@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.6 2004/06/15 05:18:15 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.7 2004/06/19 21:48:50 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -482,13 +482,14 @@ void MyPasswordSafe::pwordEdit()
       item->setGroup(dlg.getGroup()); // FIXME: needs to reparent the view item
       item->updateModTime();
 
-      m_safe->setChanged(true); // FIXME: send this through the view
-      savingEnabled(true);
       statusBar()->message(tr("Password updated"));
     }
     else {
       statusBar()->message(tr("Edit password cancelled"));
     }
+
+    m_safe->setChanged(true); // FIXME: send this through the view
+    savingEnabled(true);
   }
   else {
     statusBar()->message(tr("No item selected"));

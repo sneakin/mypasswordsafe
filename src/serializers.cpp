@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.4 2004/06/12 10:54:32 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.5 2004/06/19 21:48:50 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -165,29 +165,20 @@ BlowfishLizer::~BlowfishLizer()
 {
 }
 
-#if 0
-int BlowfishLizer::writeCBC(FILE *fp, string &data, const SecuredString &passkey,
-			    const unsigned char *salt, unsigned char *ipthing)
-{
-  return _writecbc(fp, (const unsigned char *)data.c_str(), data.length(),
-		   (const unsigned char *)passkey.get(), passkey.length(),
-		   salt, SaltLength, ipthing);
-}
-#endif
 int BlowfishLizer::writeCBC(FILE *fp, BlowFish *fish,
-			    SecuredString &data, int type,
-			    unsigned char *ipthing)
+			    const unsigned char *data, int length,
+			    int type, unsigned char *ipthing)
 {
    int numWritten = 0;
 
-   int BlockLength = ((data.length()+7)/8)*8;
+   int BlockLength = ((length+7)/8)*8; // FIXME: is the *8 needed
    if (BlockLength == 0)
       BlockLength = 8;
 
    // First encrypt and write the length of the buffer
    unsigned char lengthblock[8];
    memset(lengthblock, 0, 8);
-   putInt32( lengthblock, data.length());
+   putInt32( lengthblock, length);
 
    lengthblock[sizeof(long)] = (unsigned char)type;
 
@@ -204,15 +195,15 @@ int BlowfishLizer::writeCBC(FILE *fp, BlowFish *fish,
    // NOTE: the string gets decrypted here
    // It could be possible to do the decryption and encryption
    // along side each other
-   const unsigned char *buffer = (const unsigned char *)data.get();
+   const unsigned char *buffer = (const unsigned char *)data;
 
    for (int x=0;x<BlockLength;x+=8)
    {
-      if ((data.length() == 0) || ((data.length()%8 != 0) && (data.length()-x<8)))
+      if ((length == 0) || ((length % 8 != 0) && (length-x<8)))
       {
          //This is for an uneven last block
          memset(curblock, 0, 8);
-         memcpy(curblock, buffer+x, data.length() % 8);
+         memcpy(curblock, buffer+x, length % 8);
       }
       else
          memcpy(curblock, buffer+x, 8);
@@ -225,37 +216,15 @@ int BlowfishLizer::writeCBC(FILE *fp, BlowFish *fish,
    return numWritten;
 }
 
-// Adapted from Counterpane's PasswordSafe
-#if 0
-int BlowfishLizer::readCBC(FILE *fp, string &data, const SecuredString &passkey, const unsigned char *salt, unsigned char *ipthing)
+int BlowfishLizer::writeCBC(FILE *fp, BlowFish *fish,
+			    SecuredString &data, int type,
+			    unsigned char *ipthing)
 {
-  // We do a double cast because the LPCSTR cast operator is overridden by the CString class
-  // to access the pointer we need,
-  // but we in fact need it as an unsigned char. Grrrr.
-  //LPCSTR passstr = LPCSTR(app.m_passkey);
-  const char *passstr = passkey.get();
-
-  unsigned char *buffer = NULL;
-  unsigned int buffer_len = 0;
-  int retval;
-
-  retval = _readcbc(fp, buffer, buffer_len,
-		    (const unsigned char *)passstr, passkey.length(),
-		    salt, SaltLength, ipthing);
-  if (buffer_len > 0) {
-    //CMyString str(LPCSTR(buffer), buffer_len);
-    //string str(buffer, buffer_len);
-    buffer[buffer_len] = '\0';
-    data = (char *)buffer;
-    trashMemory(buffer, buffer_len);
-    delete[] buffer;
-  } else {
-    data = "";
-  }
-  return retval;
+  return writeCBC(fp, fish, (const unsigned char *)data.get(), data.length(),
+		  type, ipthing);
 }
-#endif
 
+// Adapted from Counterpane's PasswordSafe
 int BlowfishLizer::readCBC(FILE *fp, BlowFish *fish,
 			   SecuredString &data, int &type,
 			   unsigned char *ipthing)
@@ -300,21 +269,17 @@ int BlowfishLizer::readCBC(FILE *fp, BlowFish *fish,
 
   unsigned char tempcbc[8];
   numRead += fread(buffer, 1, BlockLength, fp);
-  for (int x=0;x<BlockLength;x+=8)
-    {
-      memcpy(tempcbc, buffer+x, 8);
-      fish->Decrypt(buffer+x, buffer+x);
-      xormem(buffer+x, ipthing, 8);
-      memcpy(ipthing, tempcbc, 8);
-    }
+  for (int x=0;x<BlockLength;x+=8) {
+    memcpy(tempcbc, buffer+x, 8);
+    fish->Decrypt(buffer+x, buffer+x);
+    xormem(buffer+x, ipthing, 8);
+    memcpy(ipthing, tempcbc, 8);
+  }
 	
   trashMemory(tempcbc, 8);
 
   buffer[length] = '\0';
   data.set((const char *)buffer);
-
-  trashMemory(buffer, BlockLength);
-  delete[] buffer;
 
   return numRead;
 }
@@ -888,10 +853,22 @@ int BlowfishLizer2::readEntry(FILE *in, SafeItem &item,
       break;
     }
     case CTIME:
+      DBGOUT("CTIME size: " << data.length());
+      item.setCreationTime(*(time_t *)data.get());
+      break;
     case MTIME:
+      item.setModificationTime(*(time_t *)data.get());
+      break;
     case ATIME:
+      item.setAccessTime(*(time_t *)data.get());
+      break;
     case LTIME:
+      item.setLifetime(*(time_t *)data.get());
+      break;
     case POLICY:
+      DBGOUT("Policy size: " << data.length());
+      item.setPolicy((const unsigned char *)data.get());
+      break;
     default:
       DBGOUT("unhandled block");
       break;
@@ -927,6 +904,26 @@ int BlowfishLizer2::writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
   
   data.set(item.getNotes());
   num_written += writeCBC(out, fish, data, NOTES, ipthing);
+
+  // CTIME, MTIME, ATIME, LTIME, POLICY
+  time_t time = item.getCreationTime();
+  num_written += writeCBC(out, fish, (const unsigned char *)&time,
+			  sizeof(time_t), CTIME, ipthing);
+
+  time = item.getModificationTime();
+  num_written += writeCBC(out, fish, (const unsigned char *)&time,
+			  sizeof(time_t), MTIME, ipthing);
+
+  time = item.getAccessTime();
+  num_written += writeCBC(out, fish, (const unsigned char *)&time,
+			  sizeof(time_t), ATIME, ipthing);
+
+  time = item.getLifetime();
+  num_written += writeCBC(out, fish, (const unsigned char *)&time,
+			  sizeof(time_t), LTIME, ipthing);
+
+  data.set((const char *)item.getPolicy(), 4);
+  num_written += writeCBC(out, fish, data, POLICY, ipthing);
 
   num_written += writeCBC(out, fish, data, END, ipthing);
 

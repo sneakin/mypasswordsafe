@@ -1,7 +1,8 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.4 2004/06/15 05:18:15 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.5 2004/06/19 21:48:50 nolan Exp $
  */
 #include <qpixmap.h>
 #include <assert.h>
+#include <qdatetime.h>
 #include "myutil.hpp"
 #include "safelistview.hpp"
 
@@ -57,8 +58,25 @@ QString SafeListViewItem::text(int col) const
 
     return getNotes();
   }
+  else if(col >= 3 && col < 6) {
+    QDateTime time;
+
+    if(col == 3)
+      time.setTime_t(getModificationTime());
+    else if(col == 4)
+      time.setTime_t(getAccessTime());
+    else if(col == 5)
+      time.setTime_t(getCreationTime());
+
+    return time.toString(Qt::LocalDate);
+  }
+  else if(col == 6) {
+    QTime time;
+    time.addSecs(getLifetime());
+    return time.toString();
+  }
 #ifdef DEBUG
-  else if(col == 3) {
+  else if(col == 7) {
     return getGroup();
   }
 #endif
@@ -167,7 +185,7 @@ QString SafeListViewGroup::text(int col) const
     //return m_fullname.section(SafeItem::GroupSeperator, -1);
     return m_name;
 #ifdef DEBUG
-  else if(col == 3)
+  else if(col == 7)
     return fullname();
 #endif
   else
@@ -242,6 +260,10 @@ SafeListView::SafeListView(QWidget *parent, const char *name, Safe *safe)
   addColumn(tr("Name"));
   addColumn(tr("User"));
   addColumn(tr("Notes"));
+  addColumn(tr("Last Modified"));
+  addColumn(tr("Accessed on"));
+  addColumn(tr("Created on"));
+  addColumn(tr("Lifetime"));
 #ifdef DEBUG
   addColumn(tr("Group"));
 #endif

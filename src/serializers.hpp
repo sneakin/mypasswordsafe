@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.3 2004/06/12 06:42:18 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.4 2004/06/19 21:48:50 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -80,6 +80,8 @@ protected:
 			 unsigned char *ipthing, const string &def_user,
 			 bool v2_hdr = false);
 
+  int writeCBC(FILE *fp, BlowFish *fish, const unsigned char *data,
+	       int length, int type, unsigned char *ipthing);
   int writeCBC(FILE *fp, BlowFish *fish,
 	       SecuredString &data, int type,
 	       unsigned char *ipthing);
