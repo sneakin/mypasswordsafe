@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.21 2004/12/06 13:38:23 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.22 2004/12/06 16:03:46 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -152,7 +152,7 @@ SafeListViewGroup::SafeListViewGroup(SafeListViewGroup *parent,
 void SafeListViewGroup::init()
 {
   setPixmap(0, QPixmap::fromMimeSource("folder_blue.png"));
-  //setRenameEnabled(0, true);
+  setRenameEnabled(0, true);
 }
 
 void SafeListViewGroup::setOpen(bool yes)
@@ -163,6 +163,16 @@ void SafeListViewGroup::setOpen(bool yes)
     setPixmap(0, QPixmap::fromMimeSource("folder_blue_open.png"));
 
   QListViewItem::setOpen(yes);
+}
+
+void SafeListViewGroup::setText(int col, const QString &text)
+{
+  if(col == 0) {
+    group()->setName(text);
+    group()->safe()->setChanged(true);
+  }
+
+  SafeListViewItem::setText(col, text);
 }
 
 QString SafeListViewGroup::text(int col) const

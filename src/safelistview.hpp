@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.12 2004/11/01 21:34:58 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.13 2004/12/06 16:03:46 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -76,6 +76,7 @@ public:
 
   virtual void setOpen(bool yes);
 
+  virtual void setText(int col, const QString &);
   virtual QString text(int col = 0) const;
 
   inline SafeGroup *group() const { return (SafeGroup *)item(); }
@@ -116,6 +117,7 @@ public:
 signals:
   void deleteItem(SafeItem *);
   void dragObjectDropped(QMimeSource *drag, SafeListViewItem *target);
+  //void itemRenamed(QListViewItem *, int, const QString &);
 
 public slots:
   void dropped(QDropEvent *);

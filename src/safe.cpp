@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.27 2004/12/06 12:32:05 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.28 2004/12/06 16:03:46 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -782,6 +782,7 @@ void Safe::setPassPhrase(const EncryptedString &phrase)
 void Safe::setChanged(bool value)
 {
   m_changed = value;
+  changed();
 }
 
 /** Returns a string that describes an error.

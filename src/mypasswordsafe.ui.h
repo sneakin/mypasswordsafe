@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.32 2004/11/02 22:17:12 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.33 2004/12/06 16:03:46 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -230,6 +230,7 @@ bool MyPasswordSafe::open( const char *filename, const EncryptedString &passkey,
       setCaption(tr("MyPasswordSafe: ") + filename);
       savingEnabled(false);
       fileSaveAsAction->setEnabled(true);
+      connect(m_safe, SIGNAL(changed()), this, SLOT(savingEnabled()));
       return true;
     }
     else {
@@ -502,6 +503,10 @@ int MyPasswordSafe::getGeneratedPwordLength()
   return m_gen_pword_length;
 }
 
+void MyPasswordSafe::savingEnabled()
+{
+  savingEnabled(true);
+}
 
 void MyPasswordSafe::savingEnabled( bool value)
 {
