@@ -35,10 +35,15 @@
 #include <qstring.h>
 #include "safe.hpp"
 #include "safeserializer.hpp"
+#include "plaintextlizer.hpp"
+#include "serializers.hpp"
 
 using namespace std;
 
 SafeSerializer::SerializerVec SafeSerializer::m_serializers;
+BlowfishLizer2 _blowfish_lizer2;
+BlowfishLizer _blowfish_lizer;
+PlainTextLizer _plain_text_lizer;
 
 SafeSerializer::SafeSerializer(const QString &extension, const QString &name)
   : m_extension(extension), m_name(name)

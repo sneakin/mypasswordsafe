@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.8 2004/07/26 07:11:30 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.9 2004/07/28 23:17:20 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -44,17 +44,6 @@ class QString;
 /* Instances of these classes are in safe.cpp after the SerializerMap.
  */
 
-class PlainTextLizer: public SafeSerializer
-{
-public:
-  PlainTextLizer();
-  virtual ~PlainTextLizer();
-
-  virtual Safe::Error checkPassword(const QString &path, const SecuredString &password);
-  virtual Safe::Error load(Safe &safe, const QString &path, const EncryptedString &passphrase, const QString &def_user);
-  virtual Safe::Error save(Safe &safe, const QString &path, const QString &def_user);
-};
-
 class BlowfishLizer: public SafeSerializer
 {
 public:
@@ -81,6 +70,8 @@ protected:
   virtual int writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
 			 unsigned char *ipthing, const QString &def_user,
 			 bool v2_hdr = false);
+  Safe::Error saveGroup(FILE *out, SafeGroup *group, BlowFish *fish,
+			unsigned char *ipthing, const QString &def_user);
 
   int writeCBC(FILE *fp, BlowFish *fish, const char *data,
 	       int length, int type, unsigned char *ipthing);
@@ -125,7 +116,7 @@ protected:
   QString parseGroup(const QString &group);
   QString readyGroup(const QString &group);
 
-  virtual int readEntry(FILE *in, SafeEntry &item,
+  virtual int readEntry(FILE *in, SafeEntry &item, QString &group,
 			BlowFish *fish,
 			unsigned char *ipthing,
 			const QString &def_user);
@@ -134,6 +125,10 @@ protected:
   int writeString(FILE *out, BlowFish *fish, const QString &str,
 		  int type, unsigned char *ipthing);
   int writeTime(FILE *out, BlowFish *fish, time_t time, int type, unsigned char *ipthing);
+  Safe::Error saveGroup(FILE *out, SafeGroup *group, BlowFish *fish,
+			unsigned char *ipthing, const QString &def_user);
+
+  QString groupName(SafeEntry &entry);
 };
 
 #endif

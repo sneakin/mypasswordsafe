@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.9 2004/07/26 07:11:30 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.10 2004/07/28 23:17:20 nolan Exp $
  */
 #include <qpixmap.h>
 #include <assert.h>
@@ -8,148 +8,106 @@
 #include "myutil.hpp"
 #include "safelistview.hpp"
 
-SafeListViewItem::SafeListViewItem(SafeListView *parent, SafeEntry *item)
-  : QListViewItem(parent), m_item(item)
+SafeListViewItem::SafeListViewItem(SafeListView *parent, SafeItem *i)
+  : QListViewItem(parent), m_item(i)
 {
   assert(m_item != NULL);
-
-  //setPixmap(0, QPixmap::fromMimeSource("password.png"));
-  setGroup("");
-  setDragEnabled(true);
-  setDropEnabled(true);
 }
 
-SafeListViewItem::SafeListViewItem(SafeListViewGroup *parent,
-				   SafeEntry *item)
-  : QListViewItem(parent), m_item(item)
+SafeListViewItem::SafeListViewItem(SafeListViewGroup *parent, SafeItem *i)
+  : QListViewItem(parent), m_item(i)
 {
-  assert(m_item != NULL);
-
-  //setPixmap(0, QPixmap::fromMimeSource("password.png"));
-  setGroup(parent->fullname());
-  setDragEnabled(true);
-  setDropEnabled(true);
 }
 
 SafeListViewItem::~SafeListViewItem()
 {
 }
 
-void SafeListViewItem::setSelected(bool yes)
+void SafeListViewItem::setItem(SafeItem *i)
+{
+  m_item = i;
+}
+
+
+
+SafeListViewEntry::SafeListViewEntry(SafeListView *parent, SafeEntry *item)
+  : SafeListViewItem(parent, item)
+{
+  //setPixmap(0, QPixmap::fromMimeSource("password.png"));
+  setDragEnabled(true);
+  setDropEnabled(true);
+}
+
+SafeListViewEntry::SafeListViewEntry(SafeListViewGroup *parent,
+				   SafeEntry *item)
+  : SafeListViewItem(parent, item)
+{
+  //setPixmap(0, QPixmap::fromMimeSource("password.png"));
+  setDragEnabled(true);
+  setDropEnabled(true);
+}
+
+SafeListViewEntry::~SafeListViewEntry()
+{
+}
+
+void SafeListViewEntry::setSelected(bool yes)
 {
   setMultiLinesEnabled(yes);
   QListViewItem::setSelected(yes);
   setup();
 }
 
-QString SafeListViewItem::text(int col) const
+QString SafeListViewEntry::text(int col) const
 {
   if(col == 0) {
-    return getName();
+    return entry()->name();
   }
   else if(col == 1) {
-    return getUser();
+    return entry()->user();
   }
   else if(col == 2) {
+    QString notes(entry()->notes());
     if(isSelected() == false) {
-      QString notes(getNotes());
       int pos = notes.find('\n');
       if(pos > 0)
 	return notes.left(pos);
     }
 
-    return getNotes();
+    return notes;
   }
   else if(col >= 3 && col < 6) {
     QDateTime time;
 
     if(col == 3)
-      time.setTime_t(getModificationTime());
+      time = entry()->modifiedTime();
     else if(col == 4)
-      time.setTime_t(getAccessTime());
+      time = entry()->accessTime();
     else if(col == 5)
-      time.setTime_t(getCreationTime());
+      time = entry()->creationTime();
 
     return time.toString(Qt::LocalDate);
   }
   else if(col == 6) {
-    QTime time;
-    time.addSecs(getLifetime());
-    return time.toString();
+    return entry()->lifetime().toString();
   }
-#ifdef DEBUG
-  else if(col == 7) {
-    return getGroup();
-  }
-#endif
   else {
     return QString::null;
   }
 }
 
-void SafeListViewItem::setName(const QString &name)
-{
-  m_item->setName(name);
-}
-
-QString SafeListViewItem::getName() const
-{
-  return m_item->getName();
-}
-
-void SafeListViewItem::setUser(const QString &user)
-{
-  m_item->setUser(user);
-}
-
-QString SafeListViewItem::getUser() const
-{
-  return m_item->getUser();
-}
-
-void SafeListViewItem::setPassword(const EncryptedString &pword)
-{
-  m_item->setPassword(pword);
-}
-
-const EncryptedString &SafeListViewItem::getPassword() const
-{
-  return m_item->getPassword();
-}
-
-void SafeListViewItem::setNotes(const QString &notes)
-{
-  m_item->setNotes(notes);
-}
-
-QString SafeListViewItem::getNotes() const
-{
-  return m_item->getNotes();
-}
-
-
-void SafeListViewItem::setGroup(const QString &group)
-{
-  m_item->setGroup(group);
-}
-
-
-QString SafeListViewItem::getGroup() const
-{
-  return m_item->getGroup();
-}
 
 
 SafeListViewGroup::SafeListViewGroup(SafeListView *parent,
-				     const QString &name)
-  : QListViewItem(parent), m_name(name)
+				     SafeGroup *group)
+  : SafeListViewItem(parent, group)
 {
   init();
 }
 
 SafeListViewGroup::SafeListViewGroup(SafeListViewGroup *parent,
-				     const QString &name)
-  : QListViewItem(parent), m_name(name)
+				     SafeGroup *group)
+  : SafeListViewItem(parent, group)
 {
   init();
 }
@@ -173,28 +131,16 @@ void SafeListViewGroup::setOpen(bool yes)
   QListViewItem::setOpen(yes);
 }
 
-
-void SafeListViewGroup::setName(const QString &name)
-{
-  m_name = name;
-  updateItems();
-}
-
-
 QString SafeListViewGroup::text(int col) const
 {
   if(col == 0)
     //return m_fullname.section(SafeEntry::GroupSeperator, -1);
-    return m_name;
-#ifdef DEBUG
-  else if(col == 7)
-    return fullname();
-#endif
+    return group()->name();
   else
     return QString::null;
 }
 
-
+/*
 const QString SafeListViewGroup::fullname() const
 {
   QListViewItem *p = parent();
@@ -222,20 +168,23 @@ QString SafeListViewGroup::escape(const QString &name) const
   ret.replace('/', "\\/");
   return ret;
 }
+*/
 
 
+/*
 void SafeListViewGroup::updateItems()
 {
   QString name(fullname());
   QListViewItemIterator iter(this);
   while(iter.current()) {
-    if(iter.current()->rtti() == SafeListViewItem::RTTI) {
-      SafeListViewItem *item = (SafeListViewItem *)iter.current();
+    if(iter.current()->rtti() == SafeListViewEntry::RTTI) {
+      SafeListViewEntry *item = (SafeListViewEntry *)iter.current();
       item->setGroup(name);
     }
     iter++;
   }
 }
+*/
 
 
 bool SafeListViewGroup::acceptDrop(const QMimeSource *mime) const
@@ -284,43 +233,45 @@ void SafeListView::setResizePolicy(QListView::WidthMode mode)
 void SafeListView::setSafe(Safe *safe)
 {
   m_safe = safe;
-  populate();
+  clear();
+
+  if(m_safe != NULL) {
+    populate(m_safe);
+  }
 }
 
 SafeListViewItem *SafeListView::getSelectedItem()
 {
   QListViewItem *item = selectedItem();
-  if(item->rtti() == SafeListViewItem::RTTI)
-    return static_cast<SafeListViewItem *>(item);
-  else
-    return NULL;
+  return (SafeListViewItem *)item;
 }
 
-SafeListViewItem *SafeListView::addItem(SafeEntry *item)
+#if 0
+SafeListViewEntry *SafeListView::addItem(SafeEntry *item)
 {
   if(m_safe) {
     //SafeEntry *item_ptr = m_safe->addItem(item);
     QListViewItem *parent = selectedItem();
     if(parent == NULL) {
-      return new SafeListViewItem(this, item);
+      return new SafeListViewEntry(this, item);
     }
     else if(parent->rtti() != SafeListViewGroup::RTTI) {
       parent = parent->parent();
       if(parent == NULL) {
-	return new SafeListViewItem(this, item);
+	return new SafeListViewEntry(this, item);
       }
     }
 
     parent->setOpen(true);
     return new
-      SafeListViewItem(static_cast<SafeListViewGroup *>(parent),
+      SafeListViewEntry(static_cast<SafeListViewGroup *>(parent),
 		       item);
   }
 
   return NULL;
 }
 
-void SafeListView::delItem(SafeListViewItem *item)
+void SafeListView::delItem(SafeListViewEntry *item)
 {
   if(m_safe) {
     m_safe->delItem(item->item());
@@ -395,65 +346,103 @@ SafeListViewGroup *SafeListView::addGroup(const QString &group_name)
 
   return NULL;
 }
+#endif
 
 
 void SafeListView::startDrag()
 {
   DBGOUT("Drag started");
-
-  // get the selected item
-  QListViewItem *item = selectedItem();
-  assert(item != NULL); // can a drag be started w/o a selection?
-
-  // create a list for the item(s)
-  QValueList<SafeEntry> items;
-
-  // if the item is not a group, add it to the list
-  if(item->rtti() == SafeListViewItem::RTTI) {
-    SafeListViewItem *i = (SafeListViewItem *)item;
-    items.push_back(*i->item());
-  }
-  // else iterate through the group's children adding them to the list
-  else if(item->rtti() == SafeListViewGroup::RTTI) {
-  }
-  // just in case
-  else {
-    DBGOUT("Unknown item type; rtti() == " << item->rtti());
-    return;
-  }
-
-  // create the drag object
-  //QDragObject *d = new SafeDragObject(items, this);
-  QDragObject *d = new QTextDrag("Hello world", this);
-
-  // start the drag
-  // FIXME: detect if shift is pressed
-  d->dragMove();
-  DBGOUT("Drag done");
 }
 
-void SafeListView::populate()
+void SafeListView::itemChanged(SafeItem *item)
 {
-  clear();
+  DBGOUT("Item changed");
+  SafeListViewItem *list_item = findItem(item);
+  list_item->setup();
+}
 
-  if(m_safe) {
-    for(Safe::iterator iter = m_safe->firstItem();
-	iter != m_safe->lastItem();
-	iter++) {
-      SafeEntry *item = *iter;
-      QString group_name(item->getGroup());
-      if(!group_name.isEmpty()) {
-	SafeListViewGroup *group(addGroup(group_name));
-	assert(group != NULL);
-	group->setOpen(true);
-	(void)new SafeListViewItem(group, item);
+void SafeListView::itemAdded(SafeItem *item, SafeGroup *group)
+{
+  DBGOUT("Item added:");
+  SafeListViewGroup *parent = (SafeListViewGroup *)findItem(group);
+  if(parent) {
+    parent->setOpen(true);
+  }
+
+  if(item->rtti() == SafeEntry::RTTI) {
+    DBGOUT("Item name: " << ((SafeEntry *)item)->name());
+    if(parent)
+      (void)new SafeListViewEntry(parent, (SafeEntry *)item);
+    else
+      (void)new SafeListViewEntry(this, (SafeEntry *)item);
+  }
+  else if(item->rtti() == SafeGroup::RTTI) {
+    if(parent)
+      (void)new SafeListViewGroup(parent, (SafeGroup *)item);
+    else
+      (void)new SafeListViewGroup(this, (SafeGroup *)item);
+  }
+  else {
+    DBGOUT("Unkown item type: " << item->rtti());
+  }
+}
+
+void SafeListView::itemDeleted(SafeItem *item)
+{
+  DBGOUT("Item deleted");
+  SafeListViewItem *list_item = findItem(item);
+  delete list_item;
+}
+
+SafeListViewItem *SafeListView::findItem(SafeItem *item)
+{
+  QListViewItemIterator it(this);
+  while(it.current()) {
+    QListViewItem *list_item = it.current();
+
+    if(list_item->rtti() == SafeListViewEntry::RTTI ||
+       list_item->rtti() == SafeListViewGroup::RTTI) {
+      SafeListViewItem *casted_item = (SafeListViewItem *)list_item;
+      if(casted_item->item() == item)
+	return casted_item;
+    }
+    it++;
+  }
+  return NULL;
+}
+
+void SafeListView::populate(SafeGroup *group, SafeListViewGroup *view)
+{
+  if(group) {
+    DBGOUT("populate");
+    SafeGroup::Iterator iter(group);
+    while(iter.current()) {
+      SafeItem *item = iter.current();
+      if(item->rtti() == SafeEntry::RTTI) {
+	DBGOUT("Adding item: " << ((SafeEntry *)item)->name());
+	if(view == NULL)
+	  (void)new SafeListViewEntry(this, (SafeEntry *)item);
+	else
+	  (void)new SafeListViewEntry(view, (SafeEntry *)item);
       }
-      else
-	(void)new SafeListViewItem(this, item);
+      else if(item->rtti() == SafeGroup::RTTI) {
+	SafeListViewGroup *g = NULL;
+	DBGOUT("Adding group: " << ((SafeGroup *)item)->name());
+	if(view == NULL)
+	  g = new SafeListViewGroup(this, (SafeGroup *)item);
+	else
+	  g = new SafeListViewGroup(view, (SafeGroup *)item);
+	populate((SafeGroup *)item, g);
+      }
+      else {
+	DBGOUT("Unknown item");
+      }
+      ++iter;
     }
   }
 }
 
+/*
 QString SafeListView::thisGroup(const QString &group)
 {
   unsigned int i;
@@ -512,3 +501,4 @@ QString SafeListView::parentGroup(const QString &group)
   ret.truncate(i);
   return ret;
 }
+*/

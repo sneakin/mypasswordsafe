@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.13 2004/07/26 07:11:30 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.14 2004/07/28 23:17:20 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -94,7 +94,7 @@ void MyPasswordSafe::closeEvent( QCloseEvent *e )
 bool MyPasswordSafe::closeSafe()
 {
   if(m_safe) {
-    if(m_safe->changed()) {
+    if(m_safe->hasChanged()) {
       int result = QMessageBox::warning(this, tr("Save safe?"),
 					tr("Do you want to save the safe before it is closed?"),
 					QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel);
@@ -138,7 +138,7 @@ void MyPasswordSafe::fileExit()
 
 void MyPasswordSafe::fileMakeDefault()
 {
-  if(m_safe->changed()) {
+  if(m_safe->hasChanged()) {
     if(!save()) {
       statusBar()->message(tr("The safe must be saved before it can be made the default."));
       return;
@@ -242,7 +242,7 @@ bool MyPasswordSafe::open( const char *filename, const EncryptedString &passkey,
 			      passkey,
 			      (const char *)m_def_user);
     if(ret == Safe::Success) {
-      DBGOUT(filename << " has " << s->size() << " entries");
+      DBGOUT(filename << " has " << s->count() << " entries");
 
       if(m_safe != NULL)
 	delete m_safe;
@@ -343,20 +343,36 @@ void MyPasswordSafe::pwordAdd()
   dlg.showDetails(false);
   
   if(dlg.exec() == QDialog::Accepted) {
-    SafeEntry i(dlg.getItemName(),
-	       dlg.getUser(),
-	       SecuredString((const char *)dlg.getPassword().utf8()),
-	       dlg.getNotes());
-    SafeEntry *safe_item = m_safe->addItem(i);
-    if(safe_item != NULL) {
-      if(pwordListView->addItem(safe_item) != NULL) {
-	savingEnabled(true);
-	statusBar()->message(tr("Item added"));
-	return;
+    SafeListViewItem *selection = pwordListView->getSelectedItem();
+    SafeGroup *parent = m_safe;
+
+    if(selection != NULL) {
+      SafeListViewGroup *group = NULL;
+      if(selection->rtti() == SafeListViewEntry::RTTI) {
+	group = (SafeListViewGroup *)selection->parent();
       }
+      else if(selection->rtti() == SafeListViewGroup::RTTI) {
+	group = (SafeListViewGroup *)selection;
+      }
+
+      if(group)
+	parent = group->group();
     }
 
-    statusBar()->message(tr("Error adding item"));
+    SafeEntry *safe_item = new SafeEntry(parent,
+					 dlg.getItemName(),
+					 dlg.getUser(),
+					 EncryptedString(dlg.getPassword().utf8()),
+					 dlg.getNotes());
+    if(safe_item != NULL) {
+      m_safe->setChanged(true);
+      pwordListView->itemAdded(safe_item, parent);
+      savingEnabled(true);
+      statusBar()->message(tr("Item added"));
+    }
+    else {
+      statusBar()->message(tr("Unable to allocate new item"));
+    }
   }
   else {
     statusBar()->message(tr("Add canceled"));
@@ -368,12 +384,15 @@ void MyPasswordSafe::pwordDelete()
 {
   SafeListViewItem *list_item(pwordListView->getSelectedItem());
   if(list_item) {
+    SafeItem *item = list_item->item();
     int result = QMessageBox::warning(this, tr("Are you sure?"),
 				      tr("Are you sure you want to delete this password?"),
 				      QMessageBox::Yes, QMessageBox::No);
     switch(result) {
     case QMessageBox::Yes:
-      pwordListView->delItem(list_item);
+      m_safe->setChanged(true);
+      pwordListView->itemDeleted(item);
+      delete item;
       savingEnabled(true);
       statusBar()->message(tr("Password deleted"));
       break;
@@ -392,37 +411,43 @@ void MyPasswordSafe::pwordEdit()
 {
   SafeListViewItem *item = pwordListView->getSelectedItem();
   if(item != NULL) {
-    item->updateAccessTime();
+    if(item->rtti() == SafeListViewEntry::RTTI) {
+      SafeEntry *entry = (SafeEntry *)item->item();
 
-    PwordEditDlg dlg;
+      entry->updateAccessTime();
 
-    dlg.setGenPwordLength(m_gen_pword_length);
-    dlg.setItemName(item->getName());
-    dlg.setUser(item->getUser());
-    // NOTE: password decrypted
-    dlg.setPassword(item->getPassword().get().get());
-    dlg.setNotes(item->getNotes());
-    dlg.setAccessedOn(item->getAccessTime());
-    dlg.setCreatedOn(item->getCreationTime());
-    dlg.setModifiedOn(item->getModificationTime());
-    dlg.setLifetime(item->getLifetime());
-    dlg.setUUID(item->getUUID());
+      PwordEditDlg dlg;
 
-    if(dlg.exec() == QDialog::Accepted) {
-      item->setName(dlg.getItemName());
-      item->setUser(dlg.getUser());
-      item->setPassword(EncryptedString((const char *)dlg.getPassword().utf8()));
-      item->setNotes(dlg.getNotes());
-      item->updateModTime();
+      dlg.setGenPwordLength(m_gen_pword_length);
+      dlg.setItemName(entry->name());
+      dlg.setUser(entry->user());
+      // NOTE: password decrypted
+      dlg.setPassword(entry->password().get().get());
+      dlg.setNotes(entry->notes());
+      dlg.setAccessedOn(entry->accessTime());
+      dlg.setCreatedOn(entry->creationTime());
+      dlg.setModifiedOn(entry->modifiedTime());
+      dlg.setLifetime(entry->lifetime());
+      dlg.setUUID(entry->uuid().toString().c_str());
 
-      statusBar()->message(tr("Password updated"));
+      if(dlg.exec() == QDialog::Accepted) {
+	entry->setName(dlg.getItemName());
+	entry->setUser(dlg.getUser());
+	entry->setPassword(EncryptedString((const char *)dlg.getPassword().utf8()));
+	entry->setNotes(dlg.getNotes());
+	entry->updateModTime();
+
+	m_safe->setChanged(true);
+	pwordListView->itemChanged(entry);
+	statusBar()->message(tr("Password updated"));
+      }
+      else {
+	statusBar()->message(tr("Edit password cancelled"));
+      }
+
+      m_safe->setChanged(true); // FIXME: send this through the view
+      savingEnabled(true);
     }
-    else {
-      statusBar()->message(tr("Edit password cancelled"));
-    }
-
-    m_safe->setChanged(true); // FIXME: send this through the view
-    savingEnabled(true);
   }
   else {
     statusBar()->message(tr("No item selected"));
@@ -433,13 +458,14 @@ void MyPasswordSafe::pwordEdit()
 void MyPasswordSafe::pwordFetch()
 {
   SafeListViewItem *item(pwordListView->getSelectedItem());
-  if(item) {
+  if(item && item->rtti() == SafeListViewEntry::RTTI) {
+    SafeEntry *entry = (SafeEntry *)item->item();
     // NOTE: password decrypted
-    SecuredString pword(item->getPassword().get());
+    SecuredString pword(entry->password().get());
 	copyToClipboard(QString::fromUtf8(pword.get()));
     statusBar()->message(tr("Password copied to clipboard"));
 
-    item->updateAccessTime();
+    entry->updateAccessTime();
   }
   else {
     statusBar()->message(tr("No item selected"));
@@ -450,11 +476,12 @@ void MyPasswordSafe::pwordFetch()
 void MyPasswordSafe::pwordFetchUser()
 {
   SafeListViewItem *item(pwordListView->getSelectedItem());
-  if(item) {
-	copyToClipboard(item->getUser());
+  if(item && item->rtti() == SafeListViewEntry::RTTI) {
+    SafeEntry *entry = (SafeEntry *)item->item();
+    copyToClipboard(entry->user());
     statusBar()->message(tr("Username copied to clipboard"));
 
-    item->updateAccessTime();
+    entry->updateAccessTime();
   }
   else {
     statusBar()->message(tr("No item selected"));
@@ -464,7 +491,7 @@ void MyPasswordSafe::pwordFetchUser()
 
 void MyPasswordSafe::onPwordListDblClicked(QListViewItem *item)
 {
-  if(item->rtti() == SafeListViewItem::RTTI)
+  if(item->rtti() == SafeListViewEntry::RTTI)
     pwordFetch();
 }
 
@@ -620,39 +647,35 @@ void MyPasswordSafe::createGroup()
     return;
   }
 
-  // escape any slashes the user may have entered
-  group_name.replace('\\', "\\\\");
-  group_name.replace('/', "\\/");
-
   // get the selected item
-  QListViewItem *item = pwordListView->selectedItem();
-	
+  SafeListViewItem *item = pwordListView->getSelectedItem();
+  SafeGroup *parent = m_safe;
+
   // if there's an item selected
   if(item != NULL) {
     //    get its group
-    QString parent_group;
-    if(item->rtti() == SafeListViewItem::RTTI) {
-      parent_group = static_cast<SafeListViewItem *>(item)->getGroup();
+    if(item->rtti() == SafeListViewEntry::RTTI) {
+      SafeEntry *entry = ((SafeListViewEntry *)item)->entry();
+      parent = entry->parent();
     }
     else if(item->rtti() == SafeListViewGroup::RTTI) {
-      parent_group = static_cast<SafeListViewGroup *>(item)->fullname();
+      parent = ((SafeListViewGroup *)item)->group();
     }
     else {
       DBGOUT("Selected item not a valid item type");
       statusBar()->message(tr("The selected item is invalid"));
       return;
     }
-		
-    //    append the new group name to the item's group
-    if(!parent_group.isEmpty())
-      group_name = parent_group + '/' + group_name;
   }
 	
-  //    add the group to the view
-  if(pwordListView->addGroup(group_name) == NULL) {
+  //    create the group
+  SafeGroup *group = new SafeGroup(parent, group_name);
+  if(group == NULL) {
     statusBar()->message(tr("Unable to create the group"));
   }
   else {
+    m_safe->setChanged(true);
+    pwordListView->itemAdded(group, parent);
     savingEnabled(true);
     statusBar()->message(tr("Created the group \"%1\"").arg(group_name));
   }

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.11 2004/07/26 07:11:30 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.12 2004/07/28 23:17:20 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -38,12 +38,12 @@
 #include <qobject.h>
 #include <qstring.h>
 #include <qptrlist.h>
+#include <qdatetime.h>
 #include <vector>
 #include <map>
 #include "securedstring.hpp"
 #include "encryptedstring.hpp"
 #include "uuid.hpp"
-#include "xmlable.hpp"
 
 using std::map;
 using std::vector;
@@ -56,7 +56,7 @@ class SafeSerializer;
 class SafeGroup;
 class Safe;
 
-class SafeItem: public Xmlable
+class SafeItem
 {
 public:
   SafeItem(SafeGroup *parent);
@@ -65,8 +65,12 @@ public:
   inline SafeGroup *parent() { return m_parent; }
   inline const SafeGroup *parent() const { return m_parent; }
 
-  inline virtual Safe *safe() { return m_safe; }
-  inline virtual const Safe *safe() const { return m_safe; }
+  inline Safe *safe() { return m_safe; }
+  inline const Safe *safe() const { return m_safe; }
+
+  virtual int rtti() const;
+
+  void setParent(SafeGroup *parent);
 
 private:
   SafeGroup *m_parent;
@@ -76,11 +80,36 @@ private:
 class SafeGroup: public SafeItem
 {
 public:
-  typedef QPtrList<SafeItem> ItemList;
-  typedef QPtrListIterator<SafeItem> ItemListIterator;
+  class Iterator
+  {
+    friend class SafeGroup;
+
+  public:
+    Iterator(const SafeGroup *group);
+
+    SafeItem *current() const;
+    SafeItem *next();
+    SafeItem *prev();
+    SafeItem *toFirst();
+    SafeItem *toLast();
+
+    bool atFirst() const;
+    bool atLast() const;
+
+    inline SafeItem *operator *() const { return current(); }
+    inline SafeItem *operator++() { return next(); }
+    inline SafeItem *operator--() { return prev(); }
+
+  private:
+    QPtrListIterator<SafeItem> m_iter;
+  };
+
+  static const int RTTI;
 
   SafeGroup(SafeGroup *parent, const QString &name = QString::null);
   virtual ~SafeGroup();
+
+  virtual int rtti() const;
 
   const QString &name() const { return m_name; }
   void setName(const QString &name);
@@ -90,11 +119,15 @@ public:
 
   int count() const;
   void empty();
+  SafeItem *at(unsigned int i);
 
-  virtual bool fromXml(const QDomNode &node);
-  virtual QDomNode toXml(QDomDocument &doc) const;
+  Iterator first();
+  Iterator last();
 
 private:
+  typedef QPtrList<SafeItem> ItemList;
+  typedef QPtrListIterator<SafeItem> ItemListIterator;
+
   QString m_name;
   ItemList m_items;
 };
@@ -103,16 +136,16 @@ class SafeEntry: public SafeItem
 {
 public:
   static const char GroupSeperator = '/'; //!< group delimeter
+  static const int RTTI;
 
   SafeEntry(SafeGroup *parent);
   SafeEntry(SafeGroup *parent,
 	    const QString &n, const QString &u,
 	    const EncryptedString &p, const QString &n);
-  SafeEntry(SafeGroup *parent,
-	    const QString &n, const QString &u,
-	    const EncryptedString &p, const QString &n,
-	    const QString &g);
   SafeEntry(const SafeEntry &item);
+  ~SafeEntry();
+
+  virtual int rtti() const;
 
   void copy(const SafeEntry &item);
   void clear();
@@ -120,51 +153,42 @@ public:
   inline const UUID &uuid() const { return m_uuid; }
   inline const unsigned char *policy() const { return m_policy; }
 
-  inline time_t creationTime() const { return m_creation_time; }
-  inline time_t modificationTime() const { return m_mod_time; }
-  inline time_t accessTime() const { return m_access_time; }
-  inline time_t lifetime() const { return m_life_time; }
+  inline const QDateTime &creationTime() const { return m_creation_time; }
+  inline const QDateTime &modifiedTime() const { return m_mod_time; }
+  inline const QDateTime &accessTime() const { return m_access_time; }
+  inline const QTime &lifetime() const { return m_life_time; }
 
   inline const QString &name() const { return m_name; }
   inline const QString &user() const { return m_user; }
   inline const EncryptedString &password() const { return m_password; }
   inline const QString &notes() const { return m_notes; }
-  inline const QString &group() const { return m_group; }
 
   void setUUID(const unsigned char u[16]);
   void setUUID(const UUID &u);
   void setPolicy(const unsigned char p[4]);
 
-  void setCreationTime(time_t t);
-  void setModificationTime(time_t t);
-  void setAccessTime(time_t t);
-  void setLifetime(time_t t);
+  void setCreationTime(const QDateTime &t);
+  void setModifiedTime(const QDateTime &t);
+  void setAccessTime(const QDateTime &t);
+  void setLifetime(const QTime &t);
 
   void setName(const QString &n);
   void setUser(const QString &u);
   void setPassword(const EncryptedString &p);
   void setPassword(const char *p);
   void setNotes(const QString &n);
-  void setGroup(const QString &g);
 
   void updateModTime();
   void updateAccessTime();
 
-  virtual bool fromXml(const QDomNode &node);
-  virtual QDomNode toXml(QDomDocument &doc) const;
-
 private:
   void init();
-  QDomElement fieldToXml(QDomDocument &doc, const QString &field,
-			 const QString &value,
-			 bool multiline = false) const;
-  QDomElement fieldToXml(QDomDocument &doc, const QString &field,
-			time_t time) const;
 
   UUID m_uuid;
   unsigned char m_policy[4];
-  time_t m_creation_time, m_mod_time, m_access_time, m_life_time;
-  QString m_name, m_user, m_notes, m_group;
+  QDateTime m_creation_time, m_mod_time, m_access_time;
+  QTime m_life_time;
+  QString m_name, m_user, m_notes;
   EncryptedString m_password;
 };
 
@@ -211,11 +235,16 @@ public:
   inline const EncryptedString getPassPhrase() const { return m_passphrase.get(); }
   void setPassPhrase(const EncryptedString &phrase);
 
-  inline bool changed() { return m_changed; }
+  inline bool hasChanged() { return m_changed; }
   void setChanged(bool value);
 
-  inline virtual Safe *safe() { return this; }
-  inline virtual const Safe *safe() const { return this; }
+signals:
+  void changed();
+  void itemChanged(SafeItem *);
+  void itemAdded(SafeItem *, SafeGroup *);
+  void itemDeleted(SafeItem *, SafeGroup *);
+  void saved();
+  void loaded();
 
 protected:
   bool makeBackup(const QString &path);

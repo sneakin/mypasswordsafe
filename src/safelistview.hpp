@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.6 2004/07/26 07:11:30 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.7 2004/07/28 23:17:20 nolan Exp $
  */
 #ifndef SAFELISTVIEW_HPP
 #define SAFELISTVIEW_HPP
@@ -15,17 +15,34 @@ class SafeListViewGroup;
 class SafeListViewItem: public QListViewItem
 {
 public:
+  SafeListViewItem(SafeListView *parent, SafeItem *i);
+  SafeListViewItem(SafeListViewGroup *parent, SafeItem *i);
+  virtual ~SafeListViewItem();
+
+  inline SafeItem *item() const { return m_item; }
+  void setItem(SafeItem *i);
+
+private:
+  SafeItem *m_item;
+};
+
+class SafeListViewEntry: public SafeListViewItem
+{
+public:
   static const int RTTI = 1001;
 
-  SafeListViewItem(SafeListView *parent, SafeEntry *item);
-  SafeListViewItem(SafeListViewGroup *parent, SafeEntry *item);
-  virtual ~SafeListViewItem();
+  SafeListViewEntry(SafeListView *parent, SafeEntry *item);
+  SafeListViewEntry(SafeListViewGroup *parent, SafeEntry *item);
+  virtual ~SafeListViewEntry();
 
   int rtti() const { return RTTI; }
 
   virtual void setSelected(bool yes);
   virtual QString text(int col = 0) const;
 
+  inline SafeEntry *entry() const { return (SafeEntry *)item(); }
+
+  /*
   void setName(const QString &name);
   QString getName() const;
 
@@ -41,8 +58,6 @@ public:
   void setGroup(const QString &group);
   QString getGroup() const;
 
-  inline SafeEntry *item() { return m_item; }
-
   inline time_t getCreationTime() const { return m_item->getCreationTime(); }
   inline time_t getModificationTime() const { return m_item->getModificationTime(); }
   inline time_t getAccessTime() const { return m_item->getAccessTime(); }
@@ -52,39 +67,30 @@ public:
 
   inline void updateModTime() { m_item->updateModTime(); }
   inline void updateAccessTime() { m_item->updateAccessTime(); }
-
-private:
-  SafeEntry *m_item;
+  */
 };
 
-class SafeListViewGroup: public QListViewItem
+class SafeListViewGroup: public SafeListViewItem
 {
 public:
   static const int RTTI = 1002;
 
-  SafeListViewGroup(SafeListView *parent, const QString &name);
-  SafeListViewGroup(SafeListViewGroup *parent, const QString &name);
+  SafeListViewGroup(SafeListView *parent, SafeGroup *group);
+  SafeListViewGroup(SafeListViewGroup *parent, SafeGroup *group);
 
   int rtti() const { return RTTI; }
 
   virtual void setOpen(bool yes);
-  virtual void setName(const QString &name);
 
   virtual QString text(int col = 0) const;
-
-  const QString fullname() const;
 
   virtual bool acceptDrop(const QMimeSource *mime) const;
   virtual void dropped(QDropEvent *event);
 
+  inline SafeGroup *group() const { return (SafeGroup *)item(); }
+
 protected:
   void init();
-  QString escape(const QString &name) const;
-
-  void updateItems();
-
-private:
-  QString m_name;
 };
 
 class SafeListView: public QListView
@@ -101,27 +107,20 @@ public:
   void setSafe(Safe *safe);
   SafeListViewItem *getSelectedItem();
 
-  SafeListViewItem *addItem(SafeEntry *item);
-  // adds an item to the view, and updates its group
-  void delItem(SafeListViewItem *item);
-
-  SafeListViewGroup *findGroup(const QString &group_name);
-  SafeListViewGroup *addGroup(const QString &group_name);
-  // adds a new group specified by a full group name
-
   virtual void startDrag();
 
-  signals:
+  //signals:
   //void contextMenuRequested(QListViewItem *, const QPoint &, int);
   //void doubleClicked(QListViewItem *);
 
-protected:
-  void populate();
-  QString thisGroup(const QString &group);
-  QString parentGroup(const QString &group);
-
+  void itemChanged(SafeItem *);
+  void itemAdded(SafeItem *, SafeGroup *);
+  void itemDeleted(SafeItem *);
 
 private:
+  SafeListViewItem *findItem(SafeItem *);
+  void populate(SafeGroup *group, SafeListViewGroup *view = NULL);
+
   Safe *m_safe;
 };
 

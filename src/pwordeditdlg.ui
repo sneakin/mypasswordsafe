@@ -349,23 +349,23 @@
     <slot>showPassword()</slot>
     <slot>genPassword()</slot>
     <slot>fetchPassword()</slot>
-    <slot>setItemName( const QString &amp; text )</slot>
-    <slot>setCreatedOn( time_t time )</slot>
-    <slot>setAccessedOn( time_t time )</slot>
-    <slot>setModifiedOn( time_t time )</slot>
-    <slot>setLifetime( time_t time )</slot>
-    <slot>setUUID( const QString &amp; uuid )</slot>
-    <slot>showDetails( bool yes )</slot>
 </slots>
 <functions>
     <function returnType="QString">getItemName() const</function>
     <function returnType="QString">getUser() const</function>
     <function returnType="QString">getPassword() const</function>
     <function returnType="QString">getNotes() const</function>
+    <function>setItemName( const QString &amp; text )</function>
     <function>setUser( const QString &amp; text )</function>
     <function>setPassword( const QString &amp; text )</function>
     <function>setNotes( const QString &amp; text )</function>
     <function>setGenPwordLength( int value )</function>
+    <function>setCreatedOn( const QDateTime &amp; time )</function>
+    <function>setAccessedOn( const QDateTime &amp; time )</function>
+    <function>setModifiedOn( const QDateTime &amp; time )</function>
+    <function>setLifetime( const QTime &amp; time )</function>
+    <function>setUUID( const QString &amp; uuid )</function>
+    <function>showDetails( bool yes )</function>
     <function returnType="bool">detailsShown() const</function>
 </functions>
 <pixmapinproject/>

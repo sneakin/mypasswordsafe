@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.17 2004/07/26 07:11:30 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.18 2004/07/28 23:17:20 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -50,13 +50,11 @@
 using namespace std;
 
 SafeItem::SafeItem(SafeGroup *parent)
-  : m_parent(parent)
+  : m_parent(NULL)
 {
-  DBGOUT("SafeItem");
-
-  if(m_parent != NULL) {
-    m_parent->addItem(this);
-    m_safe = m_parent->safe();
+  if(parent != NULL) {
+    parent->addItem(this);
+    m_safe = parent->safe();
   }
   else {
     m_safe = (Safe *)this;
@@ -65,27 +63,78 @@ SafeItem::SafeItem(SafeGroup *parent)
 
 SafeItem::~SafeItem()
 {
-  DBGOUT("~SafeItem");
-
   if(m_parent != NULL)
     m_parent->takeItem(this);
 }
 
+int SafeItem::rtti() const
+{
+  return -1;
+}
+
+void SafeItem::setParent(SafeGroup *parent)
+{
+  m_parent = parent;
+}
 
 
-SafeGroup::SafeGroup(SafeGroup *safe, const QString &name)
-  : SafeItem(safe), m_name(name)
+SafeGroup::Iterator::Iterator(const SafeGroup *group)
+  : m_iter(group->m_items)
+{
+}
+
+SafeItem *SafeGroup::Iterator::current() const
+{
+  return m_iter.current();
+}
+
+SafeItem *SafeGroup::Iterator::next()
+{
+  return ++m_iter;
+}
+
+SafeItem *SafeGroup::Iterator::prev()
+{
+  return --m_iter;
+}
+
+SafeItem *SafeGroup::Iterator::toFirst()
+{
+  return m_iter.toFirst();
+}
+
+SafeItem *SafeGroup::Iterator::toLast()
+{
+  return m_iter.toLast();
+}
+
+bool SafeGroup::Iterator::atFirst() const
+{
+  return m_iter.atFirst();
+}
+
+bool SafeGroup::Iterator::atLast() const
+{
+  return m_iter.atLast();
+}
+
+
+
+const int SafeGroup::RTTI = 1;
+
+SafeGroup::SafeGroup(SafeGroup *p, const QString &name)
+  : SafeItem(p), m_name(name)
 {
 }
 
 SafeGroup::~SafeGroup()
 {
-  // this can be done because SafeItem will
-  // call SafeGroup::delItem which will remove
-  // the item from m_items
-  while(m_items.first()) {
-    delete m_items.first();
-  }
+  empty();
+}
+
+int SafeGroup::rtti() const
+{
+  return RTTI;
 }
 
 void SafeGroup::setName(const QString &name)
@@ -96,11 +145,13 @@ void SafeGroup::setName(const QString &name)
 void SafeGroup::addItem(SafeItem *item)
 {
   m_items.append(item);
+  item->setParent(this);
 }
 
 bool SafeGroup::takeItem(SafeItem *item)
 {
-  return m_items.remove(item);
+  bool ret = m_items.remove(item);
+  return ret;
 }
 
 int SafeGroup::count() const
@@ -110,27 +161,34 @@ int SafeGroup::count() const
 
 void SafeGroup::empty()
 {
-  m_items.clear();
-}
-
-bool SafeGroup::fromXml(const QDomNode &node)
-{
-  return false;
-}
-
-QDomNode SafeGroup::toXml(QDomDocument &doc) const
-{
-  QDomElement e = doc.createElement("group");
-  e.setAttribute("name", name());
-
-  ItemListIterator it(m_items);
-  while(it.current()) {
-    SafeItem *item = it.current();
-    e.appendChild(item->toXml(doc));
-    ++it;
+  // this can be done because SafeItem will
+  // call SafeGroup::delItem which will remove
+  // the item from m_items
+  while(m_items.first()) {
+    delete m_items.first();
   }
+}
 
-  return e;
+SafeItem *SafeGroup::at(unsigned int i)
+{
+  if(i < count())
+    return m_items.at(i);
+  else
+    return NULL;
+}
+
+SafeGroup::Iterator SafeGroup::first()
+{
+  Iterator i(this);
+  i.toFirst();
+  return i;
+}
+
+SafeGroup::Iterator SafeGroup::last()
+{
+  Iterator i(this);
+  i.toLast();
+  return i;
 }
 
 
@@ -139,6 +197,8 @@ QDomNode SafeGroup::toXml(QDomDocument &doc) const
  * \brief Represents an entry in the Safe.
  * The information contained in each entry is stored in a SafeEntry.
  */
+
+const int SafeEntry::RTTI = 2;
 
 SafeEntry::SafeEntry(SafeGroup *parent)
   : SafeItem(parent)
@@ -151,17 +211,7 @@ SafeEntry::SafeEntry(SafeGroup *parent,
 		     const EncryptedString &p,
 		     const QString &note)
   : SafeItem(parent), m_name(n), m_user(u),
-    m_notes(note), m_group(""), m_password(p)
-{
-  init();
-}
-
-SafeEntry::SafeEntry(SafeGroup *parent, const QString &n,
-		     const QString &u,
-		     const EncryptedString &p,
-		     const QString &note, const QString &g)
-  : SafeItem(parent), m_name(n), m_user(u), m_notes(note), 
-    m_group(g), m_password(p)
+    m_notes(note), m_password(p)
 {
   init();
 }
@@ -172,17 +222,25 @@ SafeEntry::SafeEntry(const SafeEntry &item)
   copy(item);
 }
 
+SafeEntry::~SafeEntry()
+{
+}
+
+int SafeEntry::rtti() const
+{
+  return RTTI;
+}
+
 void SafeEntry::copy(const SafeEntry &item)
 {
   setName(item.name());
   setUser(item.user());
   setPassword(item.password());
   setNotes(item.notes());
-  setGroup(item.group());
   setUUID(item.uuid());
 
   setCreationTime(item.creationTime());
-  setModificationTime(item.modificationTime());
+  setModifiedTime(item.modifiedTime());
   setAccessTime(item.accessTime());
   setLifetime(item.lifetime());
 
@@ -196,12 +254,9 @@ void SafeEntry::clear()
   m_name.truncate(0);
   m_user.truncate(0);
   m_notes.truncate(0);
-  m_group.truncate(0);
   m_password.clear();
-  m_uuid.create();
-  memset(m_policy, 0, 4);
-  m_creation_time = m_mod_time = m_access_time = time(NULL);
-  m_life_time = 0;
+
+  init();
 }
 
 
@@ -220,22 +275,22 @@ void SafeEntry::setPolicy(const unsigned char p[4])
   memcpy(m_policy, p, 4);
 }
 
-void SafeEntry::setCreationTime(time_t t)
+void SafeEntry::setCreationTime(const QDateTime &t)
 {
   m_creation_time = t;
 }
 
-void SafeEntry::setModificationTime(time_t t)
+void SafeEntry::setModifiedTime(const QDateTime &t)
 {
   m_mod_time = t;
 }
 
-void SafeEntry::setAccessTime(time_t t)
+void SafeEntry::setAccessTime(const QDateTime &t)
 {
   m_access_time = t;
 }
 
-void SafeEntry::setLifetime(time_t t)
+void SafeEntry::setLifetime(const QTime &t)
 {
   m_life_time = t;
 }
@@ -270,79 +325,25 @@ void SafeEntry::setNotes(const QString &n)
   updateModTime();
 }
 
-void SafeEntry::setGroup(const QString &g)
-{
-  m_group = g;
-  updateModTime();
-}
-
 void SafeEntry::updateModTime()
 {
-  m_mod_time = time(NULL);
+  m_mod_time = QDateTime::currentDateTime();
 }
 
 void SafeEntry::updateAccessTime()
 {
-  m_access_time = time(NULL);
-}
-
-bool SafeEntry::fromXml(const QDomNode &node)
-{
-  return false;
-}
-
-QDomNode SafeEntry::toXml(QDomDocument &doc) const
-{
-  QDomElement e = doc.createElement("item");
-  e.appendChild(fieldToXml(doc, "name", name()));
-  e.appendChild(fieldToXml(doc, "user", user()));
-  e.appendChild(fieldToXml(doc, "password",
-			   password().get().get())); // NOTE: password decrypted
-  e.appendChild(fieldToXml(doc, "notes", notes(), true));
-
-  return e;
+  m_access_time = QDateTime::currentDateTime();
 }
 
 void SafeEntry::init()
 {
   m_uuid.make();
   memset(m_policy, 0, 4);
-  m_creation_time = m_mod_time = m_access_time = time(NULL);
-  m_life_time = 0;
+  m_creation_time = m_mod_time = m_access_time = QDateTime::currentDateTime();
+  m_life_time = QTime(0, 0); // FIXME: get this from config file
 }
 
-QDomElement SafeEntry::fieldToXml(QDomDocument &doc,
-				  const QString &field,
-				  const QString &value,
-				  bool multiline) const
-{
-  QDomElement xml = doc.createElement(field);
 
-  if(!multiline) {
-    xml.appendChild(doc.createTextNode(value));
-  }
-  else {
-    QStringList lines = QStringList::split("\n", value);
-    QStringList::Iterator it = lines.begin();
-    QStringList::Iterator end = lines.end();
-
-    while(it != end) {
-      xml.appendChild(fieldToXml(doc, "line", *it));
-      it++;
-    }
-  }
-
-  return xml;
-}
-
-QDomElement SafeEntry::fieldToXml(QDomDocument &doc,
-				  const QString &field,
-				  time_t time) const
-{
-  QDomElement xml = doc.createElement(field);
-  xml.appendChild(doc.createTextNode("FIXME"));
-  return xml;
-}
 
 /** \class Safe safe.hpp
  * \brief Represents a safe.
@@ -720,13 +721,3 @@ bool Safe::makeBackup(const QString &path)
   }
   return false;
 }
-
-#ifdef SAFE_TEST
-int main(int argc, char *argv[])
-{
-  SafeEntry item;
-  cout << item.getUUID().toString() << endl;
-  item.clear();
-  cout << item.getUUID().toString() << endl;
-}
-#endif

@@ -6,7 +6,7 @@
 ** init() function in place of a constructor, and a destroy() function in
 ** place of a destructor.
 *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.5 2004/06/22 00:00:11 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.6 2004/07/28 23:17:20 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -125,33 +125,24 @@ void PwordEditDlg::setGenPwordLength( int value )
 	m_pword_length = value;
 }
 
-void PwordEditDlg::setCreatedOn(time_t time)
+void PwordEditDlg::setCreatedOn(const QDateTime &time)
 {
-	QDateTime date_time;
-	date_time.setTime_t(time);
-	createdOnLabel->setText(tr("Created on: %1").arg(date_time.toString()));
+	createdOnLabel->setText(tr("Created on: %1").arg(time.toString()));
 }
 
-void PwordEditDlg::setAccessedOn(time_t time)
+void PwordEditDlg::setAccessedOn(const QDateTime &time)
 {
-	QDateTime date_time;
-	date_time.setTime_t(time);
-	accessedOnLabel->setText(tr("Accessed on: %1").arg(date_time.toString()));
+	accessedOnLabel->setText(tr("Accessed on: %1").arg(time.toString()));
 }
 
-void PwordEditDlg::setModifiedOn(time_t time)
+void PwordEditDlg::setModifiedOn(const QDateTime &time)
 {
-	QDateTime date_time;
-	date_time.setTime_t(time);
-	modifiedOnLabel->setText(tr("Modified on: %1").arg(date_time.toString()));
+	modifiedOnLabel->setText(tr("Modified on: %1").arg(time.toString()));
 }
 
-void PwordEditDlg::setLifetime(time_t time)
+void PwordEditDlg::setLifetime(const QTime &time)
 {
-	// FIXME: lifetime is not a date, but just a span of time
-	QTime qtime;
-	qtime = qtime.addSecs(time);
-	lifetimeLabel->setText(tr("Lifetime: %1").arg(qtime.toString()));
+	lifetimeLabel->setText(tr("Lifetime: %1").arg(time.toString()));
 }
 
 void PwordEditDlg::setUUID(const QString &uuid)
