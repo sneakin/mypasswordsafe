@@ -2,12 +2,20 @@ MyPasswordSafe
 Copyright 2004 Semantic Gap (TM)
 http://www.semanticgap.com/
 
+Legal
+======
 MyPasswordSafe is cover by the GNU General Public License. See COPYING for more
-details. Semantic Gap is a trademark of Nolan Eakins.
+details.
 
+Semantic Gap is a trademark of Nolan Eakins.
+
+Quick Instructions
+===================
 Please read doc/manual.html for all the information you'll probably need. If
 for some reason you can't read html, you need Qt 3 <http://www.trolltech.com/>
 to use MyPasswordSafe. Once that's setup, running "make" will compile everything
 and "make install" will install everything.
 
-For help email support@semanticgap.com
+To compile quicker try "make -jN" where N is a number greater than 1.
+
+For help, comments, or suggestions email support@semanticgap.com
