@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.6 2004/06/20 21:25:22 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.7 2004/06/23 02:24:20 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -139,7 +139,8 @@ public:
     Success, //!< Everything was a success
     BadFormat, //!< Wrong or unsupported filter
     BadFile, //!< File couldn't be opened
-    IOError //!< Trouble reading the file
+    IOError, //!< Trouble reading the file
+    UUIDError //!< UUID threw an exception
   };
 
   /** Returns a string that lists allowable safe extensions.
@@ -294,6 +295,12 @@ public:
    * @post size() == 0
    */
   void empty();
+
+  /** Returns a string that describes an error.
+   * @param error Safe::Error that needs to be translated.
+   * @return Descriptive string
+   */
+  static const char *errorToString(Error e);
 
 protected:
   /** Backs up a file appending '~' to the name.

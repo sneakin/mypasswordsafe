@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.8 2004/06/22 00:00:11 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.9 2004/06/23 02:24:20 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -254,8 +254,8 @@ void MyPasswordSafe::fileOpen()
 
 	  if(open_ret == Safe::Success)
 	    break;
-	  else if(open_ret == Safe::BadFile) {
-	    statusBar()->message(tr("Failed to open safe"));
+	  else {
+	    statusBar()->message(Safe::errorToString(open_ret));
 	    return;
 	  }
 
@@ -319,7 +319,7 @@ bool MyPasswordSafe::open( const char *filename, const EncryptedString &passkey,
       return true;
     }
     else {
-      DBGOUT("Error = " << ret);
+      DBGOUT("Error = " << Safe::errorToString(ret));
       statusBar()->message(tr("Error opening file"));
       delete s;
     }
@@ -344,13 +344,17 @@ bool MyPasswordSafe::save()
   if(m_safe != NULL) {
 	QString path(m_safe->getPath());
 	if(path.isEmpty())
-		return saveAs();
+	  return saveAs();
 	else {
-		if(m_safe->save((const char *)m_def_user)) {
-			savingEnabled(false);
-			statusBar()->message(tr("Safe saved"));
-			return true;
-		}
+	  Safe::Error error = m_safe->save((const char *)m_def_user);
+	  if(error == Safe::Success) {
+	    savingEnabled(false);
+	    statusBar()->message(tr("Safe saved"));
+	    return true;
+	  }
+	  else {
+	    statusBar()->message(Safe::errorToString(error));
+	  }
 	}
   }
   return false;

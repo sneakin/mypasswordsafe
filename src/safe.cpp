@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.9 2004/06/21 03:02:47 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.10 2004/06/23 02:24:20 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -38,6 +38,7 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <qobject.h>
 #include "securedstring.hpp"
 #include "safe.hpp"
 #include "safeserializer.hpp"
@@ -277,9 +278,15 @@ Safe::Error Safe::load(const char *path, const char *type, const EncryptedString
 
       DBGOUT("Using " << serializer->name() << " to serialize");
 
-      err = serializer->load(*this, string(path),
-				   passphrase, def_user_str);
-      DBGOUT("serializer->load: " << err);
+      try {
+	err = serializer->load(*this, string(path),
+			       passphrase, def_user_str);
+	DBGOUT("serializer->load: " << err);
+      }
+      catch(UUID::Exception e) {
+	DBGOUT("UUID exception caught: " << UUID::exceptionToString(e));
+	return UUIDError;
+      }
 
       if(err == Success) {
 	DBGOUT("Success");
@@ -460,6 +467,17 @@ void Safe::empty()
     }
   }
   m_items.erase(m_items.begin(), m_items.end());
+}
+
+const char *Safe::errorToString(Safe::Error e)
+{
+  static const char *errors[] = { QT_TR_NOOP("Failed to open safe"),
+				  QT_TR_NOOP("Safe successfully opened"),
+				  QT_TR_NOOP("Wrong or unsupported filter used"),
+				  QT_TR_NOOP("Trouble reading the file"),
+				  QT_TR_NOOP("Unable to generate a UUID")
+  };
+  return errors[e];
 }
 
 bool Safe::makeBackup(const char *path)
