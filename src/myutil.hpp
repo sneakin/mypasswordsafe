@@ -11,6 +11,8 @@ using std::endl;
 using std::string;
 using std::vector;
 
+class QString;
+
 //#define DEBUG 1
 
 #ifdef DEBUG
@@ -24,5 +26,6 @@ using std::vector;
 string getExtension(const string &path);
 vector<string> split(string &s, int c);
 void printBinary(std::ostream &str, unsigned char c);
+void copyToClipboard(const QString &str);
 
 #endif

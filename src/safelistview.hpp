@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.3 2004/05/05 22:29:49 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.4 2004/05/13 23:20:25 nolan Exp $
  */
 #ifndef SAFELISTVIEW_HPP
 #define SAFELISTVIEW_HPP
@@ -47,6 +47,9 @@ public:
   inline time_t getModificationTime() const { return m_item->getModificationTime(); }
   inline time_t getAccessTime() const { return m_item->getAccessTime(); }
   inline time_t getLifetime() const { return m_item->getLifetime(); }
+
+  inline void updateModTime() { m_item->updateModTime(); }
+  inline void updateAccessTime() { m_item->updateAccessTime(); }
 
 private:
   SafeItem *m_item;

@@ -6,7 +6,7 @@
 ** init() function in place of a constructor, and a destroy() function in
 ** place of a destructor.
 *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.3 2004/05/05 22:29:48 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.4 2004/05/13 23:20:25 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -69,7 +69,7 @@ void PwordEditDlg::genPassword()
 
 void PwordEditDlg::fetchPassword()
 {
-	QApplication::clipboard()->setText(passwordEdit->text(), QClipboard::Selection);
+  copyToClipboard(passwordEdit->text());
 }
 
 

@@ -1,5 +1,7 @@
 #include <string>
 #include <vector>
+#include <qapplication.h>
+#include <qclipboard.h>
 #include "myutil.hpp"
 
 using namespace std;
@@ -54,4 +56,14 @@ void printBinary(std::ostream &str, unsigned char c)
       str << (bool)(c & (1 << i));
   }
   str << " ";
+}
+
+
+void copyToClipboard(const QString &text)
+{
+  QClipboard *cb = QApplication::clipboard();
+  cb->setText(text, QClipboard::Clipboard);
+  if(cb->supportsSelection()) {
+    cb->setText(text, QClipboard::Selection);
+  }
 }

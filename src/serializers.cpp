@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.2 2004/05/04 22:48:44 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.3 2004/05/13 23:20:25 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -855,10 +855,11 @@ int BlowfishLizer2::readEntry(FILE *in, SafeItem &item,
     num_read += readCBC(in, fish, data, type, ipthing);
     total_num_read += num_read;
 
-    DBGOUT("Data: " << data.get());
+    DBGOUT("Data: " << type << "\t"
+	   << data.length() << " \"" << data.get() << "\"");
 
     if(data.length() == 0) {
-      DBGOUT("data empty; type = " << type);
+      DBGOUT("data empty");
       continue;
     }
 
@@ -892,7 +893,7 @@ int BlowfishLizer2::readEntry(FILE *in, SafeItem &item,
     case LTIME:
     case POLICY:
     default:
-      DBGOUT(type << ": " << data.get());
+      DBGOUT("unhandled block");
       break;
     }
   } while(num_read > 0 && type != END);
@@ -908,6 +909,9 @@ int BlowfishLizer2::writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
   SecuredString data;
   string temp;
   int type;
+
+  data.set((const char *)item.getUUID(), 16);
+  num_written += writeCBC(out, fish, data, UUID, ipthing);
   
   data.set(item.getName());
   num_written += writeCBC(out, fish, data, TITLE, ipthing);

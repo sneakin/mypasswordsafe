@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.2 2004/05/04 22:48:44 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.3 2004/05/13 23:20:25 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -84,7 +84,8 @@ void SafeItem::clear()
   m_password.clear();
   memset(m_uuid, 0, 16);
   memset(m_policy, 0, 4);
-  m_creation_time = m_mod_time = m_access_time = m_life_time = 0;
+  m_creation_time = m_mod_time = m_access_time = time(NULL);
+  m_life_time = 0;
 }
 
 

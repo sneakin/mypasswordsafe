@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.3 2004/05/05 22:29:48 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.4 2004/05/13 23:20:25 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -56,6 +56,7 @@
 #include "pwordeditdlg.h"
 #include "manualdlg.h"
 #include "newpassphrasedlg.h"
+#include "myutil.hpp"
 
 using namespace std;
 
@@ -114,7 +115,7 @@ void MyPasswordSafe::destroy()
 {
   // ask to save file if needed
   if(clearClipboardOnExit())
-    QApplication::clipboard()->setText("", QClipboard::Selection);
+	  copyToClipboard("");
   // save config settings   
   m_config.beginGroup("/MyPasswordSafe");
   
@@ -457,7 +458,10 @@ void MyPasswordSafe::pwordEdit()
 {
   SafeListViewItem *item = pwordListView->getSelectedItem();
   if(item != NULL) {
+    item->updateAccessTime();
+
     PwordEditDlg dlg;
+
     dlg.setGenPwordLength(m_gen_pword_length);
     dlg.setItemName(QString::fromUtf8(item->getName()));
     dlg.setUser(QString::fromUtf8(item->getUser()));
@@ -476,6 +480,8 @@ void MyPasswordSafe::pwordEdit()
       item->setPassword(EncryptedString((const char *)dlg.getPassword().utf8()));
       item->setNotes(dlg.getNotes());
       item->setGroup(dlg.getGroup()); // FIXME: needs to reparent the view item
+      item->updateModTime();
+
       m_safe->setChanged(true); // FIXME: send this through the view
       savingEnabled(true);
       statusBar()->message(tr("Password updated"));
@@ -494,11 +500,12 @@ void MyPasswordSafe::pwordFetch()
 {
   SafeListViewItem *item(pwordListView->getSelectedItem());
   if(item) {
-    QClipboard *cb = QApplication::clipboard();
     // NOTE: password decrypted
     SecuredString pword(item->getPassword().get());
-    cb->setText(QString::fromUtf8(pword.get()), QClipboard::Selection);
+	copyToClipboard(QString::fromUtf8(pword.get()));
     statusBar()->message(tr("Password copied to clipboard"));
+
+    item->updateAccessTime();
   }
   else {
     statusBar()->message(tr("No item selected"));
@@ -510,9 +517,10 @@ void MyPasswordSafe::pwordFetchUser()
 {
   SafeListViewItem *item(pwordListView->getSelectedItem());
   if(item) {
-    QClipboard *cb = QApplication::clipboard();
-    cb->setText(QString::fromUtf8(item->getUser()), QClipboard::Selection);
+	copyToClipboard(QString::fromUtf8(item->getUser()));
     statusBar()->message(tr("Username copied to clipboard"));
+
+    item->updateAccessTime();
   }
   else {
     statusBar()->message(tr("No item selected"));
