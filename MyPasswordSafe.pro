@@ -82,16 +82,6 @@ IMAGES	= images/searchfind \
 	images/folder_blue.png \
 	images/folder_blue_open.png
 
-
-
-
-
-
-
-
-
-
-
 DEBUG = $$(DEBUG)
 
 isEmpty(DEBUG) {
@@ -100,39 +90,6 @@ isEmpty(DEBUG) {
 	config += debug
 	DEFINES += DEBUG
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 unix {
   UI_DIR = .ui
