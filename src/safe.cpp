@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.5 2004/06/12 06:23:45 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.6 2004/06/12 06:42:18 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -40,6 +40,7 @@
 #include <fstream>
 #include "securedstring.hpp"
 #include "safe.hpp"
+#include "safeserializer.hpp"
 #include "serializers.hpp"
 #include "myutil.hpp"
 #include "pwsafe/Util.h"
@@ -193,6 +194,16 @@ struct SafeCleaner
 Safe::~Safe()
 {
   empty();
+}
+
+string Safe::getExtensions()
+{
+  return SafeSerializer::getExtensions();
+}
+
+string Safe::getTypes()
+{
+  return SafeSerializer::getTypes();
 }
 
 Safe::Error Safe::checkPassword(const char *path, const EncryptedString &password)
@@ -468,132 +479,4 @@ bool Safe::makeBackup(const char *path)
     return true;
   }
   return false;
-}
-
-SafeSerializer::SafeSerializer(const char *extension, const char *description)
-  : m_extension(extension), m_description(description)
-{
-  add(this);
-}
-
-SafeSerializer::~SafeSerializer()
-{
-}
-
-SafeSerializer *SafeSerializer::createByExt(const char *ext)
-{
-  string extension(ext);
-
-  if(!m_serializers.empty()) {
-    for(SerializerVec::iterator i = m_serializers.begin();
-	i != m_serializers.end();
-	i++) {
-      SafeSerializer *serializer(*i);
-      if(string(serializer->extension()) == extension) {
-	return serializer;
-      }
-    }
-  }
-  return NULL;
-}
-
-SafeSerializer *SafeSerializer::createByName(const char *name)
-{
-  string name_str(name);
-
-  if(!m_serializers.empty()) {
-    for(SerializerVec::iterator i = m_serializers.begin();
-	i != m_serializers.end();
-	i++) {
-      SafeSerializer *serializer(*i);
-      if(string(serializer->description()) == name_str) {
-	return serializer;
-      }
-    }
-  }
-  return NULL;
-}
-
-bool SafeSerializer::add(SafeSerializer *serializer)
-{
-  m_serializers.push_back(serializer);
-  return true;
-}
-
-struct TypeConCater
-{
-private:
-  string result;
-
-public:
-  void setResult(const string &s) { result = s; }
-  const string &getResult() { return result; }
-
-  void operator () (SafeSerializer::SerializerVec::reference r)
-  {
-    setResult(getResult() + r->description() + "\n");
-  }
-};
-
-string SafeSerializer::getTypes()
-{
-  TypeConCater cater;
-  return(for_each(m_serializers.begin(),
-		  m_serializers.end(),
-		  cater).getResult());
-}
-
-struct ExtConCater
-{
-private:
-  string result;
-
-public:
-  void setResult(const string &s) { result = s; }
-  const string &getResult() { return result; }
-
-  void operator () (SafeSerializer::SerializerVec::reference r)
-  {
-    setResult(getResult() + "*." + r->extension() + " ");
-  }
-};
-
-string SafeSerializer::getExtensions()
-{
-  ExtConCater cater;
-  return(for_each(m_serializers.begin(),
-		  m_serializers.end(),
-		  cater).getResult());
-}
-
-const char *SafeSerializer::getExtForType(const char *type)
-{
-  for(SerializerVec::iterator i = m_serializers.begin();
-      i != m_serializers.end();
-      i++) {
-    SafeSerializer *serializer(*i);
-    if(string(serializer->description()) == string(type)) {
-      return serializer->extension();
-    }
-  }
-  return NULL;
-}
-
-SafeSerializer *SafeSerializer::getNextExt(SafeSerializer *serializer)
-{
-  for(SerializerVec::iterator i = m_serializers.begin();
-      i != m_serializers.end();
-      i++) {
-    if(*i == serializer) {
-      string extension(serializer->extension());
-
-      for(i++; i != m_serializers.end(); i++) {
-	if(string((*i)->extension()) == extension);
-	  return *i;
-      }
-      break;
-    }
-  }
-
-  return NULL;
 }

@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.4 2004/05/13 23:20:25 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.5 2004/06/12 06:42:18 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -591,10 +591,10 @@ const QString & MyPasswordSafe::getDefaultSafe()
 
 bool MyPasswordSafe::browseForSafe( QString &filename, QString &filter, bool saving )
 {
-  QString all_safes(tr("All Safes (%1)").arg(SafeSerializer::getExtensions().c_str()));
+  QString all_safes(tr("All Safes (%1)").arg(Safe::getExtensions().c_str()));
   QString all_files(tr("All Files (*)"));
 
-  QString types(QString("%1\n%2\n%3").arg(all_safes).arg(SafeSerializer::getTypes().c_str()).arg(all_files));
+  QString types(QString("%1\n%2\n%3").arg(all_safes).arg(Safe::getTypes().c_str()).arg(all_files));
 
   QFileDialog file_dlg(QString::null, types, this, "file",
 		       true);

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.2 2004/05/04 22:48:44 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.3 2004/06/12 06:42:18 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -36,6 +36,7 @@
 #define _SERIALIZERS_HPP_
 
 #include "safe.hpp"
+#include "safeserializer.hpp"
 #include "pwsafe/Util.h"
 
 /* Instances of these classes are in safe.cpp after the SerializerMap.

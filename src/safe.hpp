@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.2 2004/05/04 22:48:44 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.3 2004/06/12 06:42:18 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -138,6 +138,13 @@ public:
     BadFile, //!< File couldn't be opened
     IOError //!< Trouble reading the file
   };
+
+  /** Returns a string that lists allowable safe extensions.
+   */
+  static string getExtensions();
+  /** Returns a string that lists the types of safes.
+   */
+  static string getTypes();
 
   /** Checks the password of a file.
    * The serializer is choosen from the file's extension.
@@ -315,59 +322,6 @@ private:
   EncryptedString m_passphrase;
   ItemList m_items;
   bool m_changed;
-};
-
-/** ABC that handles reading and writing Safes to various formats.
- */
-class SafeSerializer
-{
-public:
-  virtual ~SafeSerializer();
-
-  inline const char *extension() { return m_extension.c_str(); }
-  inline const char *description() { return m_description.c_str(); }
-  // Returns the string to be used in file open/save dialogs
-
-  virtual Safe::Error checkPassword(const string &path, const SecuredString &password) = 0;
-  // returns true if password can open path, false if it can not
-
-  virtual Safe::Error load(Safe &safe, const string &path, const EncryptedString &passphrase, const string &def_user) = 0;
-  // loads the file specified by path into safe return true on success,
-  // false on failure
-  virtual Safe::Error save(Safe &safe, const string &path, const string &def_user) = 0;
-  // saves safe to the file specified by path. returns true if success,
-  // false on failure
-
-protected:
-  SafeSerializer(const char *ext, const char *description);
-
-private:
-  string m_extension, m_description;
-
-  // Begin Factory methods
-public:
-  static SafeSerializer *createByExt(const char *ext);
-  static SafeSerializer *createByName(const char *name);
-  // public interface to the SafeSerializer factory. Returns a pointer
-  // to a SafeSerializer that handles files with the specified
-  // file extension
-    
-  static SafeSerializer *getNextExt(SafeSerializer *serializer);
-
-  typedef vector<SafeSerializer *> SerializerVec;
-  static const SerializerVec &serializers() { return m_serializers; }
-  // returns the std::map of serializers. The map is a pair made of
-  // extension and the pointer to the serializer.
-  static string getTypes();
-  static string getExtensions();
-  static const char *getExtForType(const char *type);
-
-protected:
-  static bool add(SafeSerializer *serializer);
-  // register a SafeSerializer to handle the ext extension with the factory
-    
-private:
-  static SerializerVec m_serializers;
 };
 
 #endif
