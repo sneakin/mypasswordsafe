@@ -31,4 +31,4 @@ $(RELEASE).src.tgz.asc: $(RELEASE).src.tgz
 	$(GPGSIGN) $<
 
 clean:
-	rm -r $(RELEASE)
+	rm -r $(RELEASE) *.tgz*
