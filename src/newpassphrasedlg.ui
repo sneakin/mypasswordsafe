@@ -71,7 +71,10 @@
                         <cstring>textLabel2</cstring>
                     </property>
                     <property name="text">
-                        <string>Password:</string>
+                        <string>&amp;Password:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>firstLine</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="1" column="0">
@@ -79,7 +82,10 @@
                         <cstring>textLabel2_2</cstring>
                     </property>
                     <property name="text">
-                        <string>Re-type:</string>
+                        <string>&amp;Re-type:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>secondLine</cstring>
                     </property>
                 </widget>
             </grid>
@@ -114,7 +120,10 @@
                         <cstring>cancelButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Cancel</string>
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
                     </property>
                     <property name="autoDefault">
                         <bool>false</bool>
@@ -131,7 +140,10 @@
                         <bool>true</bool>
                     </property>
                     <property name="text">
-                        <string>Ok</string>
+                        <string>&amp;Ok</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+O</string>
                     </property>
                     <property name="default">
                         <bool>true</bool>

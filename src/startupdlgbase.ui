@@ -64,7 +64,10 @@
                         <cstring>textLabel2</cstring>
                     </property>
                     <property name="text">
-                        <string>What would you like to do?</string>
+                        <string>&amp;What would you like to do?</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>actionBox</cstring>
                     </property>
                 </widget>
                 <widget class="QComboBox">
@@ -147,10 +150,13 @@
                                     <cstring>openLabel</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>What's the pass-phrase for %1?</string>
+                                    <string>What's the &amp;pass-phrase for %1?</string>
                                 </property>
                                 <property name="alignment">
                                     <set>WordBreak|AlignVCenter</set>
+                                </property>
+                                <property name="buddy" stdset="0">
+                                    <cstring>passPhraseBox</cstring>
                                 </property>
                             </widget>
                         </hbox>
@@ -192,7 +198,10 @@
                             <cstring>textLabel2_2</cstring>
                         </property>
                         <property name="text">
-                            <string>Pass-phrase:</string>
+                            <string>&amp;Pass-phrase:</string>
+                        </property>
+                        <property name="buddy" stdset="0">
+                            <cstring>passPhraseBox</cstring>
                         </property>
                     </widget>
                     <widget class="QLabel" row="1" column="0">
@@ -200,7 +209,10 @@
                             <cstring>textLabel3</cstring>
                         </property>
                         <property name="text">
-                            <string>Verify:</string>
+                            <string>&amp;Verify:</string>
+                        </property>
+                        <property name="buddy" stdset="0">
+                            <cstring>verifyBox</cstring>
                         </property>
                     </widget>
                 </grid>
@@ -244,10 +256,10 @@
                         <cstring>quitButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Quit</string>
+                        <string>&amp;Quit</string>
                     </property>
                     <property name="accel">
-                        <string>Esc</string>
+                        <string>Alt+Q</string>
                     </property>
                     <property name="iconSet">
                         <iconset>exit.png</iconset>
@@ -258,10 +270,10 @@
                         <cstring>okButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Ok</string>
+                        <string>&amp;Ok</string>
                     </property>
                     <property name="accel">
-                        <string>Return</string>
+                        <string>Alt+O</string>
                     </property>
                     <property name="default">
                         <bool>true</bool>

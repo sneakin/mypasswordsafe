@@ -60,7 +60,7 @@
                     <cstring>tab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Info</string>
+                    <string>&amp;Info</string>
                 </attribute>
                 <hbox>
                     <property name="name">
@@ -100,7 +100,7 @@ under certain conditions. Click the License tab for more information.&lt;br/&gt;
                     <cstring>tab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>License</string>
+                    <string>&amp;License</string>
                 </attribute>
                 <widget class="QTextBrowser">
                     <property name="name">
@@ -152,7 +152,7 @@ Greenwood, IN 46143&lt;/li&gt;
                     <cstring>tab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Credits</string>
+                    <string>&amp;Credits</string>
                 </attribute>
                 <widget class="QTextBrowser">
                     <property name="name">
@@ -218,7 +218,10 @@ Thanks go out to:
                         <cstring>pushButton11</cstring>
                     </property>
                     <property name="text">
-                        <string>Close</string>
+                        <string>&amp;Close</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
                     </property>
                     <property name="default">
                         <bool>true</bool>

@@ -8,7 +8,7 @@
     </property>
     <property name="geometry">
         <rect>
-            <x>20</x>
+            <x>0</x>
             <y>0</y>
             <width>300</width>
             <height>100</height>
@@ -93,7 +93,10 @@
                                 <cstring>textLabel5</cstring>
                             </property>
                             <property name="text">
-                                <string>What is your pass-phrase?</string>
+                                <string>What is your &amp;pass-phrase?</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>pwordBox</cstring>
                             </property>
                         </widget>
                         <widget class="QLineEdit">
@@ -138,7 +141,10 @@
                         <cstring>cancelButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Cancel</string>
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
                     </property>
                     <property name="iconSet">
                         <iconset>button_cancel.png</iconset>
@@ -149,10 +155,10 @@
                         <cstring>okButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Ok</string>
+                        <string>&amp;Ok</string>
                     </property>
                     <property name="accel">
-                        <string>Return</string>
+                        <string>Alt+O</string>
                     </property>
                     <property name="default">
                         <bool>true</bool>

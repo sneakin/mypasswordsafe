@@ -318,7 +318,10 @@ make&lt;/pre&gt;
                         <cstring>closeButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Close</string>
+                        <string>&amp;Close</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
                     </property>
                     <property name="default">
                         <bool>true</bool>
