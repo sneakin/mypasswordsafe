@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.17 2004/09/21 04:43:51 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.18 2004/10/01 10:38:20 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -494,7 +494,7 @@ Safe::Error BlowfishLizer2::load(Safe &safe, const QString &path,
   DBGOUT("Name: \"" << item->name() << "\"");
   DBGOUT("pword: " << item->password().get().get());
 
-  const string pwsafe2_header(FormatName);
+  const QString pwsafe2_header(FormatName);
   if(item->name() != pwsafe2_header) {
     DBGOUT("Not version 2, trying version 1 loader");
     return Safe::BadFormat;
