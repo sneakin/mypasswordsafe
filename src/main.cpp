@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/main.cpp,v 1.6 2004/11/02 20:57:48 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/main.cpp,v 1.7 2004/11/02 21:25:57 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -74,6 +74,10 @@ int main( int argc, char ** argv )
   }
   else {
     a.installTranslator(&myapp);
+  }
+
+  if(myps.firstTime()) {
+    myps.helpAbout(1); // show license
   }
 
   if(!doStartupDialog(&myps, argc, argv)) {

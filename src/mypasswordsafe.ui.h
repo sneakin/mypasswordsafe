@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.30 2004/11/02 20:57:48 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.31 2004/11/02 21:25:57 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -472,9 +472,10 @@ void MyPasswordSafe::onPwordListRightClk( QListViewItem *, const QPoint &point, 
 }
 
 
-void MyPasswordSafe::helpAbout()
+void MyPasswordSafe::helpAbout(int page)
 {
   AboutDlg dlg;
+  dlg.setCurrentPage(page);
   dlg.exec();
 }
 
@@ -745,6 +746,8 @@ void MyPasswordSafe::readConfig()
 {
   m_config.setPath("SemanticGap.com", "MyPasswordSafe");
   m_config.beginGroup("/MyPasswordSafe");
+
+  m_first_time = m_config.readBoolEntry("/prefs/first_time", true);
   m_gen_pword_length = m_config.readNumEntry("/prefs/password_length", 8);
   
   m_default_safe = m_config.readEntry("/prefs/default_safe", "");
@@ -793,7 +796,8 @@ void MyPasswordSafe::writeConfig()
 {
   // save config settings   
   m_config.beginGroup("/MyPasswordSafe");
-  
+
+  m_config.writeEntry("/prefs/first_time", false);
   m_config.writeEntry("/prefs/password_length", (int)m_gen_pword_length);
   m_config.writeEntry("/prefs/default_safe", m_default_safe);
   m_config.writeEntry("/prefs/default_username", m_def_user);
@@ -857,4 +861,9 @@ void MyPasswordSafe::dragObjectDropped(QMimeSource *drag, SafeListViewItem *targ
       }
     }
   }
+}
+
+bool MyPasswordSafe::firstTime() const
+{
+  return m_first_time;
 }

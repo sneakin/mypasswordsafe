@@ -20,3 +20,13 @@ void AboutDlg::init()
 	text.replace("{DATE}", COMP_DATE);
 	infoText->setText(text);
 }
+
+void AboutDlg::setCurrentPage(int page)
+{
+	tabWidget2->setCurrentPage(page);
+}
+
+int AboutDlg::currentPage() const
+{
+	return tabWidget2->currentPageIndex();
+}

@@ -242,8 +242,12 @@ Thanks go out to:
 <includes>
     <include location="local" impldecl="in implementation">aboutdlg.ui.h</include>
 </includes>
+<slots>
+    <slot>setCurrentPage( int page )</slot>
+</slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
+    <function returnType="int">currentPage() const</function>
 </functions>
 <pixmapinproject/>
 <layoutdefaults spacing="6" margin="11"/>
