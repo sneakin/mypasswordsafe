@@ -35,7 +35,8 @@
 #ifndef SAFESERIALIZER_HPP
 #define SAFESERIALIZER_HPP
 
-using std::string;
+#include <qstring.h>
+
 class Safe;
 
 /** ABC that handles reading and writing Safes to various formats.
@@ -53,18 +54,18 @@ public:
 
   /** Returns the extension that the serializer uses for files.
    */
-  inline const char *extension() { return m_extension.c_str(); }
+  inline const QString &extension() { return m_extension; }
   /** Returns the name of the serializer.
    * This is used in file open/save dialogs.
    */
-  inline const char *name() { return m_name.c_str(); }
+  inline const QString &name() { return m_name; }
 
   /** Checks the password of a safe.
    * @param path Filename to check
    * @param password Password that is being checked
    * @return Safe::Success if the password is correct
    */
-  virtual Safe::Error checkPassword(const string &path, const SecuredString &password) = 0;
+  virtual Safe::Error checkPassword(const QString &path, const SecuredString &password) = 0;
 
   /** Loads a safe.
    * @param safe The safe that the data will be loaded into.
@@ -74,7 +75,7 @@ public:
    * @return Safe::Success if the safe was loaded, otherwise a Safe::Error condition
    *         corresponding to what happened.
    */
-  virtual Safe::Error load(Safe &safe, const string &path, const EncryptedString &passphrase, const string &def_user) = 0;
+  virtual Safe::Error load(Safe &safe, const QString &path, const EncryptedString &passphrase, const QString &def_user) = 0;
   /** Saves a safe to a file.
    * @param safe The safe to save.
    * @param path The filename that the safe will be saved as.
@@ -82,7 +83,7 @@ public:
    * @return Safe::Success if the safe was saved, otherwise a Safe::Error that
    *         that corresponds to what happened.
    */
-  virtual Safe::Error save(Safe &safe, const string &path, const string &def_user) = 0;
+  virtual Safe::Error save(Safe &safe, const QString &path, const QString &def_user) = 0;
 
 
 protected:
@@ -90,10 +91,10 @@ protected:
    * @param ext File extension that the serializer uses
    * @param name Descriptive name of the serializer
    */
-  SafeSerializer(const char *ext, const char *name);
+  SafeSerializer(const QString &ext, const QString &name);
 
 private:
-  string m_extension, m_name;
+  QString m_extension, m_name;
 
   // Begin Factory methods
 public:
@@ -102,7 +103,7 @@ public:
    *            can match many serializers.
    * @return SafeSerializer instance whose extension() == ext
    */
-  static SafeSerializer *createByExt(const char *ext);
+  static SafeSerializer *createByExt(const QString &ext);
   /** Returns the next serializer that has the same extension as
    * the parameter.
    * @param serializer The serializer to start searching from.
@@ -116,7 +117,7 @@ public:
    *             match.
    * @return SafeSerializer instance whose name() == name
    */
-  static SafeSerializer *createByName(const char *name);
+  static SafeSerializer *createByName(const QString &name);
 
   typedef vector<SafeSerializer *> SerializerVec;
   /** Returns the vector of all the serializers.
@@ -125,14 +126,14 @@ public:
 
   /** Returns a multilined string with all the serializer names.
    */
-  static string getTypes();
+  static QString getTypes();
   /** Returns a multilined string with all the extensions that are
    * registered.
    */
-  static string getExtensions();
+  static QString getExtensions();
   /** Returns the extension for the given name.
    */
-  static const char *getExtForName(const char *type);
+  static const QString getExtForName(const QString &type);
 
 protected:
   /** Registers a SafeSerializer with the factory.

@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.10 2004/06/24 04:16:28 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.11 2004/06/24 06:08:16 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -187,7 +187,7 @@ void MyPasswordSafe::fileOpen()
 	if(passphrase_dlg.exec() == PassPhraseDlg::Accepted) {
 	  pword.set(passphrase_dlg.getText().utf8());
 
-	  open_ret = Safe::checkPassword((const char *)filename.utf8(), (const char *)filter.utf8(), pword);
+	  open_ret = Safe::checkPassword(filename, filter, pword);
 
 	  if(open_ret == Safe::Success)
 	    break;
@@ -303,10 +303,10 @@ bool MyPasswordSafe::saveAs()
       NewPassPhraseDlg dlg;
       if(dlg.exec() == QDialog::Accepted) {
 	passkey.set(dlg.password().utf8());
-	Safe::Error error = m_safe->save((const char *)filename.utf8(),
-				   (const char *)filter.utf8(),
+	Safe::Error error = m_safe->save(filename,
+				   filter,
 				   passkey,
-				   (const char *)m_def_user);
+				   m_def_user);
 	if(error == Safe::Success) {
 	  setCaption(tr("MyPasswordSafe: ") + m_safe->getPath());
 	  statusBar()->message(tr("Safe saved"));
@@ -343,10 +343,10 @@ void MyPasswordSafe::pwordAdd()
   dlg.showDetails(false);
   
   if(dlg.exec() == QDialog::Accepted) {
-    SafeItem i((const char *)dlg.getItemName().utf8(),
-	       (const char *)dlg.getUser().utf8(),
+    SafeItem i(dlg.getItemName(),
+	       dlg.getUser(),
 	       SecuredString((const char *)dlg.getPassword().utf8()),
-	       (const char *)dlg.getNotes().utf8());
+	       dlg.getNotes());
     SafeItem *safe_item = m_safe->addItem(i);
     if(safe_item != NULL) {
       if(pwordListView->addItem(safe_item) != NULL) {
@@ -397,11 +397,11 @@ void MyPasswordSafe::pwordEdit()
     PwordEditDlg dlg;
 
     dlg.setGenPwordLength(m_gen_pword_length);
-    dlg.setItemName(QString::fromUtf8(item->getName()));
-    dlg.setUser(QString::fromUtf8(item->getUser()));
+    dlg.setItemName(item->getName());
+    dlg.setUser(item->getUser());
     // NOTE: password decrypted
-    dlg.setPassword(QString::fromUtf8(item->getPassword().get().get()));
-    dlg.setNotes(QString::fromUtf8(item->getNotes()));
+    dlg.setPassword(item->getPassword().get().get());
+    dlg.setNotes(item->getNotes());
     dlg.setAccessedOn(item->getAccessTime());
     dlg.setCreatedOn(item->getCreationTime());
     dlg.setModifiedOn(item->getModificationTime());
@@ -451,7 +451,7 @@ void MyPasswordSafe::pwordFetchUser()
 {
   SafeListViewItem *item(pwordListView->getSelectedItem());
   if(item) {
-	copyToClipboard(QString::fromUtf8(item->getUser()));
+	copyToClipboard(item->getUser());
     statusBar()->message(tr("Username copied to clipboard"));
 
     item->updateAccessTime();
@@ -524,10 +524,10 @@ const QString & MyPasswordSafe::getDefaultSafe()
 
 bool MyPasswordSafe::browseForSafe( QString &filename, QString &filter, bool saving )
 {
-  QString all_safes(tr("All Safes (%1)").arg(Safe::getExtensions().c_str()));
+  QString all_safes(tr("All Safes (%1)").arg(Safe::getExtensions()));
   QString all_files(tr("All Files (*)"));
 
-  QString types(QString("%1\n%2\n%3").arg(all_safes).arg(Safe::getTypes().c_str()).arg(all_files));
+  QString types(QString("%1\n%2\n%3").arg(all_safes).arg(Safe::getTypes()).arg(all_files));
 
   QFileDialog file_dlg(QString::null, types, this, "file",
 		       true);

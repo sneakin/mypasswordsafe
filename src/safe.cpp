@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.11 2004/06/24 04:16:28 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.12 2004/06/24 06:08:16 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -54,22 +54,21 @@ BlowfishLizer _blowfish_lizer;
 PlainTextLizer _plain_text_lizer;
 
 SafeItem::SafeItem()
-  : m_name(""), m_user(""), m_notes("")
 {
   init();
 }
 
-SafeItem::SafeItem(const string &name, const string &user,
-		   const EncryptedString &password, const string &notes)
+SafeItem::SafeItem(const QString &name, const QString &user,
+		   const EncryptedString &password, const QString &notes)
   : m_name(name), m_user(user), m_notes(notes), m_group(""),
     m_password(password)
 {
   init();
 }
 
-SafeItem::SafeItem(const string &name, const string &user,
-		   const EncryptedString &password, const string &notes,
-		   const string &group)
+SafeItem::SafeItem(const QString &name, const QString &user,
+		   const EncryptedString &password, const QString &notes,
+		   const QString &group)
   : m_name(name), m_user(user), m_notes(notes), 
     m_group(group), m_password(password)
 {
@@ -79,10 +78,10 @@ SafeItem::SafeItem(const string &name, const string &user,
 
 void SafeItem::clear()
 {
-  m_name.clear();
-  m_user.clear();
-  m_notes.clear();
-  m_group.clear();
+  m_name.truncate(0);
+  m_user.truncate(0);
+  m_notes.truncate(0);
+  m_group.truncate(0);
   m_password.clear();
   m_uuid.create();
   memset(m_policy, 0, 4);
@@ -126,13 +125,13 @@ void SafeItem::setLifetime(time_t t)
   m_life_time = t;
 }
 
-void SafeItem::setName(const string &name)
+void SafeItem::setName(const QString &name)
 {
   m_name = name;
   updateModTime();
 }
 
-void SafeItem::setUser(const string &user)
+void SafeItem::setUser(const QString &user)
 {
   m_user = user;
   updateModTime();
@@ -140,7 +139,6 @@ void SafeItem::setUser(const string &user)
 
 void SafeItem::setPassword(const EncryptedString &password)
 {
-  //m_password.setAlgorithm(password.getAlgorithm());
   m_password.set(password);
   updateModTime();
 }
@@ -151,13 +149,13 @@ void SafeItem::setPassword(const char *password)
   updateModTime();
 }
 
-void SafeItem::setNotes(const string &notes)
+void SafeItem::setNotes(const QString &notes)
 {
   m_notes = notes;
   updateModTime();
 }
 
-void SafeItem::setGroup(const string &group)
+void SafeItem::setGroup(const QString &group)
 {
   m_group = group;
   updateModTime();
@@ -182,8 +180,7 @@ void SafeItem::init()
 }
 
 Safe::Safe()
-  : m_path(""), m_type(""), m_passphrase(NULL),
-    m_changed(false)
+  : m_passphrase(NULL), m_changed(false)
 {
 }
 
@@ -202,25 +199,25 @@ Safe::~Safe()
   empty();
 }
 
-string Safe::getExtensions()
+QString Safe::getExtensions()
 {
   return SafeSerializer::getExtensions();
 }
 
-string Safe::getTypes()
+QString Safe::getTypes()
 {
   return SafeSerializer::getTypes();
 }
 
-Safe::Error Safe::checkPassword(const char *path, const EncryptedString &password)
+Safe::Error Safe::checkPassword(const QString &path, const EncryptedString &password)
 {
   return checkPassword(path, NULL, password);
 }
 
-Safe::Error Safe::checkPassword(const char *path, const char *type, const EncryptedString &password)
+Safe::Error Safe::checkPassword(const QString &path, const QString &type, const EncryptedString &password)
 {
-  string ext(getExtension(path));
-  SafeSerializer *serializer(createSerializer(ext.c_str(), type));
+  QString ext(getExtension(path));
+  SafeSerializer *serializer(createSerializer(ext, type));
 
   DBGOUT("Path: " << path);
 
@@ -238,7 +235,7 @@ Safe::Error Safe::checkPassword(const char *path, const char *type, const Encryp
     DBGOUT("Serializer: " << serializer->name());
 
     // NOTE: password is decrypted
-    string p(path);
+    QString p(path);
     return serializer->checkPassword(p, password.get());
   }
   else {
@@ -247,30 +244,15 @@ Safe::Error Safe::checkPassword(const char *path, const char *type, const Encryp
 }
 
 
-Safe::Error Safe::load(const char *path, const char *type, const EncryptedString &passphrase, const char *def_user)
+Safe::Error Safe::load(const QString &path, const QString &type,
+		       const EncryptedString &passphrase, const QString &def_user)
 {
-  assert(path != NULL);
+  assert(!path.isEmpty());
 
-  string ext(getExtension(path));
-  SafeSerializer *serializer(createSerializer(ext.c_str(), type));
-  //bool by_ext = false;
+  QString ext(getExtension(path));
+  SafeSerializer *serializer(createSerializer(ext, type));
 
-/*  if(type != NULL && strlen(type) > 0) {
-    serializer = SafeSerializer::createByName(type);
-  }
-  else {
-    if(ext.length() != 0)
-      serializer = SafeSerializer::createByExt(ext.c_str());
-    //by_ext = true;
-  }
-*/
   if(serializer) {
-    //Safe *safe = new Safe();
-    //if(safe != NULL) {
-    string def_user_str;
-    if(def_user != NULL)
-      def_user_str = def_user;
-
     Error err = Failed;
 
     do {
@@ -279,8 +261,8 @@ Safe::Error Safe::load(const char *path, const char *type, const EncryptedString
       DBGOUT("Using " << serializer->name() << " to serialize");
 
       try {
-	err = serializer->load(*this, string(path),
-			       passphrase, def_user_str);
+	err = serializer->load(*this, path,
+			       passphrase, def_user);
 	DBGOUT("serializer->load: " << err);
       }
       catch(UUID::Exception e) {
@@ -312,32 +294,22 @@ Safe::Error Safe::load(const char *path, const char *type, const EncryptedString
   }
 }
 
-Safe::Error Safe::load(const char *path, const EncryptedString &passphrase, const char *def_user)
+Safe::Error Safe::load(const QString &path, const EncryptedString &passphrase, const QString &def_user)
 {
-  assert(path != NULL);
+  assert(!path.isEmpty());
   return load(path, NULL, passphrase, def_user);
 }
 
-Safe::Error Safe::save(const char *path, const char *type,
-		const EncryptedString &passphrase, const char *def_user)
+Safe::Error Safe::save(const QString &path, const QString &type,
+		const EncryptedString &passphrase, const QString &def_user)
 {
-  assert(path != NULL);
+  assert(!path.isEmpty());
 
-  string ext(getExtension(path));
-  SafeSerializer *serializer(createSerializer(ext.c_str(), type));
+  QString ext(getExtension(path));
+  SafeSerializer *serializer(createSerializer(ext, type));
 
-  /*if(type != NULL && strlen(type) > 0) {
-    serializer = SafeSerializer::createByName(type);
-    if(ext.length() == 0) {
-      full_path += ".";
-      full_path += serializer->extension();
-    }
-  }
-  else if(ext.length() != 0) {
-      serializer = SafeSerializer::createByExt(ext.c_str());
-      }*/
   if(serializer) {
-    string full_path(path);
+    QString full_path(path);
 
     if(ext.length() == 0) {
       full_path += ".";
@@ -358,7 +330,7 @@ Safe::Error Safe::save(const char *path, const char *type,
       setPassPhrase(passphrase);
 
     // FIXME: make this an option
-    makeBackup(full_path.c_str());
+    makeBackup(full_path);
 
     Safe::Error error = serializer->save(*this, full_path, def_user);
     if(error == Safe::Success) {
@@ -370,28 +342,28 @@ Safe::Error Safe::save(const char *path, const char *type,
   return BadFormat;
 }
 
-Safe::Error Safe::save(const char *path, const EncryptedString &passphrase, const char *def_user)
+Safe::Error Safe::save(const QString &path, const EncryptedString &passphrase, const QString &def_user)
 {
-  if(m_type.length() > 0)
-    return save(path, m_type.c_str(), passphrase, def_user);
-  else
+  if(m_type.isEmpty())
     return save(path, NULL, passphrase, def_user);
+  else
+    return save(path, m_type, passphrase, def_user);
 }
 
-Safe::Error Safe::save(const char *def_user)
+Safe::Error Safe::save(const QString &def_user)
 {
-  if(m_path.length() > 0 && m_passphrase.length() > 0) {
-    return save(m_path.c_str(), m_type.c_str(), m_passphrase, def_user);
+  if(!m_path.isEmpty() && m_passphrase.length() > 0) {
+    return save(m_path, m_type, m_passphrase, def_user);
   }
   return Failed;
 }
 
-void Safe::setPath(const string &path)
+void Safe::setPath(const QString &path)
 {
   m_path = path;
 }
 
-void Safe::setType(const string &type)
+void Safe::setType(const QString &type)
 {
   // NOTE: we don't check type because only Safe::save calls it, and
   // it used type to create a serializer so it's good
@@ -399,14 +371,14 @@ void Safe::setType(const string &type)
 }
 
 
-SafeSerializer *Safe::createSerializer(const char *extension,
-				       const char *serializer)
+SafeSerializer *Safe::createSerializer(const QString &extension,
+				       const QString &serializer)
 {
-  if(serializer != NULL && strlen(serializer) > 0) {
+  if(!serializer.isEmpty()) {
     return SafeSerializer::createByName(serializer);
   }
   else {
-    if(extension != NULL && strlen(extension) > 0)
+    if(!extension.isEmpty())
       return SafeSerializer::createByExt(extension);
     else
       return NULL;
@@ -475,16 +447,16 @@ const char *Safe::errorToString(Safe::Error e)
   return errors[e];
 }
 
-bool Safe::makeBackup(const char *path)
+bool Safe::makeBackup(const QString &path)
 {
-  if(path == NULL)
+  if(path.isEmpty())
     return false;
 
   FILE *in = fopen(path, "rb");
   if(in != NULL) {
-    string new_path(path);
+    QString new_path(path);
     new_path += "~";
-    FILE *out = fopen(new_path.c_str(), "wb");
+    FILE *out = fopen(new_path, "wb");
     char buffer[1024];
     int num_read = 0;
     do {

@@ -6,8 +6,8 @@
     </property>
     <property name="geometry">
         <rect>
-            <x>68</x>
-            <y>85</y>
+            <x>0</x>
+            <y>0</y>
             <width>400</width>
             <height>351</height>
         </rect>
@@ -327,6 +327,16 @@
     </connection>
 </connections>
 <tabstops>
+    <tabstop>nameEdit</tabstop>
+    <tabstop>userEdit</tabstop>
+    <tabstop>passwordEdit</tabstop>
+    <tabstop>showButton</tabstop>
+    <tabstop>fetchButton</tabstop>
+    <tabstop>genButton</tabstop>
+    <tabstop>notesEdit</tabstop>
+    <tabstop>okButton</tabstop>
+    <tabstop>cancelButton</tabstop>
+    <tabstop>tabWidget</tabstop>
 </tabstops>
 <includes>
     <include location="global" impldecl="in declaration">time.h</include>

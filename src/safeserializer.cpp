@@ -32,13 +32,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include <string>
+#include <qstring.h>
 #include "safe.hpp"
 #include "safeserializer.hpp"
 
 using namespace std;
 
-SafeSerializer::SafeSerializer(const char *extension, const char *name)
+SafeSerializer::SafeSerializer(const QString &extension, const QString &name)
   : m_extension(extension), m_name(name)
 {
   add(this);
@@ -48,16 +48,14 @@ SafeSerializer::~SafeSerializer()
 {
 }
 
-SafeSerializer *SafeSerializer::createByExt(const char *ext)
+SafeSerializer *SafeSerializer::createByExt(const QString &ext)
 {
-  string extension(ext);
-
   if(!m_serializers.empty()) {
     for(SerializerVec::iterator i = m_serializers.begin();
 	i != m_serializers.end();
 	i++) {
       SafeSerializer *serializer(*i);
-      if(string(serializer->extension()) == extension) {
+      if(serializer->extension() == ext) {
 	return serializer;
       }
     }
@@ -65,16 +63,14 @@ SafeSerializer *SafeSerializer::createByExt(const char *ext)
   return NULL;
 }
 
-SafeSerializer *SafeSerializer::createByName(const char *name)
+SafeSerializer *SafeSerializer::createByName(const QString &name)
 {
-  string name_str(name);
-
   if(!m_serializers.empty()) {
     for(SerializerVec::iterator i = m_serializers.begin();
 	i != m_serializers.end();
 	i++) {
       SafeSerializer *serializer(*i);
-      if(string(serializer->name()) == name_str) {
+      if(serializer->name() == name) {
 	return serializer;
       }
     }
@@ -91,11 +87,11 @@ bool SafeSerializer::add(SafeSerializer *serializer)
 struct TypeConCater
 {
 private:
-  string result;
+  QString result;
 
 public:
-  void setResult(const string &s) { result = s; }
-  const string &getResult() { return result; }
+  void setResult(const QString &s) { result = s; }
+  const QString &getResult() { return result; }
 
   void operator () (SafeSerializer::SerializerVec::reference r)
   {
@@ -103,7 +99,7 @@ public:
   }
 };
 
-string SafeSerializer::getTypes()
+QString SafeSerializer::getTypes()
 {
   TypeConCater cater;
   return(for_each(m_serializers.begin(),
@@ -114,11 +110,11 @@ string SafeSerializer::getTypes()
 struct ExtConCater
 {
 private:
-  string result;
+  QString result;
 
 public:
-  void setResult(const string &s) { result = s; }
-  const string &getResult() { return result; }
+  void setResult(const QString &s) { result = s; }
+  const QString &getResult() { return result; }
 
   void operator () (SafeSerializer::SerializerVec::reference r)
   {
@@ -126,7 +122,7 @@ public:
   }
 };
 
-string SafeSerializer::getExtensions()
+QString SafeSerializer::getExtensions()
 {
   ExtConCater cater;
   return(for_each(m_serializers.begin(),
@@ -134,17 +130,17 @@ string SafeSerializer::getExtensions()
 		  cater).getResult());
 }
 
-const char *SafeSerializer::getExtForName(const char *type)
+const QString SafeSerializer::getExtForName(const QString &type)
 {
   for(SerializerVec::iterator i = m_serializers.begin();
       i != m_serializers.end();
       i++) {
     SafeSerializer *serializer(*i);
-    if(string(serializer->name()) == string(type)) {
+    if(serializer->name() == QString(type)) {
       return serializer->extension();
     }
   }
-  return NULL;
+  return QString();
 }
 
 SafeSerializer *SafeSerializer::getNextExt(SafeSerializer *serializer)
@@ -153,10 +149,10 @@ SafeSerializer *SafeSerializer::getNextExt(SafeSerializer *serializer)
       i != m_serializers.end();
       i++) {
     if(*i == serializer) {
-      string extension(serializer->extension());
+      QString extension(serializer->extension());
 
       for(i++; i != m_serializers.end(); i++) {
-	if(string((*i)->extension()) == extension);
+	if((*i)->extension() == extension);
 	  return *i;
       }
       break;

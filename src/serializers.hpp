@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.5 2004/06/20 21:25:22 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.6 2004/06/24 06:08:16 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -39,6 +39,8 @@
 #include "safeserializer.hpp"
 #include "pwsafe/Util.h"
 
+class QString;
+
 /* Instances of these classes are in safe.cpp after the SerializerMap.
  */
 
@@ -48,21 +50,21 @@ public:
   PlainTextLizer();
   virtual ~PlainTextLizer();
 
-  virtual Safe::Error checkPassword(const string &path, const SecuredString &password);
-  virtual Safe::Error load(Safe &safe, const string &path, const EncryptedString &passphrase, const string &def_user);
-  virtual Safe::Error save(Safe &safe, const string &path, const string &def_user);
+  virtual Safe::Error checkPassword(const QString &path, const SecuredString &password);
+  virtual Safe::Error load(Safe &safe, const QString &path, const EncryptedString &passphrase, const QString &def_user);
+  virtual Safe::Error save(Safe &safe, const QString &path, const QString &def_user);
 };
 
 class BlowfishLizer: public SafeSerializer
 {
 public:
-  BlowfishLizer(const char *ext = "dat",
-		const char *description = "Password Safe (*.dat)");
+  BlowfishLizer(const QString &ext = "dat",
+		const QString &description = "Password Safe (*.dat)");
   virtual ~BlowfishLizer();
 
-  virtual Safe::Error checkPassword(const string &path, const SecuredString &password);
-  virtual Safe::Error load(Safe &safe, const string &path, const EncryptedString &passphrase, const string &def_user);
-  virtual Safe::Error save(Safe &safe, const string &path, const string &def_user);
+  virtual Safe::Error checkPassword(const QString &path, const SecuredString &password);
+  virtual Safe::Error load(Safe &safe, const QString &path, const EncryptedString &passphrase, const QString &def_user);
+  virtual Safe::Error save(Safe &safe, const QString &path, const QString &def_user);
 
 protected:
   virtual int readHeader(FILE *in, unsigned char randstuff[8],
@@ -70,14 +72,14 @@ protected:
 		 unsigned char salt[SaltLength],
 		 unsigned char ipthing[8]);
   virtual int readEntry(FILE *in, SafeItem &item, BlowFish *fish,
-		unsigned char *ipthing, const string &def_user);
+		unsigned char *ipthing, const QString &def_user);
 
   virtual int writeHeader(FILE *out, unsigned char randstuff[8],
 			  unsigned char randhash[20],
 			  unsigned char salt[SaltLength],
 			  unsigned char ipthing[8]);
   virtual int writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
-			 unsigned char *ipthing, const string &def_user,
+			 unsigned char *ipthing, const QString &def_user,
 			 bool v2_hdr = false);
 
   int writeCBC(FILE *fp, BlowFish *fish, const unsigned char *data,
@@ -105,8 +107,8 @@ public:
   BlowfishLizer2();
   virtual ~BlowfishLizer2();
 
-  virtual Safe::Error load(Safe &safe, const string &path, const EncryptedString &passphrase, const string &def_user);
-  virtual Safe::Error save(Safe &safe, const string &path, const string &def_user);
+  virtual Safe::Error load(Safe &safe, const QString &path, const EncryptedString &passphrase, const QString &def_user);
+  virtual Safe::Error save(Safe &safe, const QString &path, const QString &def_user);
 
   // field types, per formatV2.txt
   enum BlockType {
@@ -120,15 +122,15 @@ public:
 protected:
   static const char *FormatName, *FormatVersion;
 
-  string parseGroup(const string &group);
-  string readyGroup(const string &group);
+  QString parseGroup(const QString &group);
+  QString readyGroup(const QString &group);
 
   virtual int readEntry(FILE *in, SafeItem &item,
 			BlowFish *fish,
 			unsigned char *ipthing,
-			const string &def_user);
+			const QString &def_user);
   virtual int writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
-			 unsigned char *ipthing, const string &def_user);
+			 unsigned char *ipthing, const QString &def_user);
 };
 
 #endif

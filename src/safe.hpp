@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.7 2004/06/23 02:24:20 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.8 2004/06/24 06:08:16 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -35,14 +35,13 @@
 #ifndef SAFE_HPP
 #define SAFE_HPP
 
-#include <string>
+#include <qstring.h>
 #include <vector>
 #include <map>
 #include "securedstring.hpp"
 #include "encryptedstring.hpp"
 #include "uuid.hpp"
 
-using std::string;
 using std::map;
 using std::vector;
 
@@ -55,11 +54,11 @@ public:
   static const char GroupSeperator = '/'; //!< group delimeter
 
   SafeItem();
-  SafeItem(const string &name, const string &user,
-	   const EncryptedString &password, const string &notes);
-  SafeItem(const string &name, const string &user,
-	   const EncryptedString &password, const string &notes,
-	   const string &group);
+  SafeItem(const QString &name, const QString &user,
+	   const EncryptedString &password, const QString &notes);
+  SafeItem(const QString &name, const QString &user,
+	   const EncryptedString &password, const QString &notes,
+	   const QString &group);
 
   void clear();
 
@@ -71,11 +70,11 @@ public:
   inline time_t getAccessTime() const { return m_access_time; }
   inline time_t getLifetime() const { return m_life_time; }
 
-  inline const char *getName() const { return m_name.c_str(); }
-  inline const char *getUser() const { return m_user.c_str(); }
+  inline const QString &getName() const { return m_name; }
+  inline const QString &getUser() const { return m_user; }
   inline const EncryptedString &getPassword() const { return m_password; }
-  inline const char *getNotes() const { return m_notes.c_str(); }
-  inline const char *getGroup() const { return m_group.c_str(); }
+  inline const QString &getNotes() const { return m_notes; }
+  inline const QString &getGroup() const { return m_group; }
 
   void setUUID(const unsigned char uuid[16]);
   void setUUID(const UUID &uuid);
@@ -86,12 +85,12 @@ public:
   void setAccessTime(time_t t);
   void setLifetime(time_t t);
 
-  void setName(const string &name);
-  void setUser(const string &user);
+  void setName(const QString &name);
+  void setUser(const QString &user);
   void setPassword(const EncryptedString &password);
   void setPassword(const char *password);
-  void setNotes(const string &notes);
-  void setGroup(const string &group);
+  void setNotes(const QString &notes);
+  void setGroup(const QString &group);
 
   void updateModTime();
   void updateAccessTime();
@@ -102,7 +101,7 @@ private:
   UUID m_uuid;
   unsigned char m_policy[4];
   time_t m_creation_time, m_mod_time, m_access_time, m_life_time;
-  string m_name, m_user, m_notes, m_group;
+  QString m_name, m_user, m_notes, m_group;
   EncryptedString m_password;
 };
 
@@ -145,10 +144,10 @@ public:
 
   /** Returns a string that lists allowable safe extensions.
    */
-  static string getExtensions();
+  static QString getExtensions();
   /** Returns a string that lists the types of safes.
    */
-  static string getTypes();
+  static QString getTypes();
 
   /** Checks the password of a file.
    * The serializer is choosen from the file's extension.
@@ -158,7 +157,7 @@ public:
    * @param password Password to check.
    * @return Safe::Success if the password is correct, Safe::Failed if not.
    */
-  static Error checkPassword(const char *path, const EncryptedString &password);
+  static Error checkPassword(const QString &path, const EncryptedString &password);
   /** Checks the password of a file.
    * But allows the type of file to be specified. If type
    * is NULL or has a length of zero, the file's
@@ -170,7 +169,7 @@ public:
    * @param password Password to check.
    * @return Safe::Success if the password is correct, Safe::Failed if not.
    */
-  static Error checkPassword(const char *path, const char *type, const EncryptedString &password);
+  static Error checkPassword(const QString &path, const QString &type, const EncryptedString &password);
 
   /** Loads a safe from disk using the specified serializer.
    * Empties the safe and reads the specified file into the safe using
@@ -187,7 +186,7 @@ public:
    * @post getPassPhrase() == passphrase
    * @post changed() == false
    */
-  Error load(const char *path, const char *type, const EncryptedString &passphrase, const char *def_user);
+  Error load(const QString &path, const QString &type, const EncryptedString &passphrase, const QString &def_user);
 
   /** Loads a safe from disk.
    * Empties the safe and reads the specified file into the safe.
@@ -202,7 +201,7 @@ public:
    * @post getPassPhrase() == passphrase
    * @post changed() == false
    */
-  Error load(const char *path, const EncryptedString &passphrase, const char *def_user);
+  Error load(const QString &path, const EncryptedString &passphrase, const QString &def_user);
 
   /** Saves the safe to a file.
    * The safe is saved to the specified file with the status of the
@@ -219,8 +218,8 @@ public:
    * @post getPassPhrase() == passphrase
    * @post changed() == false
    */
-  Error save(const char *path, const char *type,
-	    const EncryptedString &passphrase, const char *def_user);
+  Error save(const QString &path, const QString &type,
+	    const EncryptedString &passphrase, const QString &def_user);
 
   /** Saves the safe to a file.
    * The safe is saved to the specified file with the status of the
@@ -235,7 +234,7 @@ public:
    * @post getPassPhrase() == passphrase
    * @post changed() == false
    */
-  Error save(const char *path, const EncryptedString &passphrase, const char *def_user);
+  Error save(const QString &path, const EncryptedString &passphrase, const QString &def_user);
   /** Saves the safe to a file.
    * The safe is saved to it's previous location using the same
    * pass-pharse and serializer.
@@ -245,11 +244,11 @@ public:
    *         condition.
    * @post changed() == false
    */
-  Error save(const char *def_user);
+  Error save(const QString &def_user);
     
-  inline const char *getPath() const { return m_path.c_str(); }
-  void setPath(const string &path);
-  inline const char *getType() const { return m_type.c_str(); }
+  inline const QString &getPath() const { return m_path; }
+  void setPath(const QString &path);
+  inline const QString &getType() const { return m_type; }
 
   inline const EncryptedString getPassPhrase() const { return m_passphrase.get(); }
   void setPassPhrase(const EncryptedString &phrase);
@@ -309,11 +308,11 @@ protected:
    * @param path Path to file
    * @return True if the backup was made, false if not
    */
-  bool makeBackup(const char *path);
+  bool makeBackup(const QString &path);
 
   /** Sets the safe's serializer's name.
    */
-  void setType(const string &type);
+  void setType(const QString &type);
 
   /** Creates a serializer that matches the given extension and serializer.
    * Extensions map to serializers one to many, while
@@ -330,11 +329,11 @@ protected:
    * @param serializer Name of the serializer
    * @return SafeSerializer that matches either extension or serializer.
    */
-  static SafeSerializer *createSerializer(const char *extension,
-					  const char *serializer);
+  static SafeSerializer *createSerializer(const QString &extension,
+					  const QString &serializer);
 
 private:
-  string m_path, m_type;
+  QString m_path, m_type;
   EncryptedString m_passphrase;
   ItemList m_items;
   bool m_changed;

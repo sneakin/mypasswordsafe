@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.7 2004/06/21 03:02:47 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.8 2004/06/24 06:08:16 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -39,6 +39,7 @@
  */
 #include <iostream>
 #include <fstream>
+#include <qstring.h>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -69,9 +70,9 @@ PlainTextLizer::~PlainTextLizer()
 {
 }
 
-Safe::Error PlainTextLizer::checkPassword(const string &path, const SecuredString &password)
+Safe::Error PlainTextLizer::checkPassword(const QString &path, const SecuredString &password)
 {
-  ifstream in(path.c_str());
+  ifstream in(path);
   string line;
   getline(in, line, '\n');
   in.close();
@@ -81,9 +82,9 @@ Safe::Error PlainTextLizer::checkPassword(const string &path, const SecuredStrin
     return Safe::Failed;
 }
 
-Safe::Error PlainTextLizer::load(Safe &safe, const string &path, const EncryptedString &passphrase, const string &)
+Safe::Error PlainTextLizer::load(Safe &safe, const QString &path, const EncryptedString &passphrase, const QString &)
 {
-  ifstream file(path.c_str());
+  ifstream file(path);
   if(file.is_open()) {
     string line;
     getline(file, line, '\n');
@@ -102,7 +103,7 @@ Safe::Error PlainTextLizer::load(Safe &safe, const string &path, const Encrypted
       note.replace("\\n", "\n");
 
       SafeItem safe_item(items[0], items[1],
-			 SecuredString(items[2].c_str()), (const char *)note);
+			 SecuredString(items[2].c_str()), note);
       if(items.size() == 4)
 	safe_item.setGroup(items[3]);
 
@@ -141,10 +142,10 @@ public:
   }
 };
 
-Safe::Error PlainTextLizer::save(Safe &safe, const string &path, const string &)
+Safe::Error PlainTextLizer::save(Safe &safe, const QString &path, const QString &)
 {
   Safe::ItemList &items(safe.getItems());
-  ofstream file(path.c_str());
+  ofstream file(path);
   if(!file.is_open()) {
     return Safe::BadFile;
   }
@@ -157,7 +158,7 @@ Safe::Error PlainTextLizer::save(Safe &safe, const string &path, const string &)
 }
 
 
-BlowfishLizer::BlowfishLizer(const char *ext, const char *description)
+BlowfishLizer::BlowfishLizer(const QString &ext, const QString &description)
   : SafeSerializer(ext, description)
 {
 }
@@ -306,12 +307,10 @@ void trimLeft(string &str)
   str.erase(str.begin(), i);
 }
 
-Safe::Error BlowfishLizer::checkPassword(const string &path, const SecuredString &password)
+Safe::Error BlowfishLizer::checkPassword(const QString &path, const SecuredString &password)
 {
-  FILE *in = fopen(path.c_str(), "rb");
+  FILE *in = fopen(path, "rb");
   if(in != NULL) {
-    //cout << "opened " << path << endl;
-    //cout << "using " << password.get() << " as the password" << endl;
     unsigned char randstuff[StuffSize];
     unsigned char randhash[20];
 
@@ -323,21 +322,7 @@ Safe::Error BlowfishLizer::checkPassword(const string &path, const SecuredString
 
     unsigned char genhash[20];
     GenRandhash(password, randstuff, genhash);
-    /*
-      cout << "Randstuff" << endl;
-      for(int i = 0; i < 8; i++) {
-      printf(" %x", randstuff[i]);
-      }
-      cout << endl << "Genhash" << endl;
-      for(int i = 0; i < 20; i++) {
-      printf(" %x", genhash[i]);
-      }
-      cout << endl << "Randhash" << endl;
-      for(int i = 0; i < 20; i++) {
-      printf(" %x", randhash[i]);
-      }
-      cout << endl;
-    */
+
     if(memcmp(randhash, genhash, 20) == 0) {
       return Safe::Success;
     }
@@ -364,7 +349,7 @@ int BlowfishLizer::readHeader(FILE *in, unsigned char randstuff[8], unsigned cha
 int BlowfishLizer::readEntry(FILE *in, SafeItem &item,
 			     BlowFish *fish,
 			     unsigned char *ipthing,
-			     const string &def_user)
+			     const QString &def_user)
 {
   SecuredString data;
   string tempdata;
@@ -417,14 +402,14 @@ int BlowfishLizer::readEntry(FILE *in, SafeItem &item,
   return numread;
 }
 
-Safe::Error BlowfishLizer::load(Safe &safe, const string &path, const EncryptedString &passphrase, const string &def_user)
+Safe::Error BlowfishLizer::load(Safe &safe, const QString &path, const EncryptedString &passphrase, const QString &def_user)
 {
   //That passkey had better be the same one that came from CheckPassword(...)
 
 #if 0
   try {
 #endif
-    FILE * in = fopen(path.c_str(), "rb");
+    FILE * in = fopen(path, "rb");
 
     if (in == NULL)
       return Safe::Failed;
@@ -465,9 +450,9 @@ Safe::Error BlowfishLizer::load(Safe &safe, const string &path, const EncryptedS
 #endif
 }
 
-Safe::Error BlowfishLizer::save(Safe &safe, const string &path, const string &def_user)
+Safe::Error BlowfishLizer::save(Safe &safe, const QString &path, const QString &def_user)
 {
-  FILE *out = fopen(path.c_str(), "wb");
+  FILE *out = fopen(path, "wb");
   const EncryptedString &passphrase(safe.getPassPhrase());
 
   DBGOUT("Saving " << path);
@@ -551,12 +536,12 @@ int BlowfishLizer::writeHeader(FILE *out, unsigned char randstuff[8],
 }
 
 int BlowfishLizer::writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
-			      unsigned char *ipthing, const string &def_user,
+			      unsigned char *ipthing, const QString &def_user,
 			      bool v2_hdr)
 {
   int num_written = 0;
   SecuredString data;
-  string temp(item.getName());
+  QString temp(item.getName());
 
   if(v2_hdr == false) {
     if(def_user == item.getUser()) {
@@ -570,14 +555,13 @@ int BlowfishLizer::writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
 
   DBGOUT("Writing name: \"" << temp << "\"");
   
-  data.set(temp);
+  data.set(temp.utf8());
   num_written += writeCBC(out, fish, data, 0, ipthing);
   
   data.set(item.getPassword().get()); // NOTE: decrypted password
   num_written += writeCBC(out, fish, data, 0, ipthing);
   
-  temp = item.getNotes();
-  data.set(item.getNotes());
+  data.set(item.getNotes().utf8());
   num_written += writeCBC(out, fish, data, 0, ipthing);
 
   return num_written;
@@ -595,11 +579,11 @@ BlowfishLizer2::~BlowfishLizer2()
 
 extern BlowfishLizer _blowfish_lizer;
 
-Safe::Error BlowfishLizer2::load(Safe &safe, const string &path,
+Safe::Error BlowfishLizer2::load(Safe &safe, const QString &path,
 			  const EncryptedString &passphrase,
-			  const string &def_user)
+			  const QString &def_user)
 {
-  FILE * in = fopen(path.c_str(), "rb");
+  FILE * in = fopen(path, "rb");
 
   if (in == NULL)
     return Safe::Failed;
@@ -645,9 +629,9 @@ Safe::Error BlowfishLizer2::load(Safe &safe, const string &path,
   return Safe::Success;
 }
 
-Safe::Error BlowfishLizer2::save(Safe &safe, const string &path, const string &def_user)
+Safe::Error BlowfishLizer2::save(Safe &safe, const QString &path, const QString &def_user)
 {
-  FILE *out = fopen(path.c_str(), "wb");
+  FILE *out = fopen(path, "wb");
   const EncryptedString &passphrase(safe.getPassPhrase());
 
   DBGOUT("Saving " << path);
@@ -723,66 +707,74 @@ Safe::Error BlowfishLizer2::save(Safe &safe, const string &path, const string &d
   }
 }
 
-string BlowfishLizer2::parseGroup(const string &group)
+QString BlowfishLizer2::parseGroup(const QString &group)
   // This parses Password Safe's ridiculus group names.
   // '.' seperates groups, '\' is the escape sequence,
   // but only '.' and '\' need to be escaped.
 {
-  string ret;
-  for(string::const_iterator i = group.begin();
-      i != group.end();
-      i++) {
-    if(*i == '\\') {
+  QString ret;
+  QChar c;
+
+  for(unsigned int i = 0; i < group.length(); i++) {
+    c = group[i];
+    if(c == '\\') {
       i++;
-      if(i == group.end())
+      if(i == group.length())
 	break;
 
-      if(*i == '.')
-	ret.push_back(*i);
-      else if(*i == '\\')
+      c = group[i];
+      if(c == '.')
+	ret += c;
+      else if(c == '\\')
 	ret += "\\\\";
     }
-    else if(*i == '.')
-      ret.push_back(SafeItem::GroupSeperator);
-    else if(*i == SafeItem::GroupSeperator)
+    else if(c == '.')
+      ret += SafeItem::GroupSeperator;
+    else if(c == SafeItem::GroupSeperator)
       ret += "\\/";
     else {
-      ret.push_back(*i);
+      ret += c;
     }
   }
 
   return ret;
 }
 
-string BlowfishLizer2::readyGroup(const string &group)
+QString BlowfishLizer2::readyGroup(const QString &group)
 {
-  string ret;
-  string::const_iterator i = group.begin();
+  QString ret;
+  unsigned int i = 0;
+  QChar c(group[i]);
 
-  if(*i == SafeItem::GroupSeperator) {
-    for(; i != group.end(); i++) {
-      if(*i != SafeItem::GroupSeperator)
+  // skip the first seperator, and find the next one
+  if(c == SafeItem::GroupSeperator) {
+    for(; i < group.length(); i++) {
+      c = group[i];
+      if(c != SafeItem::GroupSeperator)
 	break;
     }
   }
 
-  for(;i != group.end(); i++) {
-    if(*i == '\\') {
+  for(;i < group.length(); i++) {
+    c = group[i];
+    // handle escapes
+    if(c == '\\') {
       i++;
-      if(i == group.end())
+      if(i == group.length())
 	break;
 
-      if(*i == SafeItem::GroupSeperator)
-	ret.push_back(*i);
+      c = group[i];
+      if(c == SafeItem::GroupSeperator)
+	ret += c;
       else
 	ret += "\\\\";
     }
-    else if(*i == SafeItem::GroupSeperator)
-      ret.push_back('.');
-    else if(*i == '.')
+    else if(c == SafeItem::GroupSeperator)
+      ret += '.';
+    else if(c == '.')
       ret += "\\.";
     else {
-      ret.push_back(*i);
+      ret += c;
     }
   }
 
@@ -793,7 +785,7 @@ string BlowfishLizer2::readyGroup(const string &group)
 int BlowfishLizer2::readEntry(FILE *in, SafeItem &item,
 			      BlowFish *fish,
 			      unsigned char *ipthing,
-			      const string &)
+			      const QString &)
 {
   SecuredString data;
   int type;
@@ -813,16 +805,16 @@ int BlowfishLizer2::readEntry(FILE *in, SafeItem &item,
 
     switch(type) {
     case TITLE:
-      item.setName(data.get());
+      item.setName(QString::fromUtf8(data.get()));
       break;
     case PASSWORD:
       item.setPassword(data.get());
       break;
     case USER:
-      item.setUser(data.get());
+      item.setUser(QString::fromUtf8(data.get()));
       break;
     case NOTES:
-      item.setNotes(data.get());
+      item.setNotes(QString::fromUtf8(data.get()));
       break;
     case UUID_BLOCK: {
       const unsigned char *uuid_array = (const unsigned char *)data.get();
@@ -876,7 +868,7 @@ int BlowfishLizer2::readEntry(FILE *in, SafeItem &item,
 }
 
 int BlowfishLizer2::writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
-			       unsigned char *ipthing, const string &)
+			       unsigned char *ipthing, const QString &)
 {
   int num_written = 0;
   SecuredString data;
@@ -888,20 +880,19 @@ int BlowfishLizer2::writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
   data.set((const char *)uuid_array, 16);
   num_written += writeCBC(out, fish, data, UUID_BLOCK, ipthing);
   
-  data.set(item.getName());
+  data.set(item.getName().utf8());
   num_written += writeCBC(out, fish, data, TITLE, ipthing);
   
-  data.set(item.getUser());
+  data.set(item.getUser().utf8());
   num_written += writeCBC(out, fish, data, USER, ipthing);
 
   data.set(item.getPassword().get()); // NOTE: decrypted password
   num_written += writeCBC(out, fish, data, PASSWORD, ipthing);
 
-  temp = item.getGroup();
-  data.set(readyGroup(temp));
+  data.set(readyGroup(item.getGroup()));
   num_written += writeCBC(out, fish, data, GROUP, ipthing);
   
-  data.set(item.getNotes());
+  data.set(item.getNotes().utf8());
   num_written += writeCBC(out, fish, data, NOTES, ipthing);
 
   // CTIME, MTIME, ATIME, LTIME, POLICY
