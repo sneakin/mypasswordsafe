@@ -1,10 +1,11 @@
 DATE=$(shell date +%Y%m%d)
-BRANCH=rel-1
+BRANCH=
 
 all: MyPasswordSafe-$(DATE).src.tgz MyPasswordSafe-$(DATE).bin.tgz
 
 MyPasswordSafe:
-	cvs co -r $(BRANCH) $@
+	#cvs co -r $(BRANCH) $@
+	cvs co $@
 
 MyPasswordSafe-$(DATE).bin.tgz: MyPasswordSafe
 	make -C $< all
