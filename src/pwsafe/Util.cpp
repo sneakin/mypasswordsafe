@@ -50,9 +50,13 @@ trashMemory(unsigned char* buffer,
 	{
 		for (int x=0; x<numiter; x++)
 		{
+#ifdef DEBUG
+		  memset(buffer, 0xCC, length);
+#else
 		  memset(buffer, 0x00, length);
 		  memset(buffer, 0xFF, length);
 		  memset(buffer, 0x00, length);
+#endif
 		}
 	}
 }
@@ -60,7 +64,7 @@ trashMemory(unsigned char* buffer,
 void
 trashMemory( char * buffer, long length, int numiter )
 {
-	trashMemory( (unsigned char *) buffer, length * sizeof(buffer[0]), numiter );
+	trashMemory( (unsigned char *) buffer, length * sizeof(char), numiter );
 }
 
 //Generates a passkey-based hash from stuff - used to validate the passkey

@@ -3,7 +3,11 @@
 
 #include "BlowFish.h"
 
-#include "Util.h" // for trashMemory
+//#include "Util.h" // for trashMemory
+extern void trashMemory(unsigned char* buffer,
+                        long length,
+                        int numiter = 30);
+extern void trashMemory(char *buffer, long length, int numiter = 30 );
 
 
 
@@ -415,8 +419,9 @@ BlowFish::~BlowFish()
 {
   //  trashMemory((unsigned char*)tempbf_P, 18*4);
   // trashMemory((unsigned char*)tempbf_S, 256*4);
-  trashMemory((unsigned char*)bf_P, 18*4);
-  trashMemory((unsigned char*)bf_S, 256*4);
+  trashMemory((unsigned char*)bf_P, 18*sizeof(long));
+  for(int i = 0; i < 4; i++)
+    trashMemory((unsigned char*)bf_S[i], 256);
 }
 
 void
