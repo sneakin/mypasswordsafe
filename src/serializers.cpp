@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.10 2004/06/27 10:09:36 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.11 2004/06/28 04:58:02 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -168,7 +168,7 @@ BlowfishLizer::~BlowfishLizer()
 }
 
 int BlowfishLizer::writeCBC(FILE *fp, BlowFish *fish,
-			    const unsigned char *data, int length,
+			    const char *data, int length,
 			    int type, unsigned char *ipthing)
 {
    int numWritten = 0;
@@ -222,7 +222,7 @@ int BlowfishLizer::writeCBC(FILE *fp, BlowFish *fish,
 			    SecuredString &data, int type,
 			    unsigned char *ipthing)
 {
-  return writeCBC(fp, fish, (const unsigned char *)data.get(), data.length(),
+  return writeCBC(fp, fish, (const char *)data.get(), data.length(),
 		  type, ipthing);
 }
 
@@ -860,66 +860,64 @@ int BlowfishLizer2::readEntry(FILE *in, SafeItem &item,
   return total_num_read;
 }
 
+
+int BlowfishLizer2::writeString(FILE *out, BlowFish *fish,
+			       const QString &str,
+			       int type, unsigned char *ipthing)
+{
+  if(!str.isEmpty()) {
+    return writeCBC(out, fish, (const char *)str.utf8(),
+		    str.length(), type, ipthing);
+  }
+  else {
+    return 0;
+  }
+}
+
+int BlowfishLizer2::writeTime(FILE *out, BlowFish *fish, time_t time,
+			      int type, unsigned char *ipthing)
+{
+  return writeCBC(out, fish, (const char *)&time,
+		  sizeof(time_t), type, ipthing);
+}
+
 int BlowfishLizer2::writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
 			       unsigned char *ipthing, const QString &)
 {
   int num_written = 0;
   SecuredString data;
-  string temp;
 
+  // Write the UUID
   const UUID &uuid(item.getUUID());
   unsigned char uuid_array[16];
   uuid.toArray(uuid_array);
   data.set((const char *)uuid_array, 16);
   num_written += writeCBC(out, fish, data, UUID_BLOCK, ipthing);
 
-  // FIXME: clear data after each write
+  // Write the textual fields
+  num_written += writeString(out, fish, item.getName(), TITLE, ipthing);
+  num_written += writeString(out, fish, item.getUser(), USER, ipthing);
+  num_written += writeString(out, fish, readyGroup(item.getGroup()), GROUP, ipthing);
+  num_written += writeString(out, fish, item.getNotes(), NOTES, ipthing);
 
-  if(!item.getName().isEmpty()) {
-    data.set(item.getName().utf8());
-    num_written += writeCBC(out, fish, data, TITLE, ipthing);
-  }
-  
-  if(!item.getUser().isEmpty()) {
-    data.set(item.getUser().utf8());
-    num_written += writeCBC(out, fish, data, USER, ipthing);
-  }
-
+  // Write the password
+  data.clear();
   if(item.getPassword().length() > 0) {
     data.set(item.getPassword().get()); // NOTE: decrypted password
     num_written += writeCBC(out, fish, data, PASSWORD, ipthing);
   }
 
-  if(!item.getGroup().isEmpty()) {
-    data.set(readyGroup(item.getGroup()).utf8());
-    num_written += writeCBC(out, fish, data, GROUP, ipthing);
-  }
+  // Write the times
+  num_written += writeTime(out, fish, item.getCreationTime(), CTIME, ipthing);
+  num_written += writeTime(out, fish, item.getModificationTime(), MTIME, ipthing);
+  num_written += writeTime(out, fish, item.getAccessTime(), ATIME, ipthing);
+  num_written += writeTime(out, fish, item.getLifetime(), LTIME, ipthing);
 
-  if(!item.getNotes().isEmpty()) {
-    data.set(item.getNotes().utf8());
-    num_written += writeCBC(out, fish, data, NOTES, ipthing);
-  }
-
-  // CTIME, MTIME, ATIME, LTIME, POLICY
-  time_t time = item.getCreationTime();
-  num_written += writeCBC(out, fish, (const unsigned char *)&time,
-			  sizeof(time_t), CTIME, ipthing);
-
-  time = item.getModificationTime();
-  num_written += writeCBC(out, fish, (const unsigned char *)&time,
-			  sizeof(time_t), MTIME, ipthing);
-
-  time = item.getAccessTime();
-  num_written += writeCBC(out, fish, (const unsigned char *)&time,
-			  sizeof(time_t), ATIME, ipthing);
-
-  time = item.getLifetime();
-  num_written += writeCBC(out, fish, (const unsigned char *)&time,
-			  sizeof(time_t), LTIME, ipthing);
-
+  // Write the policy
   data.set((const char *)item.getPolicy(), 4);
   num_written += writeCBC(out, fish, data, POLICY, ipthing);
 
+  // and finally write the ending
   num_written += writeCBC(out, fish, data, END, ipthing);
 
   return num_written;

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.6 2004/06/24 06:08:16 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.7 2004/06/28 04:58:03 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -82,7 +82,7 @@ protected:
 			 unsigned char *ipthing, const QString &def_user,
 			 bool v2_hdr = false);
 
-  int writeCBC(FILE *fp, BlowFish *fish, const unsigned char *data,
+  int writeCBC(FILE *fp, BlowFish *fish, const char *data,
 	       int length, int type, unsigned char *ipthing);
   int writeCBC(FILE *fp, BlowFish *fish,
 	       SecuredString &data, int type,
@@ -131,6 +131,9 @@ protected:
 			const QString &def_user);
   virtual int writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
 			 unsigned char *ipthing, const QString &def_user);
+  int writeString(FILE *out, BlowFish *fish, const QString &str,
+		  int type, unsigned char *ipthing);
+  int writeTime(FILE *out, BlowFish *fish, time_t time, int type, unsigned char *ipthing);
 };
 
 #endif
