@@ -1,8 +1,10 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.7 2004/06/27 10:09:36 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.8 2004/07/24 03:30:12 nolan Exp $
  */
 #include <qpixmap.h>
 #include <assert.h>
 #include <qdatetime.h>
+#include <qvaluelist.h>
+#include <qdragobject.h>
 #include "myutil.hpp"
 #include "safelistview.hpp"
 
@@ -398,6 +400,36 @@ SafeListViewGroup *SafeListView::addGroup(const QString &group_name)
 void SafeListView::startDrag()
 {
   DBGOUT("Drag started");
+
+  // get the selected item
+  QListViewItem *item = selectedItem();
+  assert(item != NULL); // can a drag be started w/o a selection?
+
+  // create a list for the item(s)
+  QValueList<SafeItem> items;
+
+  // if the item is not a group, add it to the list
+  if(item->rtti() == SafeListViewItem::RTTI) {
+    SafeListViewItem *i = (SafeListViewItem *)item;
+    items.push_back(*i->item());
+  }
+  // else iterate through the group's children adding them to the list
+  else if(item->rtti() == SafeListViewGroup::RTTI) {
+  }
+  // just in case
+  else {
+    DBGOUT("Unknown item type; rtti() == " << item->rtti());
+    return;
+  }
+
+  // create the drag object
+  //QDragObject *d = new SafeDragObject(items, this);
+  QDragObject *d = new QTextDrag("Hello world", this);
+
+  // start the drag
+  // FIXME: detect if shift is pressed
+  d->dragMove();
+  DBGOUT("Drag done");
 }
 
 void SafeListView::populate()

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.8 2004/06/24 06:08:16 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.9 2004/07/24 03:30:12 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -59,7 +59,9 @@ public:
   SafeItem(const QString &name, const QString &user,
 	   const EncryptedString &password, const QString &notes,
 	   const QString &group);
+  SafeItem(const SafeItem &item);
 
+  void copy(const SafeItem &item);
   void clear();
 
   inline const UUID &getUUID() const { return m_uuid; }

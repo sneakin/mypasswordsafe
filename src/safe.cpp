@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.13 2004/06/24 07:46:21 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.14 2004/07/24 03:30:12 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -74,6 +74,29 @@ SafeItem::SafeItem(const QString &name, const QString &user,
   init();
 }
 
+SafeItem::SafeItem(const SafeItem &item)
+{
+  copy(item);
+}
+
+void SafeItem::copy(const SafeItem &item)
+{
+  setName(item.getName());
+  setUser(item.getUser());
+  setPassword(item.getPassword());
+  setNotes(item.getNotes());
+  setGroup(item.getGroup());
+  setUUID(item.getUUID());
+
+  setCreationTime(item.getCreationTime());
+  setModificationTime(item.getModificationTime());
+  setAccessTime(item.getAccessTime());
+  setLifetime(item.getLifetime());
+
+  for(int i = 0; i < 4; i++) {
+    m_policy[i] = item.m_policy[i];
+  }
+}
 
 void SafeItem::clear()
 {
