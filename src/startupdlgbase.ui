@@ -8,12 +8,24 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>384</width>
-            <height>323</height>
+            <width>385</width>
+            <height>280</height>
         </rect>
     </property>
     <property name="caption">
         <string>Welcome to MyPasswordSafe</string>
+    </property>
+    <property name="minimumSize">
+      <size>
+        <width>385</width>
+        <height>280</height>
+      </size>
+    </property>
+    <property name="maximumSize">
+      <size>
+        <width>385</width>
+        <height>280</height>
+      </size>
     </property>
     <vbox>
         <property name="name">

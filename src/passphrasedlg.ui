@@ -11,7 +11,7 @@
             <x>0</x>
             <y>0</y>
             <width>340</width>
-            <height>130</height>
+            <height>100</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -25,13 +25,13 @@
     <property name="minimumSize">
         <size>
             <width>340</width>
-            <height>130</height>
+            <height>100</height>
         </size>
     </property>
     <property name="maximumSize">
         <size>
             <width>340</width>
-            <height>130</height>
+            <height>100</height>
         </size>
     </property>
     <property name="caption">
@@ -63,14 +63,14 @@
                     </property>
                     <property name="minimumSize">
                         <size>
-                            <width>64</width>
-                            <height>64</height>
+                            <width>48</width>
+                            <height>48</height>
                         </size>
                     </property>
                     <property name="maximumSize">
                         <size>
-                            <width>64</width>
-                            <height>64</height>
+                            <width>48</width>
+                            <height>48</height>
                         </size>
                     </property>
                     <property name="pixmap">
