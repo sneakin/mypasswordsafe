@@ -6,6 +6,13 @@ Date of release: YYYY/MM/DD
 	Quick list of changes made
 
 ----
+2004/5/5
+	Added times and group to PwordEditDlg
+
+2004/5/4
+	Got BlowfishLizer2 to work w/ Password Safe
+	Fixed QClipboard selection bug
+
 2004/5/3
 	Added Error conditions for Safe::load, save, and checkPassword
 	Fixed the rules for SafeSerializer creation in Safe::load, save,
