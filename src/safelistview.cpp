@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.22 2004/12/06 16:03:46 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.23 2004/12/09 06:49:06 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -245,7 +245,7 @@ SafeListView::SafeListView(QWidget *parent, const char *name, Safe *safe)
   setAllColumnsShowFocus(true);
   setAcceptDrops(true);
   viewport()->setAcceptDrops(true);
-  setRootIsDecorated(true);
+  setRootIsDecorated(false);
 
   addColumn(tr("Name"), 150);
   addColumn(tr("User"), 100);
