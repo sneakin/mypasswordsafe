@@ -1,9 +1,13 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwsafe/PwsPlatform.h,v 1.2 2004/05/04 22:48:46 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwsafe/PwsPlatform.h,v 1.3 2004/10/11 10:27:10 nolan Exp $
  */
 #ifndef PwsPlatform_h
 #define PwsPlatform_h
 
+#ifdef __NetBSD__
+#include <sys/endian.h>
+#else
 #include <endian.h>
+#endif
 
 #ifndef BYTE_ORDER
 #error BYTE_ORDER not defined

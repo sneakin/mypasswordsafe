@@ -10,7 +10,11 @@
 #include <assert.h>
 
 #ifndef WIN32
+#ifdef __NetBSD__
+#include <sys/endian.h>
+#else
 #include <endian.h>
+#endif
 #endif
 
 #include <string>

@@ -1,5 +1,5 @@
 # MyPasswordSafe Makefile
-# $Header: /home/cvsroot/MyPasswordSafe/Makefile,v 1.13 2004/10/02 03:40:30 nolan Exp $
+# $Header: /home/cvsroot/MyPasswordSafe/Makefile,v 1.14 2004/10/11 10:27:08 nolan Exp $
 
 # This is the only configuration setting. It specifies where the files will
 # be copied when "make install" is called, and where MyPS will search for
@@ -28,12 +28,12 @@ MyPasswordSafe.mak: MyPasswordSafe.pro
 	$(QMAKE) -o $@ $<
 
 MyPasswordSafe: config uuid-1.0.0/.libs/libuuid.a MyPasswordSafe.mak
-	make -f MyPasswordSafe.mak
+	${MAKE} -f MyPasswordSafe.mak
 	lrelease locale/*.ts
 
 uuid-1.0.0/.libs/libuuid.a:
 	cd uuid-1.0.0 && ./configure --prefix=$(PREFIX) && cd ..
-	make -C uuid-1.0.0
+	${MAKE} -C uuid-1.0.0
 
 doc/api:
 	mkdir doc/api
@@ -54,18 +54,18 @@ src/config.h:
 config: src/config.h
 
 clean: MyPasswordSafe.mak
-	make -f $< clean
-	make -C uuid-1.0.0 clean
+	${MAKE} -f $< clean
+	${MAKE} -C uuid-1.0.0 clean
 	rm $<
 	rm -r doc/api
 
 install:
 	install -d $(PREFIX)/bin $(PREFIX)/share/MyPasswordSafe/locale \
-		$(PREFIX)/doc/MyPasswordSafe/sshots
+		$(PREFIX)/share/doc/MyPasswordSafe/sshots
 	install MyPasswordSafe $(PREFIX)/bin/MyPasswordSafe
 	install -m 0644 locale/*.qm $(PREFIX)/share/MyPasswordSafe/locale
-	install -m 0644 doc/manual.html $(PREFIX)/doc/MyPasswordSafe
-	install -m 0644 doc/sshots/*.jpg $(PREFIX)/doc/MyPasswordSafe/sshots
+	install -m 0644 doc/manual.html $(PREFIX)/share/doc/MyPasswordSafe
+	install -m 0644 doc/sshots/*.jpg $(PREFIX)/share/doc/MyPasswordSafe/sshots
 
 uninstall:
 	rm $(PREFIX)/bin/MyPasswordSafe
@@ -73,7 +73,7 @@ uninstall:
 	rm -r $(PREFIX)/doc/MyPasswordSafe
 
 release:
-	make -c release
+	${MAKE} -c release
 
 commit:
 	cvs commit
