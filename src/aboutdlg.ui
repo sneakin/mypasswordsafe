@@ -84,6 +84,12 @@ Copyright &amp;copy; 2004 &lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade;&lt;br/&gt;
 &lt;br/&gt;
 Compiled by&lt;br/&gt;
 {USER}@{HOST} on {DATE}&lt;br/&gt;
+&lt;br/&gt;
+MyPasswordSafe comes with ABSOLUTELY NO WARRANTY.&lt;br/&gt;
+&lt;br/&gt;
+This is free software, and you are welcome to redistribute it
+under certain conditions. Click the License tab for more information.&lt;br/&gt;
+&lt;br/&gt;
 &lt;/center&gt;</string>
                         </property>
                     </widget>
@@ -109,21 +115,35 @@ Compiled by&lt;br/&gt;
                         </rect>
                     </property>
                     <property name="text">
-                        <string>Copyright &amp;copy; 2004, &lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade;&lt;br&gt;
-All rights reserved.&lt;br&gt;
+                        <string>&lt;p&gt;Copyright &amp;copy; 2004, &lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade;&lt;/p&gt;
 
 &lt;p&gt;&lt;b&gt;Semantic Gap&lt;/b&gt; is a trademark of Nolan Eakins.&lt;/p&gt;
 
-&lt;p&gt;Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:&lt;/p&gt;
-&lt;p&gt;
-Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.&lt;/p&gt;
-&lt;p&gt;Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.&lt;/p&gt;
-&lt;p&gt;Neither the name of &lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade; Solutions nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.&lt;/p&gt;
+&lt;p&gt;This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.&lt;/p&gt;
 
-&lt;p&gt;THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-&lt;/p&gt;
+&lt;p&gt;This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.&lt;/p&gt;
 
---</string>
+&lt;p&gt;You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade; can be contacted by:
+&lt;ul&gt;
+&lt;li&gt;Email: support@semanticgap.com&lt;/li&gt;
+&lt;li&gt;Mail:&lt;br/&gt;
+&lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade;&lt;br/&gt;
+527 Park Dr.&lt;br/&gt;
+Greenwood, IN 46143&lt;/li&gt;
+&lt;/ul&gt;
+
+
+---</string>
                     </property>
                 </widget>
             </widget>
