@@ -312,6 +312,7 @@
     <tabstop>genButton</tabstop>
 </tabstops>
 <includes>
+    <include location="global" impldecl="in declaration">time.h</include>
     <include location="local" impldecl="in implementation">pwordeditdlg.ui.h</include>
 </includes>
 <variables>

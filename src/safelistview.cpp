@@ -1,6 +1,7 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.3 2004/05/05 22:29:49 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.4 2004/06/15 05:18:15 nolan Exp $
  */
 #include <qpixmap.h>
+#include <assert.h>
 #include "myutil.hpp"
 #include "safelistview.hpp"
 

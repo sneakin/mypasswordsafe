@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.5 2004/06/12 06:42:18 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.6 2004/06/15 05:18:15 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -207,7 +207,7 @@ void MyPasswordSafe::fileMakeDefault()
       return;
     }
   }
-  m_default_safe = m_safe->getPath().c_str();
+  m_default_safe = m_safe->getPath();
   fileOpenDefaultAction->setEnabled(true);
 }
 

@@ -23,6 +23,7 @@
  * Canceling the startup dialog quits the program.
  */
 #include <qmessagebox.h>
+#include <assert.h>
 #include "config.h"
 #include "mypasswordsafe.h"
 #include "encryptedstring.hpp"

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.4 2004/06/12 07:30:40 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.5 2004/06/15 05:18:15 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -243,9 +243,9 @@ public:
    */
   Error save(const char *def_user);
     
-  inline const string &getPath() const { return m_path; }
+  inline const char *getPath() const { return m_path.c_str(); }
   void setPath(const string &path);
-  inline const string &getType() const { return m_type; }
+  inline const char *getType() const { return m_type.c_str(); }
 
   inline const EncryptedString getPassPhrase() const { return m_passphrase.get(); }
   void setPassPhrase(const EncryptedString &phrase);

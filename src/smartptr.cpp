@@ -1,4 +1,5 @@
 #include <map>
+#include <assert.h>
 #include "smartptr.hpp"
 #include "myutil.hpp"
 
