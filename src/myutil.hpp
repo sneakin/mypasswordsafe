@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include "config.h"
+#include "exception.hpp"
 
 using std::cerr;
 using std::endl;
@@ -12,6 +13,8 @@ using std::string;
 using std::vector;
 
 class QString;
+class SafeGroup;
+class Safe;
 
 //#define DEBUG 1
 
@@ -30,10 +33,6 @@ void copyToClipboard(const QString &str);
 void trimRight(string &str);
 void trimLeft(string &str);
 
-class SafeGroup;
-class Safe;
-class QString;
-
 SafeGroup *findOrCreateGroup(Safe *safe, const QString &group_name);
 QString thisGroup(const QString &);
 QString parentGroup(const QString &);
@@ -42,5 +41,10 @@ SafeGroup *findGroup(SafeGroup *group, const QString &full_group);
 QString escapeGroup(const QString &);
 QString unescapeGroup(const QString &);
 
+class EscapeException: public Exception
+{
+public:
+  EscapeException();
+};
 
 #endif

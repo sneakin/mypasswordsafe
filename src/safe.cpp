@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.19 2004/07/29 00:00:30 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.20 2004/07/29 08:01:14 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -52,6 +52,8 @@ using namespace std;
 SafeItem::SafeItem(SafeGroup *parent)
   : m_parent(NULL)
 {
+  assert(parent != this);
+
   if(parent != NULL) {
     parent->addItem(this);
     m_safe = parent->safe();

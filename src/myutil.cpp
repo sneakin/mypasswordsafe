@@ -103,6 +103,9 @@ SafeGroup *findOrCreateGroup(Safe *safe, const QString &group_name)
 {
   DBGOUT("findOrCreateGroup");
 
+  if(safe == NULL)
+    return NULL;
+
   // if the group's name is empty,
   if(group_name.isEmpty()) {
     DBGOUT("Group name is empty");
@@ -127,6 +130,11 @@ SafeGroup *findOrCreateGroup(Safe *safe, const QString &group_name)
       DBGOUT("Found group " << group_path);
       return group;
     }
+
+#ifdef DEBUG
+    if(!group_path.isEmpty())
+      DBGOUT(group_path);
+#endif
 
     QString this_group = unescapeGroup(thisGroup(group_path));
     QString parent_group = parentGroup(group_path);
@@ -154,9 +162,10 @@ SafeGroup *findOrCreateGroup(Safe *safe, const QString &group_name)
  */
 QString thisGroup(const QString &group)
 {
-  unsigned int i;
+  if(group.isEmpty())
+    return QString::null;
 
-  DBGOUT("length: " << group.length());
+  unsigned int i;
 
   for(i = (group.length() - 1); i != 0; i--) {
     if(group[i] == GroupSeperator) {
@@ -172,23 +181,7 @@ QString thisGroup(const QString &group)
   if(group[i] == GroupSeperator)
     i++;
 
-  QString ret;
-  for(; i != group.length(); i++) {
-    if(group[i] == '\\') {
-      i++;
-      if(i != group.length()) {
-	char c = group[i];
-	if(c == '\\')
-	  ret += '\\';
-	else if(c == '/')
-	  ret += '/';
-      }
-      continue;
-    }
-
-    ret += group[i];
-  }
-  return ret;
+  return group.right(group.length() - i);
 }
 
 /** Takes a group's fullname and returns its parent's fullname.
@@ -214,6 +207,8 @@ QString parentGroup(const QString &group)
 
   QString ret(group);
   ret.truncate(i);
+
+  DBGOUT(group << " -> " << ret);
   return ret;
 }
 
@@ -224,60 +219,95 @@ QString parentGroup(const QString &group)
  */
 SafeGroup *findGroup(SafeGroup *group, const QString &full_group)
 {
+  if(group == NULL || full_group.isEmpty())
+    return NULL;
+
   DBGOUT("findGroup: " << full_group);
 
-  if(!full_group.isEmpty()) {
-    QString group_name;
-    unsigned int index = 0;
-    if(full_group.at(0) == GroupSeperator)
-      index++;
-
-    for(; index < full_group.length(); index++) {
-      if(full_group.at(index) == GroupSeperator) {
-	if(index > 0 && full_group.at(index - 1) != '\\')
-	  break;
-      }
-      group_name += full_group.at(index);
-    }
-
-    group_name = unescapeGroup(group_name);
-    DBGOUT("\tName: " << group_name);
-
-    SafeGroup::Iterator it(group);
-    while(it.current()) {
-      if(it.current()->rtti() == SafeGroup::RTTI) {
-	SafeGroup *temp = (SafeGroup *)it.current();
-	if(temp->name() == group_name) {
-	  if(index == full_group.length())
-	    return temp;
-
-	  QString child_group = full_group.right(full_group.length() - (index + 1));
-	  return findGroup(temp, child_group);
-	}
-	else {
-	  DBGOUT(temp->name() << " != " << group_name);
-	}
-      }
-      ++it;
-    }
+  QString group_name;
+  unsigned int index = 0;
+  for(; index < full_group.length(); index++) {
+    if(full_group.at(index) != GroupSeperator)
+      break;
   }
 
+  // get the first section
+  for(; index < full_group.length(); index++) {
+    if(full_group.at(index) == GroupSeperator) {
+      if(index > 0 && full_group.at(index - 1) != '\\')
+	break;
+    }
+    group_name += full_group.at(index);
+  }
+
+  group_name = unescapeGroup(group_name);
+  //DBGOUT("\tName: " << group_name);
+
+  SafeGroup::Iterator it(group);
+  while(it.current()) {
+    if(it.current()->rtti() == SafeGroup::RTTI) {
+      SafeGroup *temp = (SafeGroup *)it.current();
+      if(temp->name() == group_name) {
+	if(index == full_group.length())
+	  return temp;
+
+	QString child_group = full_group.right(full_group.length() - (index + 1));
+	return findGroup(temp, child_group);
+      }
+#ifdef DEBUG
+      else {
+	if(!group_name.isEmpty())
+	  DBGOUT(temp->name() << " != " << group_name);
+      }
+#endif
+    }
+    ++it;
+  }
 
   return NULL;
 }
 
 QString escapeGroup(const QString &g)
 {
-  QString ret(g);
-  ret.replace('\\', "\\\\");
-  ret.replace('/', "\\/");
+  if(g.isEmpty())
+    return QString::null;
+
+  QString ret;
+  unsigned int length = g.length();
+  for(unsigned int i = 0; i < length; i++) {
+    if(g[i] == GroupSeperator ||
+       g[i] == '\\')
+      ret += '\\';
+    ret += g[i];
+  }
+
   return ret;
 }
 
 QString unescapeGroup(const QString &g)
 {
-  QString ret(g);
-  ret.replace("\\/", "/");
-  ret.replace("\\\\", "\\");
+  if(g.isEmpty())
+    return QString::null;
+
+  DBGOUT("unescapeGroup(\"" << g << "\")");
+
+  QString ret;
+  unsigned int length = g.length();
+  for(unsigned int i = 0; i < length; i++) {
+    if(g[i] == '\\') {
+      i++;
+      if(i == length)
+	throw EscapeException();
+      else if(g[i] != GroupSeperator &&
+	      g[i] != '\\')
+	throw EscapeException();
+    }
+    ret += g[i];
+  }
   return ret;
+}
+
+EscapeException::EscapeException()
+  : Exception("invalid escape sequence")
+{
 }
