@@ -6,6 +6,11 @@ Date of release: YYYY/MM/DD
 	Quick list of changes made
 
 ----
+2004/6/10
+	Release builds
+	Added uuid-1.0.0 for uuid generation
+	First devel release
+
 2004/5/5
 	Added times and group to PwordEditDlg
 
