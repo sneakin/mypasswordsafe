@@ -81,7 +81,13 @@ IMAGES	= images/searchfind \
 	images/folder_new.png \
 	images/folder_blue.png \
 	images/folder_blue_open.png \
-	images/keys.png
+	images/keys.png \
+	images/button_ok.png \
+	images/button_cancel.png
+
+
+
+
 
 DEBUG = $$(DEBUG)
 

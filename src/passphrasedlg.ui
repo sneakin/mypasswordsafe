@@ -8,9 +8,9 @@
     </property>
     <property name="geometry">
         <rect>
-            <x>0</x>
+            <x>20</x>
             <y>0</y>
-            <width>340</width>
+            <width>300</width>
             <height>100</height>
         </rect>
     </property>
@@ -24,13 +24,13 @@
     </property>
     <property name="minimumSize">
         <size>
-            <width>340</width>
+            <width>300</width>
             <height>100</height>
         </size>
     </property>
     <property name="maximumSize">
         <size>
-            <width>340</width>
+            <width>300</width>
             <height>100</height>
         </size>
     </property>
@@ -140,6 +140,9 @@
                     <property name="text">
                         <string>Cancel</string>
                     </property>
+                    <property name="iconSet">
+                        <iconset>button_cancel.png</iconset>
+                    </property>
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
@@ -153,6 +156,9 @@
                     </property>
                     <property name="default">
                         <bool>true</bool>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>button_ok.png</iconset>
                     </property>
                 </widget>
             </hbox>

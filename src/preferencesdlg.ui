@@ -6,67 +6,179 @@
     </property>
     <property name="geometry">
         <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>465</width>
-            <height>213</height>
+            <x>7</x>
+            <y>90</y>
+            <width>450</width>
+            <height>170</height>
         </rect>
     </property>
     <property name="sizePolicy">
         <sizepolicy>
-            <hsizetype>0</hsizetype>
-            <vsizetype>0</vsizetype>
+            <hsizetype>4</hsizetype>
+            <vsizetype>4</vsizetype>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
     <property name="minimumSize">
         <size>
-            <width>465</width>
-            <height>213</height>
+            <width>450</width>
+            <height>170</height>
         </size>
     </property>
     <property name="maximumSize">
         <size>
-            <width>32767</width>
-            <height>32767</height>
+            <width>450</width>
+            <height>170</height>
         </size>
     </property>
     <property name="caption">
         <string>Preferences</string>
     </property>
-    <hbox>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout8</cstring>
+                <cstring>layout22</cstring>
             </property>
-            <vbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLayoutWidget">
+                <widget class="QLabel" row="1" column="0">
                     <property name="name">
-                        <cstring>layout3</cstring>
+                        <cstring>textLabel7</cstring>
                     </property>
-                    <grid>
+                    <property name="text">
+                        <string>Default username:</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The default username is the username used when a new password is created.</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel6</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Default Safe:</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The active safe is the safe that MyPasswordSafe tries to open on startup.</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="3" column="1">
+                    <property name="name">
+                        <cstring>layout21</cstring>
+                    </property>
+                    <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLabel" row="0" column="0">
+                        <spacer>
                             <property name="name">
-                                <cstring>textLabel6</cstring>
+                                <cstring>spacer11</cstring>
                             </property>
-                            <property name="text">
-                                <string>Default Safe:</string>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>71</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QSpinBox">
+                            <property name="name">
+                                <cstring>maxTriesBox</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>10</number>
+                            </property>
+                            <property name="value">
+                                <number>3</number>
                             </property>
                             <property name="whatsThis" stdset="0">
-                                <string>The active safe is the safe that MyPasswordSafe tries to open on startup.</string>
+                                <string>This is the number of tries you have at guessing your pass-phrase before MyPasswordSafe gives up.</string>
                             </property>
                         </widget>
-                        <widget class="QPushButton" row="0" column="2">
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget" row="2" column="1">
+                    <property name="name">
+                        <cstring>layout20</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer10</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>81</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QSpinBox">
+                            <property name="name">
+                                <cstring>pwordLengthBox</cstring>
+                            </property>
+                            <property name="minValue">
+                                <number>4</number>
+                            </property>
+                            <property name="value">
+                                <number>8</number>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enter the number of characters you want generated passwords to use.</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Generated password length:</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The generated password length sets the length of the passwords generated by the Generate button in the password edit dialog.</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="0" column="1">
+                    <property name="name">
+                        <cstring>layout17</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>defaultSafeBox</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enter the pathname to the safe that you want to be opened on startup here.</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
                             <property name="name">
                                 <cstring>browseButton</cstring>
                             </property>
@@ -86,139 +198,76 @@
                                 <string>Click here to browse for the file that you want to use as the active safe.</string>
                             </property>
                         </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>textLabel7</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Default username:</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The default username is the username used when a new password is created.</string>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="2">
-                            <property name="name">
-                                <cstring>defUserBox</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Enter the user name that you want MyPasswordSafe to automatically use when a new password is added.</string>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="0" column="1">
-                            <property name="name">
-                                <cstring>defaultSafeBox</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Enter the pathname to the safe that you want to be opened on startup here.</string>
-                            </property>
-                        </widget>
-                    </grid>
+                    </hbox>
                 </widget>
-                <widget class="QLayoutWidget">
+                <widget class="QLabel" row="3" column="0">
                     <property name="name">
-                        <cstring>layout7</cstring>
+                        <cstring>textLabel1_2</cstring>
                     </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>textLabel1_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Number of guesses:</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>This is the number of tries you have at guessing your pass-phrase before MyPasswordSafe gives up.</string>
-                            </property>
-                        </widget>
-                        <widget class="QSpinBox" row="1" column="2">
-                            <property name="name">
-                                <cstring>maxTriesBox</cstring>
-                            </property>
-                            <property name="maxValue">
-                                <number>10</number>
-                            </property>
-                            <property name="value">
-                                <number>3</number>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>This is the number of tries you have at guessing your pass-phrase before MyPasswordSafe gives up.</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Generated password length:</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The generated password length sets the length of the passwords generated by the Generate button in the password edit dialog.</string>
-                            </property>
-                        </widget>
-                        <widget class="QSpinBox" row="0" column="2">
-                            <property name="name">
-                                <cstring>pwordLengthBox</cstring>
-                            </property>
-                            <property name="minValue">
-                                <number>4</number>
-                            </property>
-                            <property name="value">
-                                <number>8</number>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Enter the number of characters you want generated passwords to use.</string>
-                            </property>
-                        </widget>
-                        <spacer row="1" column="1">
-                            <property name="name">
-                                <cstring>spacer2_2</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>71</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <spacer row="0" column="1">
-                            <property name="name">
-                                <cstring>spacer2</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>71</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </grid>
+                    <property name="text">
+                        <string>Number of guesses:</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>This is the number of tries you have at guessing your pass-phrase before MyPasswordSafe gives up.</string>
+                    </property>
                 </widget>
-            </vbox>
+                <widget class="QLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>defUserBox</cstring>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Enter the user name that you want MyPasswordSafe to automatically use when a new password is added.</string>
+                    </property>
+                </widget>
+            </grid>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout4</cstring>
+                <cstring>layout16</cstring>
             </property>
-            <vbox>
+            <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>helpButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Help</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>help.png</iconset>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer9</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>101</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>cancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>button_cancel.png</iconset>
+                    </property>
+                </widget>
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>okButton</cstring>
@@ -232,43 +281,13 @@
                     <property name="default">
                         <bool>true</bool>
                     </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>cancelButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cancel</string>
+                    <property name="iconSet">
+                        <iconset>button_ok.png</iconset>
                     </property>
                 </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>helpButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Help</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer1</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>73</height>
-                        </size>
-                    </property>
-                </spacer>
-            </vbox>
+            </hbox>
         </widget>
-    </hbox>
+    </vbox>
 </widget>
 <connections>
     <connection>

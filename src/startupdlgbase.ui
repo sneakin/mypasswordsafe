@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>StartupDlgBase</class>
 <widget class="QDialog">
     <property name="name">
@@ -7,25 +7,25 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>0</y>
+            <y>17</y>
             <width>385</width>
-            <height>280</height>
+            <height>285</height>
         </rect>
+    </property>
+    <property name="minimumSize">
+        <size>
+            <width>385</width>
+            <height>285</height>
+        </size>
+    </property>
+    <property name="maximumSize">
+        <size>
+            <width>385</width>
+            <height>285</height>
+        </size>
     </property>
     <property name="caption">
         <string>Welcome to MyPasswordSafe</string>
-    </property>
-    <property name="minimumSize">
-      <size>
-        <width>385</width>
-        <height>280</height>
-      </size>
-    </property>
-    <property name="maximumSize">
-      <size>
-        <width>385</width>
-        <height>280</height>
-      </size>
     </property>
     <vbox>
         <property name="name">
@@ -202,7 +202,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout19</cstring>
+                <cstring>layout4</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -228,11 +228,25 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>100</width>
+                            <width>149</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>quitButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Quit</string>
+                    </property>
+                    <property name="accel">
+                        <string>Esc</string>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>exit.png</iconset>
+                    </property>
+                </widget>
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>okButton</cstring>
@@ -246,16 +260,8 @@
                     <property name="default">
                         <bool>true</bool>
                     </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>quitButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Quit</string>
-                    </property>
-                    <property name="accel">
-                        <string>Esc</string>
+                    <property name="iconSet">
+                        <iconset>button_ok.png</iconset>
                     </property>
                 </widget>
             </hbox>
