@@ -12,6 +12,8 @@
 #ifndef WIN32
 #ifdef __NetBSD__
 #include <sys/endian.h>
+#elif __APPLE__
+#include <ppc/endian.h>
 #else
 #include <endian.h>
 #endif
