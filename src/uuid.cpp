@@ -40,79 +40,124 @@ using std::string;
 UUID::UUID(bool make_uuid)
   : m_uuid(NULL)
 {
-  m_error = uuid_create(&m_uuid);
-  if(make_uuid && isOk()) {
+  uuid_rc_t error = uuid_create(&m_uuid);
+  if(error != UUID_RC_OK)
+    throw errorToException(error);
+
+  if(make_uuid) {
     make();
   }
 }
 
-UUID::UUID(UUID &uuid)
+UUID::UUID(const UUID &uuid)
+  : m_uuid(NULL)
 {
-  m_error = uuid_create(&m_uuid);
-  unsigned char array[UUID_LEN_BIN];
-  uuid.toArray(array);
-  fromArray(array);
+  uuid_rc_t error = uuid_create(&m_uuid);
+  if(error != UUID_RC_OK)
+    throw errorToException(error);
+
+  copy(uuid);
 }
 
 UUID::~UUID()
 {
-  uuid_destroy(m_uuid);
+  destroy();
 }
 
 bool UUID::isNil() const
 {
   int result = 0;
-  uuid_isnil(m_uuid, &result);
+  uuid_rc_t error = uuid_isnil(m_uuid, &result);
+  if(error != UUID_RC_OK)
+    throw errorToException(error);
+
   return (result ? true : false);
 }
 
 bool UUID::isEqual(const UUID &uuid) const
 {
   int result = 0;
-  uuid_compare(m_uuid, uuid.m_uuid, &result);
-  return (result == 0 ? true : false);
-}
+  uuid_rc_t error = uuid_compare(m_uuid, uuid.m_uuid, &result);
+  if(error != UUID_RC_OK)
+    throw errorToException(error);
 
-bool UUID::isOk() const
-{
-  return (m_error == UUID_RC_OK ? true : false);
+  return (result == 0 ? true : false);
 }
 
 void UUID::make()
 {
-  m_error = uuid_make(m_uuid, UUID_MAKE_V1);
+  uuid_rc_t error = uuid_make(m_uuid, UUID_MAKE_V1);
+  if(error != UUID_RC_OK)
+    throw errorToException(error);
 }
 
-string UUID::toString()
+void UUID::copy(const UUID &uuid)
+{
+  unsigned char array[UUID_LEN_BIN];
+  uuid.toArray(array);
+  fromArray(array);
+}
+
+void UUID::destroy()
+{
+  if(m_uuid != NULL) {
+    uuid_rc_t error = uuid_destroy(m_uuid);
+    if(error != UUID_RC_OK)
+      throw errorToException(error);
+    m_uuid = NULL;
+  }
+}
+
+string UUID::toString() const
 {
   char *buffer = NULL;
 
-  m_error = uuid_export(m_uuid, UUID_FMT_STR, (void **)&buffer, NULL);
+  uuid_rc_t error = uuid_export(m_uuid, UUID_FMT_STR, (void **)&buffer, NULL);
+  if(error != UUID_RC_OK) {
+    delete buffer; // note: this needed?
+    throw errorToException(error);
+  }
 
   string ret(buffer);
   delete buffer;
   return ret;
 }
 
-void UUID::toArray(unsigned char array[16])
+void UUID::toArray(unsigned char array[16]) const
 {
   size_t size = 16;
-  m_error = uuid_export(m_uuid, UUID_FMT_BIN, (void **)&array, &size);
+  uuid_rc_t error = uuid_export(m_uuid, UUID_FMT_BIN, (void **)&array, &size);
+  if(error != UUID_RC_OK)
+    throw errorToException(error);
 }
 
 void UUID::fromString(const string &str)
 {
-  m_error = uuid_import(m_uuid, UUID_FMT_STR, (const void *)str.c_str(), str.length());
+  uuid_rc_t error = uuid_import(m_uuid, UUID_FMT_STR, (const void *)str.c_str(), str.length());
+  if(error != UUID_RC_OK)
+    throw errorToException(error);
 }
 
 void UUID::fromArray(unsigned char array[16])
 {
-  m_error = uuid_import(m_uuid, UUID_FMT_BIN, (const void *)array, 16);
+  uuid_rc_t error = uuid_import(m_uuid, UUID_FMT_BIN, (const void *)array, 16);
+  if(error != UUID_RC_OK)
+    throw errorToException(error);
 }
 
+UUID::Exception UUID::errorToException(uuid_rc_t error)
+{
+  return (Exception)error;
+}
+
+const char *UUID::exceptionToString(UUID::Exception e)
+{
+  return uuid_error((uuid_rc_t)e);
+}
 
 #ifdef TEST
 #include <iostream>
+#include <vector>
 using namespace std;
 
 void printArray(UUID &uuid)
@@ -135,34 +180,66 @@ void testFromArray(UUID &uuid)
   printArray(copy);
 }
 
+void outOfMemTest()
+{
+  vector<UUID *> vec;
+  UUID *uuid;
+
+  cout << "Hoping to exhaust memory" << endl;
+  try {
+    for(int i = 0; i < 200000000; i++) {
+      cout << "\rat: " << i;
+      uuid = new UUID();
+      vec.push_back(uuid);
+    }
+  }
+  catch(UUID::Exception &e) {
+    cout << "Exception caught: " << UUID::exceptionToString(e) << endl;
+  }
+  catch(...) {
+    cout << "Unkown exception thrown" << endl;
+  }
+}
+
 int main(int argc, char *argv[])
 {
-  UUID uuid;
+  try {
+    UUID uuid(false);
 
-  cout << "uuid.isNil() == " << uuid.isNil() << endl; // should be 1
-  printArray(uuid);
-  uuid.make();
-  cout << "uuid.isNil() == " << uuid.isNil() << endl; // should be 0
-  cout << "uuid = " << uuid.toString() << endl;
-  printArray(uuid);
+    cout << "uuid.isNil() == " << uuid.isNil() << endl; // should be 1
+    printArray(uuid);
+    uuid.make();
+    cout << "uuid.isNil() == " << uuid.isNil() << endl; // should be 0
+    cout << "uuid = " << uuid.toString() << endl;
+    printArray(uuid);
 
-  UUID copy(true);
-  cout << "copy = " << copy.toString() << endl;
-  cout << "uuid.isEqual(copy)? " << uuid.isEqual(copy) << endl; // should be 0
+    UUID copy(true);
+    cout << "copy = " << copy.toString() << endl;
+    cout << "uuid.isEqual(copy)? " << uuid.isEqual(copy) << endl; // should be 0
 
-  copy.fromString(uuid.toString());
-  cout << "copy = " << copy.toString() << endl;
+    copy.fromString(uuid.toString());
+    cout << "copy = " << copy.toString() << endl;
 
-  testFromArray(uuid);
+    testFromArray(uuid);
 
-  cout << "uuid.isEqual(copy)? " << uuid.isEqual(copy) << endl; // should be 1
-  cout << "uuid == copy? " << (uuid == copy) << endl; // should be 1
+    cout << "uuid.isEqual(copy)? " << uuid.isEqual(copy) << endl; // should be 1
+    cout << "uuid == copy? " << (uuid == copy) << endl; // should be 1
 
-  UUID copy2(copy);
-  cout << "copy2 = " << copy2.toString() << endl;
+    UUID copy2(copy);
+    cout << "copy2 = " << copy2.toString() << endl;
 
-  cout << endl << "sizeof(uuid) == " << sizeof(uuid) << endl
-       << "sizeof(UUID) == " << sizeof(UUID) << endl;
+    cout << endl << "sizeof(uuid) == " << sizeof(uuid) << endl
+	 << "sizeof(UUID) == " << sizeof(UUID) << endl;
+
+    outOfMemTest();
+
+    throw UUID::NotImplemented;
+  }
+  catch(UUID::Exception &e) {
+    cout << "Exception thrown: " << e << "\t"
+	 << UUID::exceptionToString(e) << endl;
+    return -1;
+  }
 
   return 0;
 }

@@ -44,13 +44,22 @@ using std::string;
 class UUID
 {
 public:
+  enum Exception {
+    Ok = 0,
+    InvalidArgument,
+    OutOfMemory,
+    SystemError,
+    InternalError,
+    NotImplemented
+  };
+
   /** Constructs a new UUID object.
    * The constructed UUID is the Nil UUID unless the parameter is true.
    * @param make_uuid Controls whether or not to generate a new UUID. If it is false or left blank,
    * the UUID is set to the Nil UUID.
    */
-  UUID(bool make_uuid = false);
-  UUID(UUID &uuid); //! @note this should be const
+  UUID(bool make_uuid = true);
+  UUID(const UUID &uuid);
   ~UUID();
 
   /** Used to check if the UUID is the Nil UUID.
@@ -62,22 +71,23 @@ public:
    * @return true if the parameter equals this UUID.
    */
   bool isEqual(const UUID &uuid) const;
-  /** Checks the objects error condition.
-   * @return true if the object is ok, false if there has been an error.
-   */
-  bool isOk() const;
 
   /** Generates a new UUID.
    */
   void make();
+  /** Copies a UUID into this.
+   * @param uuid The UUID to copy.
+   */
+  void copy(const UUID &uuid);
+
   /** Exports the UUID as a string.
    * @return a std::string representing the UUID
    */
-  string toString();
+  string toString() const;
   /** Exports the UUID as an array.
    * @param array Array of bytes to store the UUID in.
    */
-  void toArray(unsigned char array[16]);
+  void toArray(unsigned char array[16]) const;
 
   /** Loads a UUID from a string.
    * @param str std::string that is storing a string representation of a UUID.
@@ -88,12 +98,33 @@ public:
    */
   void fromArray(unsigned char array[16]);
 
+  /** Equivalent to isEqual.
+   */
   inline bool operator == (const UUID &uuid) const { return isEqual(uuid); }
+  /** Equivalent to !isEqual.
+   */
   inline bool operator != (const UUID &uuid) const { return !isEqual(uuid); }
 
+  /** Returns a string that describes the exception.
+   * @param e Exception to describe.
+   * @return Descriptive string of the exception.
+   */
+  static const char *exceptionToString(Exception e);
+
+protected:
+  /** Destroys the uuid, setting it back to NULL.
+   */
+  void destroy();
+
 private:
+  /** Translates an internal error into an exception.
+   * OSSP uuid uses its own type for error codes. This method
+   * translates that error code into an Exception to thrown
+   * when an error occurs.
+   */
+  static Exception errorToException(uuid_rc_t error);
+
   uuid_t *m_uuid;
-  uuid_rc_t m_error;
 };
 
 #endif // UUID_HPP
