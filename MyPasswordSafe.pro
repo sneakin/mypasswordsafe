@@ -21,7 +21,8 @@ HEADERS	+= src/safe.hpp \
 	src/config.h \
 	src/smartptr.hpp \
 	src/safelistview.hpp \
-	src/uuid.hpp
+	src/uuid.hpp \
+        src/xmlable.hpp
 SOURCES	+= src/main.cpp \
 	src/securedstring.cpp \
 	src/safe.cpp \
