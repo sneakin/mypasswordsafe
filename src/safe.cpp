@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.14 2004/07/24 03:30:12 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.15 2004/07/24 20:49:54 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -411,6 +411,7 @@ SafeSerializer *Safe::createSerializer(const QString &extension,
 void Safe::setPassPhrase(const EncryptedString &phrase)
 {
   m_passphrase.set(phrase);
+  setChanged(true);
 }
 
 void Safe::setChanged(bool value)

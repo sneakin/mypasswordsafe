@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.11 2004/06/24 06:08:16 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.12 2004/07/24 20:49:54 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -583,10 +583,12 @@ void MyPasswordSafe::fileChangePassPhrase()
   if(dlg.exec() == NewPassPhraseDlg::Accepted) {
     // set the new password
     m_safe->setPassPhrase(EncryptedString((const char *)dlg.password().utf8()));
+    savingEnabled(true);
     statusBar()->message(tr("Pass-phrase changed"));
   }
-	
-  statusBar()->message(tr("Canceled"));
+  else {
+    statusBar()->message(tr("Canceled"));
+  }
 }
 
 
