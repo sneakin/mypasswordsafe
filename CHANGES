@@ -6,6 +6,10 @@ Date of release: YYYY/MM/DD
 	Quick list of changes made
 
 ----
+2004/6/15
+	Fixed some compilation problems that weren't
+		showing up on my machine.
+
 2004/6/12
 	Fixed a bug w/ Safe::save not setting the correct type
 		for the safe.
