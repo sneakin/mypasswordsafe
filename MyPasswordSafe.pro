@@ -75,6 +75,6 @@ IMAGES	= images/searchfind \
 	images/folder_blue_open.png
 TEMPLATE	=app
 CONFIG	+= qt warn_on release
-INCLUDEPATH	+= src/uuid-1.0.0
-LIBS	+= src/uuid-1.0.0/.libs/libuuid.a
+INCLUDEPATH	+= uuid-1.0.0
+LIBS	+= uuid-1.0.0/.libs/libuuid.a
 LANGUAGE	= C++
