@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/smartptr.hpp,v 1.1.1.1 2004/05/04 22:47:07 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/smartptr.hpp,v 1.2 2004/05/04 22:48:44 nolan Exp $
  */
 #ifndef SMARTPTR_HPP
 #define SMARTPTR_HPP

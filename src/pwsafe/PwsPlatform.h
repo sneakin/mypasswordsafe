@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwsafe/PwsPlatform.h,v 1.1.1.1 2004/05/04 22:47:07 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwsafe/PwsPlatform.h,v 1.2 2004/05/04 22:48:46 nolan Exp $
  */
 #ifndef PwsPlatform_h
 #define PwsPlatform_h

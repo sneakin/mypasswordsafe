@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/exception.hpp,v 1.1.1.1 2004/05/04 22:47:07 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/exception.hpp,v 1.2 2004/05/04 22:48:44 nolan Exp $
  */
 #ifndef _EXCEPTION_HPP_
 #define _EXCEPTION_HPP_

@@ -6,7 +6,7 @@
 ** init() function in place of a constructor, and a destroy() function in
 ** place of a destructor.
 *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/preferencesdlg.ui.h,v 1.1.1.1 2004/05/04 22:47:07 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/preferencesdlg.ui.h,v 1.2 2004/05/04 22:48:44 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
