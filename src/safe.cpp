@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.3 2004/05/13 23:20:25 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.4 2004/06/12 06:14:08 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -270,6 +270,9 @@ Safe::Error Safe::load(const char *path, const char *type, const EncryptedString
 	setPath(path);
 	if(type != NULL)
 	  setType(type);
+	else
+	  setType(serializer->description());
+
 	setPassPhrase(passphrase);
 	setChanged(false);
 	break;
