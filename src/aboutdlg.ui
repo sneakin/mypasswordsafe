@@ -78,7 +78,7 @@
 &lt;h1&gt;MyPasswordSafe&lt;/h1&gt;
 Version: {VERSION}&lt;br/&gt;
 &lt;br/&gt;
-Copyright &amp;copy; 2004 &lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade; Solutions&lt;br/&gt;
+Copyright &amp;copy; 2004 &lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade;&lt;br/&gt;
 &lt;br/&gt;
 &lt;u&gt;&lt;font color="#0000ff"&gt;http://www.semanticgap.com/&lt;/font&gt;&lt;/u&gt;&lt;br/&gt;
 &lt;br/&gt;
@@ -88,6 +88,44 @@ Compiled by&lt;br/&gt;
                         </property>
                     </widget>
                 </hbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>License</string>
+                </attribute>
+                <widget class="QTextBrowser">
+                    <property name="name">
+                        <cstring>licenseText</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>0</x>
+                            <y>0</y>
+                            <width>360</width>
+                            <height>270</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>Copyright &amp;copy; 2004, &lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade;&lt;br&gt;
+All rights reserved.&lt;br&gt;
+
+&lt;p&gt;&lt;b&gt;Semantic Gap&lt;/b&gt; is a trademark of Nolan Eakins.&lt;/p&gt;
+
+&lt;p&gt;Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:&lt;/p&gt;
+&lt;p&gt;
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.&lt;/p&gt;
+&lt;p&gt;Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.&lt;/p&gt;
+&lt;p&gt;Neither the name of &lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade; Solutions nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.&lt;/p&gt;
+
+&lt;p&gt;THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+&lt;/p&gt;
+
+--</string>
+                    </property>
+                </widget>
             </widget>
             <widget class="QWidget">
                 <property name="name">
@@ -118,48 +156,14 @@ Thanks go out to:
 &lt;li&gt;Emmanuel Adeline &amp;lt;&lt;font color="#0000ff"&gt;ead+myps@free.fr&lt;/font&gt;&amp;gt; for translating the manual and UI into French.&lt;/li&gt;
 &lt;li&gt;The Password Safe &amp;lt;&lt;font color="#0000ff"&gt;http://passwordsafe.sourceforge.net/&lt;/font&gt;&amp;gt; team for providing a program that I needed to port to Linux, and the loading and saving code that this program uses.&lt;/li&gt;
 &lt;li&gt;The KDE project &amp;lt;&lt;font color="#0000ff"&gt;http://www.kde.org/&lt;/font&gt;&amp;gt; for producing some high-quality ikons that MyPasswordSafe uses.&lt;/li&gt;
+&lt;li&gt;Thomas Klausner &amp;lt;&lt;font color="#0000ff"&gt;tk@giga.or.at&lt;/font&gt;&amp;gt; for sending patches to fix endian issues on NetBSD, and some Makefile suggestions.&lt;/li&gt;
+&lt;li&gt;Shawn Holwegner &amp;lt;&lt;font color="#0000ff"&gt;shawn@holwegner.com&lt;/font&gt;&amp;gt; for sending a patch to fix endian issues and releasing MyPasswordSafe on MacOS X.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;br/&gt;
 &lt;br/&gt;
 &lt;hr/&gt;
 &lt;/body&gt;
 &lt;/html&gt;</string>
-                    </property>
-                </widget>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>License</string>
-                </attribute>
-                <widget class="QTextBrowser">
-                    <property name="name">
-                        <cstring>licenseText</cstring>
-                    </property>
-                    <property name="geometry">
-                        <rect>
-                            <x>0</x>
-                            <y>0</y>
-                            <width>360</width>
-                            <height>270</height>
-                        </rect>
-                    </property>
-                    <property name="text">
-                        <string>Copyright (c) 2004, &lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade; Solutions&lt;br&gt;
-All rights reserved.&lt;br&gt;
-
-&lt;p&gt;Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:&lt;/p&gt;
-&lt;p&gt;
-Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.&lt;/p&gt;
-&lt;p&gt;Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.&lt;/p&gt;
-&lt;p&gt;Neither the name of &lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade; Solutions nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.&lt;/p&gt;
-
-&lt;p&gt;THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-&lt;/p&gt;
-
---</string>
                     </property>
                 </widget>
             </widget>
@@ -198,6 +202,9 @@ Redistributions of source code must retain the above copyright notice, this list
                     </property>
                     <property name="default">
                         <bool>true</bool>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>exit.png</iconset>
                     </property>
                 </widget>
             </hbox>

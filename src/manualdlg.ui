@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>ManualDlg</class>
 <widget class="QDialog">
     <property name="name">
@@ -49,7 +49,7 @@
 	&lt;div class="title"&gt;&lt;center&gt;
 		&lt;h1&gt;&lt;a name="top"&gt;MyPasswordSafe&lt;/a&gt;&lt;/h1&gt;
 		&amp;copy; 2004
-		Semantic Gap Solutions&lt;br/&gt;
+		&lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade;&lt;br/&gt;
 		&lt;i&gt;http://www.semanticgap.com/&lt;/i&gt;
 	&lt;/center&gt;&lt;/div&gt;
 	&lt;div class="contents"&gt;
@@ -93,15 +93,16 @@
 	&lt;/p&gt;
 	&lt;a href="#top"&gt;Back to top&lt;/a&gt;
 	&lt;h1&gt;&lt;a name="license"&gt;License&lt;/a&gt;&lt;/h1&gt;
-		Copyright &amp;copy; 2004, Semantic Gap Solutions&lt;br/&gt;
+		Copyright &amp;copy; 2004, &lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade;&lt;br/&gt;
 		All rights reserved.
 
+		&lt;p&gt;&lt;b&gt;Semantic Gap&lt;/b&gt; is a trademark of Nolan Eakins.&lt;/p&gt;
 		&lt;p&gt;
 		Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 		&lt;ul&gt;
 		&lt;li&gt;Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.&lt;/li&gt;
 		&lt;li&gt;Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.&lt;/li&gt;
-		&lt;li&gt;Neither the name of Semantic Gap Solutions nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.&lt;/li&gt;
+		&lt;li&gt;Neither the name of &lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade; nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.&lt;/li&gt;
 		&lt;/ul&gt;
 		&lt;/p&gt;
 		&lt;p&gt;
@@ -266,12 +267,12 @@ make&lt;/pre&gt;
 		could you compile and package it for me? ]&lt;/p&gt;
 	&lt;a href="#top"&gt;Back to top&lt;/a&gt;
 	&lt;h1&gt;&lt;a name="contact"&gt;Contact&lt;/a&gt;&lt;/h1&gt;
-	Semantic Gap Solutions can be contacted using the following:
+	&lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade; can be contacted using the following:
 	&lt;ul&gt;
 		&lt;li&gt;Web: http://www.semanticgap.com/&lt;/li&gt;
 		&lt;li&gt;Email: &lt;a href="mailto:support@semanticgap.com"&gt;support@semanticgap.com&lt;/a&gt;&lt;/li&gt;
 		&lt;li&gt;Mail:&lt;br/&gt;
-		Semantic Gap Solutions&lt;br/&gt;
+		&lt;b&gt;Semantic Gap&lt;/b&gt;&amp;trade;&lt;br/&gt;
 		527 Park Dr.&lt;br/&gt;
 		Greenwood, IN 46143
 		&lt;/li&gt;
@@ -284,8 +285,7 @@ make&lt;/pre&gt;
 	&lt;br/&gt;
 	And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
   &lt;/body&gt;
-&lt;/html&gt;
-</string>
+&lt;/html&gt;</string>
             </property>
         </widget>
         <widget class="QLayoutWidget">
@@ -322,6 +322,9 @@ make&lt;/pre&gt;
                     </property>
                     <property name="default">
                         <bool>true</bool>
+                    </property>
+                    <property name="iconSet">
+                        <iconset>exit.png</iconset>
                     </property>
                 </widget>
             </hbox>
