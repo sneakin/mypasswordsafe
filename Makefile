@@ -1,5 +1,5 @@
 # MyPasswordSafe Makefile
-# $Header: /home/cvsroot/MyPasswordSafe/Makefile,v 1.4 2004/06/10 11:45:34 nolan Exp $
+# $Header: /home/cvsroot/MyPasswordSafe/Makefile,v 1.5 2004/06/10 11:46:38 nolan Exp $
 
 # This is the only configuration setting. It specifies where the files will
 # be copied when "make install" is called, and where MyPS will search for
@@ -9,7 +9,7 @@ PREFIX=/usr/local
 export BOOST_DIR=$(HOME)/src/boost-1.30.2
 QMAKE=qmake
 DATE=$(shell date +%Y%m%d)
-VERSION=0.7
+VERSION=0.6.1
 ifndef USER
 	USER=$(USER)
 endif
