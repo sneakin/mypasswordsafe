@@ -57,7 +57,6 @@ IMAGES	= images/searchfind \
 	images/about_banner.png \
 	images/edit.png \
 	images/editcut.png \
-	images/encrypted.png \
 	images/exit.png \
 	images/filenew.png \
 	images/filenew2.png \
@@ -65,8 +64,6 @@ IMAGES	= images/searchfind \
 	images/filesave.png \
 	images/filesaveas.png \
 	images/info.png \
-	images/configure.png \
-	images/contexthelp.png \
 	images/Padlock.xpm \
 	images/fetch_user.png \
 	images/help.png \
@@ -83,11 +80,11 @@ IMAGES	= images/searchfind \
 	images/folder_blue_open.png \
 	images/keys.png \
 	images/button_ok.png \
+	images/configure.png \
+	images/contexthelp.png \
+	images/lock.png \
+	images/fileclose.png \
 	images/button_cancel.png
-
-
-
-
 
 DEBUG = $$(DEBUG)
 
