@@ -84,6 +84,14 @@ IMAGES	= images/searchfind \
 
 
 
+
+
+
+
+
+
+
+
 DEBUG = $$(DEBUG)
 
 isEmpty(DEBUG) {
