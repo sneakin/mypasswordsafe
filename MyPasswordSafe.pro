@@ -1,7 +1,8 @@
 TEMPLATE	= app
 LANGUAGE	= C++
+DEFINES += DEBUG
 
-CONFIG	+= qt warn_on release
+CONFIG	+= qt warn_on debug
 
 LIBS	+= uuid-1.0.0/.libs/libuuid.a
 INCLUDEPATH	+= uuid-1.0.0
@@ -22,7 +23,8 @@ HEADERS	+= src/safe.hpp \
 	src/smartptr.hpp \
 	src/safelistview.hpp \
 	src/uuid.hpp \
-        src/xmlable.hpp
+	src/xmlserializer.hpp \
+	src/plaintextlizer.hpp
 SOURCES	+= src/main.cpp \
 	src/securedstring.cpp \
 	src/safe.cpp \
@@ -36,7 +38,9 @@ SOURCES	+= src/main.cpp \
 	src/startupdlg.cpp \
 	src/smartptr.cpp \
 	src/safelistview.cpp \
-	src/uuid.cpp
+	src/uuid.cpp \
+	src/xmlserializer.cpp \
+	src/plaintextlizer.cpp
 FORMS	= src/mypasswordsafe.ui \
 	src/pwordeditdlg.ui \
 	src/passphrasedlg.ui \
@@ -76,6 +80,18 @@ IMAGES	= images/searchfind \
 	images/folder_new.png \
 	images/folder_blue.png \
 	images/folder_blue_open.png
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
