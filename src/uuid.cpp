@@ -32,10 +32,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include <string>
+#include <qstring.h>
 #include "uuid.hpp"
-
-using std::string;
 
 UUID::UUID(bool make_uuid)
   : m_uuid(NULL)
@@ -118,7 +116,7 @@ void UUID::destroy()
   }
 }
 
-string UUID::toString() const
+QString UUID::toString() const
 {
   char *buffer = NULL;
 
@@ -128,7 +126,7 @@ string UUID::toString() const
     throw errorToException(error);
   }
 
-  string ret(buffer);
+  QString ret(buffer);
   delete buffer;
   return ret;
 }
@@ -141,9 +139,9 @@ void UUID::toArray(unsigned char array[16]) const
     throw errorToException(error);
 }
 
-void UUID::fromString(const string &str)
+void UUID::fromString(const QString &str)
 {
-  uuid_rc_t error = uuid_import(m_uuid, UUID_FMT_STR, (const void *)str.c_str(), str.length());
+  uuid_rc_t error = uuid_import(m_uuid, UUID_FMT_STR, (const void *)str.ascii(), str.length());
   if(error != UUID_RC_OK)
     throw errorToException(error);
 }

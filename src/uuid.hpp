@@ -37,7 +37,7 @@
 
 #include <uuid.h>
 
-using std::string;
+class QString;
 
 /** Represents a Universal Unique ID.
  */
@@ -87,18 +87,18 @@ public:
   void copy(const UUID &uuid);
 
   /** Exports the UUID as a string.
-   * @return a std::string representing the UUID
+   * @return a QString representing the UUID
    */
-  string toString() const;
+  QString toString() const;
   /** Exports the UUID as an array.
    * @param array Array of bytes to store the UUID in.
    */
   void toArray(unsigned char array[16]) const;
 
   /** Loads a UUID from a string.
-   * @param str std::string that is storing a string representation of a UUID.
+   * @param str QString that is storing a string representation of a UUID.
    */
-  void fromString(const string &str);
+  void fromString(const QString &str);
   /** Loads a UUID from an array of bytes.
    * @param array Array that is storing the binary reperesentation of a UUID.
    */

@@ -259,6 +259,6 @@ QDomElement XmlSerializer::fieldToXml(QDomDocument &doc,
 				  const UUID &uuid)
 {
   QDomElement xml = doc.createElement(field);
-  xml.appendChild(doc.createTextNode(uuid.toString().c_str()));
+  xml.appendChild(doc.createTextNode(uuid.toString()));
   return xml;
 }
