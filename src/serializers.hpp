@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.4 2004/06/19 21:48:50 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.5 2004/06/20 21:25:22 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -110,7 +110,7 @@ public:
 
   // field types, per formatV2.txt
   enum BlockType {
-    NAME=0, UUID=0x1, GROUP = 0x2,
+    NAME=0, UUID_BLOCK=0x1, GROUP = 0x2,
     TITLE = 0x3, USER = 0x4, NOTES = 0x5,
     PASSWORD = 0x6, CTIME = 0x7, MTIME = 0x8,
     ATIME = 0x9, LTIME = 0xa, POLICY = 0xb,

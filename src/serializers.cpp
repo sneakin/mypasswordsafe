@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.5 2004/06/19 21:48:50 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.6 2004/06/20 21:25:22 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -52,6 +52,7 @@
 #include "smartptr.hpp"
 #include "pwsafe/BlowFish.h"
 #include "pwsafe/Util.h"
+#include "uuid.hpp"
 
 using namespace std;
 //using boost::shared_ptr;
@@ -841,8 +842,10 @@ int BlowfishLizer2::readEntry(FILE *in, SafeItem &item,
     case NOTES:
       item.setNotes(data.get());
       break;
-    case UUID: {
-      const unsigned char *uuid = (const unsigned char *)data.get();
+    case UUID_BLOCK: {
+      const unsigned char *uuid_array = (const unsigned char *)data.get();
+      UUID uuid(uuid_array);
+      DBGOUT("UUID: " << uuid.toString());
       item.setUUID(uuid);
     } break;
     case GROUP: {
@@ -869,13 +872,24 @@ int BlowfishLizer2::readEntry(FILE *in, SafeItem &item,
       DBGOUT("Policy size: " << data.length());
       item.setPolicy((const unsigned char *)data.get());
       break;
+    case END:
+      break;
     default:
-      DBGOUT("unhandled block");
+      DBGOUT("unhandled block: " << type);
       break;
     }
   } while(num_read > 0 && type != END);
 
+  // no item should have a Nil UUID
+  const UUID &uuid(item.getUUID());
+  if(uuid.isNil()) {
+    DBGOUT("UUID isNil");
+    item.setUUID(UUID(true));
+  }
+  DBGOUT("Item UUID: " << item.getUUID().toString());
+
   DBGOUT("END: " << num_read);
+
   return total_num_read;
 }
 
@@ -886,8 +900,11 @@ int BlowfishLizer2::writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
   SecuredString data;
   string temp;
 
-  data.set((const char *)item.getUUID(), 16);
-  num_written += writeCBC(out, fish, data, UUID, ipthing);
+  const UUID &uuid(item.getUUID());
+  unsigned char uuid_array[16];
+  uuid.toArray(uuid_array);
+  data.set((const char *)uuid_array, 16);
+  num_written += writeCBC(out, fish, data, UUID_BLOCK, ipthing);
   
   data.set(item.getName());
   num_written += writeCBC(out, fish, data, TITLE, ipthing);

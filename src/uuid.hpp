@@ -59,6 +59,7 @@ public:
    * the UUID is set to the Nil UUID.
    */
   UUID(bool make_uuid = true);
+  UUID(const unsigned char uuid[16]);
   UUID(const UUID &uuid);
   ~UUID();
 
@@ -72,9 +73,14 @@ public:
    */
   bool isEqual(const UUID &uuid) const;
 
+  /** Destroys the UUID and makes the UUID Nil.
+   */
+  void create();
+
   /** Generates a new UUID.
    */
   void make();
+
   /** Copies a UUID into this.
    * @param uuid The UUID to copy.
    */
@@ -96,7 +102,7 @@ public:
   /** Loads a UUID from an array of bytes.
    * @param array Array that is storing the binary reperesentation of a UUID.
    */
-  void fromArray(unsigned char array[16]);
+  void fromArray(const unsigned char array[16]);
 
   /** Equivalent to isEqual.
    */

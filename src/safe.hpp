@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.5 2004/06/15 05:18:15 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.6 2004/06/20 21:25:22 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -40,6 +40,7 @@
 #include <map>
 #include "securedstring.hpp"
 #include "encryptedstring.hpp"
+#include "uuid.hpp"
 
 using std::string;
 using std::map;
@@ -62,7 +63,7 @@ public:
 
   void clear();
 
-  inline const unsigned char *getUUID() const { return m_uuid; }
+  inline const UUID &getUUID() const { return m_uuid; }
   inline const unsigned char *getPolicy() const { return m_policy; }
 
   inline time_t getCreationTime() const { return m_creation_time; }
@@ -77,6 +78,7 @@ public:
   inline const char *getGroup() const { return m_group.c_str(); }
 
   void setUUID(const unsigned char uuid[16]);
+  void setUUID(const UUID &uuid);
   void setPolicy(const unsigned char policy[4]);
 
   void setCreationTime(time_t t);
@@ -97,7 +99,8 @@ public:
 private:
   void init();
 
-  unsigned char m_uuid[16], m_policy[4];
+  UUID m_uuid;
+  unsigned char m_policy[4];
   time_t m_creation_time, m_mod_time, m_access_time, m_life_time;
   string m_name, m_user, m_notes, m_group;
   EncryptedString m_password;

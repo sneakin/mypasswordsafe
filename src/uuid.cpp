@@ -40,22 +40,23 @@ using std::string;
 UUID::UUID(bool make_uuid)
   : m_uuid(NULL)
 {
-  uuid_rc_t error = uuid_create(&m_uuid);
-  if(error != UUID_RC_OK)
-    throw errorToException(error);
-
+  create();
   if(make_uuid) {
     make();
   }
 }
 
+UUID::UUID(const unsigned char uuid[16])
+  : m_uuid(NULL)
+{
+  create();
+  fromArray(uuid);
+}
+
 UUID::UUID(const UUID &uuid)
   : m_uuid(NULL)
 {
-  uuid_rc_t error = uuid_create(&m_uuid);
-  if(error != UUID_RC_OK)
-    throw errorToException(error);
-
+  create();
   copy(uuid);
 }
 
@@ -82,6 +83,15 @@ bool UUID::isEqual(const UUID &uuid) const
     throw errorToException(error);
 
   return (result == 0 ? true : false);
+}
+
+void UUID::create()
+{
+  destroy();
+
+  uuid_rc_t error = uuid_create(&m_uuid);
+  if(error != UUID_RC_OK)
+    throw errorToException(error);
 }
 
 void UUID::make()
@@ -138,7 +148,7 @@ void UUID::fromString(const string &str)
     throw errorToException(error);
 }
 
-void UUID::fromArray(unsigned char array[16])
+void UUID::fromArray(const unsigned char array[16])
 {
   uuid_rc_t error = uuid_import(m_uuid, UUID_FMT_BIN, (const void *)array, 16);
   if(error != UUID_RC_OK)

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.7 2004/06/12 07:30:40 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.8 2004/06/20 21:25:22 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -83,7 +83,7 @@ void SafeItem::clear()
   m_notes.clear();
   m_group.clear();
   m_password.clear();
-  memset(m_uuid, 0, 16);
+  m_uuid.create();
   memset(m_policy, 0, 4);
   m_creation_time = m_mod_time = m_access_time = time(NULL);
   m_life_time = 0;
@@ -92,7 +92,12 @@ void SafeItem::clear()
 
 void SafeItem::setUUID(const unsigned char uuid[16])
 {
-  memcpy(m_uuid, uuid, 16);
+  m_uuid.fromArray(uuid);
+}
+
+void SafeItem::setUUID(const UUID &uuid)
+{
+  m_uuid.copy(uuid);
 }
 
 void SafeItem::setPolicy(const unsigned char policy[4])
@@ -169,7 +174,7 @@ void SafeItem::updateAccessTime()
 
 void SafeItem::init()
 {
-  memset(m_uuid, 0, 16);
+  m_uuid.make();
   memset(m_policy, 0, 4);
   m_creation_time = m_mod_time = m_access_time = time(NULL);
   m_life_time = 0;
