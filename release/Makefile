@@ -1,7 +1,11 @@
 DATE=$(shell date +%Y%m%d)
 BRANCH=
 
-all: MyPasswordSafe-$(DATE).src.tgz MyPasswordSafe-$(DATE).bin.tgz
+all: bin src
+
+src: MyPasswordSafe-$(DATE).src.tgz
+
+bin: MyPasswordSafe-$(DATE).bin.tgz
 
 MyPasswordSafe:
 	#cvs co -r $(BRANCH) $@
