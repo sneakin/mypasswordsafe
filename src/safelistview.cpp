@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.5 2004/06/19 21:48:50 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.6 2004/06/24 04:16:28 nolan Exp $
  */
 #include <qpixmap.h>
 #include <assert.h>
@@ -257,13 +257,13 @@ SafeListView::SafeListView(QWidget *parent, const char *name, Safe *safe)
   viewport()->setAcceptDrops(true);
   setRootIsDecorated(true);
 
-  addColumn(tr("Name"));
-  addColumn(tr("User"));
-  addColumn(tr("Notes"));
-  addColumn(tr("Last Modified"));
-  addColumn(tr("Accessed on"));
-  addColumn(tr("Created on"));
-  addColumn(tr("Lifetime"));
+  addColumn(tr("Name"), 30);
+  addColumn(tr("User"), 30);
+  addColumn(tr("Notes"), 30);
+  addColumn(tr("Last Modified"), 30);
+  addColumn(tr("Accessed on"), 30);
+  addColumn(tr("Created on"), 30);
+  addColumn(tr("Lifetime"), 30);
 #ifdef DEBUG
   addColumn(tr("Group"));
 #endif
@@ -459,9 +459,6 @@ QString SafeListView::thisGroup(const QString &group)
     ret += group[i];
   }
   return ret;
-
-  //.section(SafeItem::GroupSeperator,
-  //				    -1);
 }
 
 QString SafeListView::parentGroup(const QString &group)
@@ -482,6 +479,4 @@ QString SafeListView::parentGroup(const QString &group)
   QString ret(group);
   ret.truncate(i);
   return ret;
-  //.section(SafeItem::GroupSeperator,
-  //				      0, -2)
 }

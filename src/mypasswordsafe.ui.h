@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.9 2004/06/23 02:24:20 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.10 2004/06/24 04:16:28 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -65,50 +65,9 @@ void MyPasswordSafe::init()
   m_shown = false;
   savingEnabled(false);
 
-  for(int i = 0; i < 3; i++)
-    pwordListView->setColumnWidthMode(i, QListView::Manual);
-    
-  m_config.setPath("SemanticGap.com", "MyPasswordSafe");
-  m_config.beginGroup("/MyPasswordSafe");
-  m_gen_pword_length = m_config.readNumEntry("/prefs/password_length", 8);
-  
-  m_default_safe = m_config.readEntry("/prefs/default_safe", "");
-  if(m_default_safe.isEmpty())
-    fileOpenDefaultAction->setEnabled(false);
-  
-  m_def_user = m_config.readEntry("/prefs/default_username", "");
-  setClearClipboardOnExit(m_config.readBoolEntry("/prefs/clear_clipboard", true));
-  setLockOnMinimize(m_config.readBoolEntry("/prefs/lock_on_minimize", true));
-  
-  m_max_tries = m_config.readNumEntry("/prefs/max_tries", 3);
-  if(m_max_tries > 10)
-    m_max_tries = 10;
-  
-  int w, h;
-  w = m_config.readNumEntry("/MainWindow/width", 400);
-  h = m_config.readNumEntry("/MainWindow/height", 320);
-  resize(QSize(w, h));
-    
-  w = m_config.readNumEntry("/MainWindow/left", -1);
-  h = m_config.readNumEntry("/MainWindow/top", -1);
-  if(w != -1 && h != -1) {
-    move(w, h);
-  }
-   
-  w = m_config.readNumEntry("/MainWindow/name_width", 0);
-  if(w)
-    pwordListView->setColumnWidth(0, w);
-  w = m_config.readNumEntry("/MainWindow/user_width", 0);
-  if(w)
-    pwordListView->setColumnWidth(1, w);
-  w = m_config.readNumEntry("/MainWindow/notes_width", 0);
-  if(w)
-    pwordListView->setColumnWidth(2, w);
-  
-  m_config.endGroup();
-  
-  m_safe = NULL;
-  // m_safe gets setup by the Startup dialog
+  readConfig();
+
+  m_safe = NULL; // m_safe gets setup by the Startup dialog
 }
 
 void MyPasswordSafe::destroy()
@@ -116,29 +75,9 @@ void MyPasswordSafe::destroy()
   // ask to save file if needed
   if(clearClipboardOnExit())
 	  copyToClipboard("");
-  // save config settings   
-  m_config.beginGroup("/MyPasswordSafe");
-  
-  m_config.writeEntry("/prefs/password_length", (int)m_gen_pword_length);
-  m_config.writeEntry("/prefs/default_safe", m_default_safe);
-  m_config.writeEntry("/prefs/default_username", m_def_user);
-  m_config.writeEntry("/prefs/clear_clipboard", clearClipboardOnExit());
-  m_config.writeEntry("/prefs/lock_on_minimize", lockOnMinimize());
-  m_config.writeEntry("/prefs/max_tries", m_max_tries);
-  
-  QSize sz = size();
-  m_config.writeEntry("/MainWindow/width", sz.width());
-  m_config.writeEntry("/MainWindow/height", sz.height());
 
-  QPoint position = pos();
-  m_config.writeEntry("/MainWindow/left", position.x());
-  m_config.writeEntry("/MainWindow/top", position.y());
- 
-  m_config.writeEntry("/MainWindow/name_width", pwordListView->columnWidth(0));
-  m_config.writeEntry("/MainWindow/user_width", pwordListView->columnWidth(1));
-  m_config.writeEntry("/MainWindow/notes_width", pwordListView->columnWidth(2));
-  m_config.endGroup();
-  
+  writeConfig();
+
   if(m_safe)
     delete m_safe;
 }
@@ -193,9 +132,7 @@ void MyPasswordSafe::fileNew()
 
 void MyPasswordSafe::fileExit()
 {
-  //if(closeSafe()) {
   close();
-  //}
 }
 
 
@@ -307,32 +244,25 @@ bool MyPasswordSafe::open( const char *filename, const EncryptedString &passkey,
     if(ret == Safe::Success) {
       DBGOUT(filename << " has " << s->size() << " entries");
 
-      //    if(s != NULL) {
       if(m_safe != NULL)
 	delete m_safe;
       m_safe = s;
       pwordListView->setSafe(m_safe);
-      //m_safe->setListBox(pwordListView);
       setCaption(tr("MyPasswordSafe: ") + filename);
       savingEnabled(false);
       fileSaveAsAction->setEnabled(true);
       return true;
     }
     else {
-      DBGOUT("Error = " << Safe::errorToString(ret));
-      statusBar()->message(tr("Error opening file"));
+      statusBar()->message(Safe::errorToString(ret));
       delete s;
     }
   }
   else if(ret == Safe::Failed) {
-    // FIXME: could we distinguish what the error was?
     statusBar()->message(tr("Wrong pass phrase"));
   }
-  else if(ret == Safe::BadFormat) {
-    statusBar()->message(tr("Wrong filter choosen"));
-  }
   else {
-    statusBar()->message(tr("Error opening file"));
+    statusBar()->message(Safe::errorToString(ret));
   }
 
   return false;
@@ -342,20 +272,20 @@ bool MyPasswordSafe::open( const char *filename, const EncryptedString &passkey,
 bool MyPasswordSafe::save()
 {
   if(m_safe != NULL) {
-	QString path(m_safe->getPath());
-	if(path.isEmpty())
-	  return saveAs();
-	else {
-	  Safe::Error error = m_safe->save((const char *)m_def_user);
-	  if(error == Safe::Success) {
-	    savingEnabled(false);
-	    statusBar()->message(tr("Safe saved"));
-	    return true;
-	  }
-	  else {
-	    statusBar()->message(Safe::errorToString(error));
-	  }
-	}
+    QString path(m_safe->getPath());
+    if(path.isEmpty())
+      return saveAs();
+    else {
+      Safe::Error error = m_safe->save((const char *)m_def_user);
+      if(error == Safe::Success) {
+	savingEnabled(false);
+	statusBar()->message(tr("Safe saved"));
+	return true;
+      }
+      else {
+	statusBar()->message(Safe::errorToString(error));
+      }
+    }
   }
   return false;
 }
@@ -476,7 +406,7 @@ void MyPasswordSafe::pwordEdit()
     dlg.setCreatedOn(item->getCreationTime());
     dlg.setModifiedOn(item->getModificationTime());
     dlg.setLifetime(item->getLifetime());
-    dlg.setUUID(item->getUUID()); // FIXME: decouple
+    dlg.setUUID(item->getUUID());
 
     if(dlg.exec() == QDialog::Accepted) {
       item->setName(dlg.getItemName());
@@ -563,7 +493,7 @@ void MyPasswordSafe::helpManual()
 }
 
 
-Safe * MyPasswordSafe::getSafe()
+Safe *MyPasswordSafe::getSafe()
 {
   return m_safe;
 }
@@ -579,7 +509,6 @@ void MyPasswordSafe::savingEnabled( bool value)
 {
   if(value) {
     fileSaveAction->setEnabled(true);
-    //fileSaveAsAction->setEnabled(true);
   }
   else {
     fileSaveAction->setEnabled(false);
@@ -623,7 +552,6 @@ void MyPasswordSafe::createNewSafe(const EncryptedString &passphrase)
   if(closeSafe()) {
     m_safe = new Safe();
     m_safe->setPassPhrase(passphrase);
-    //m_safe->setListBox(pwordListView);
     pwordListView->setSafe(m_safe);
     setCaption(tr("MyPasswordSafe: <untitled>"));
     savingEnabled(false);
@@ -761,4 +689,90 @@ void MyPasswordSafe::showEvent(QShowEvent *)
   
   // prevent MyPS from asking for the pass-phrase when it first starts
   m_shown = true;
+}
+
+static const char *MyPS_Column_Fields[] = {
+  "/MainWindow/name_width",
+  "/MainWindow/user_width",
+  "/MainWindow/notes_width",
+  "/MainWindow/modtime_width",
+  "/MainWindow/accessed_width",
+  "/MainWindow/created_width",
+  "/MainWindow/lifetime_width",
+  NULL
+};
+
+void MyPasswordSafe::readConfig()
+{
+  m_config.setPath("SemanticGap.com", "MyPasswordSafe");
+  m_config.beginGroup("/MyPasswordSafe");
+  m_gen_pword_length = m_config.readNumEntry("/prefs/password_length", 8);
+  
+  m_default_safe = m_config.readEntry("/prefs/default_safe", "");
+  if(m_default_safe.isEmpty())
+    fileOpenDefaultAction->setEnabled(false);
+  
+  m_def_user = m_config.readEntry("/prefs/default_username", "");
+  setClearClipboardOnExit(m_config.readBoolEntry("/prefs/clear_clipboard", true));
+  setLockOnMinimize(m_config.readBoolEntry("/prefs/lock_on_minimize", true));
+  
+  m_max_tries = m_config.readNumEntry("/prefs/max_tries", 3);
+  if(m_max_tries > 10)
+    m_max_tries = 10;
+  
+  int w, h;
+  w = m_config.readNumEntry("/MainWindow/width", 400);
+  h = m_config.readNumEntry("/MainWindow/height", 320);
+  resize(QSize(w, h));
+    
+  w = m_config.readNumEntry("/MainWindow/left", -1);
+  h = m_config.readNumEntry("/MainWindow/top", -1);
+  if(w != -1 && h != -1) {
+    move(w, h);
+  }
+
+  for(int i = 0; MyPS_Column_Fields[i] != NULL; i++) {
+    readColumnWidth(i, MyPS_Column_Fields[i]);
+  }
+  
+  m_config.endGroup();  
+}
+
+void MyPasswordSafe::readColumnWidth(int col, const char *name)
+{
+  int w = m_config.readNumEntry(name, 30);
+  if(w)
+    pwordListView->setColumnWidth(col, w);
+}
+
+void MyPasswordSafe::writeColumnWidth(int col, const char *name)
+{
+  m_config.writeEntry(name, pwordListView->columnWidth(col));
+}
+
+void MyPasswordSafe::writeConfig()
+{
+  // save config settings   
+  m_config.beginGroup("/MyPasswordSafe");
+  
+  m_config.writeEntry("/prefs/password_length", (int)m_gen_pword_length);
+  m_config.writeEntry("/prefs/default_safe", m_default_safe);
+  m_config.writeEntry("/prefs/default_username", m_def_user);
+  m_config.writeEntry("/prefs/clear_clipboard", clearClipboardOnExit());
+  m_config.writeEntry("/prefs/lock_on_minimize", lockOnMinimize());
+  m_config.writeEntry("/prefs/max_tries", m_max_tries);
+  
+  QSize sz = size();
+  m_config.writeEntry("/MainWindow/width", sz.width());
+  m_config.writeEntry("/MainWindow/height", sz.height());
+
+  QPoint position = pos();
+  m_config.writeEntry("/MainWindow/left", position.x());
+  m_config.writeEntry("/MainWindow/top", position.y());
+
+  for(int i = 0; MyPS_Column_Fields[i] != NULL; i++) {
+    writeColumnWidth(i, MyPS_Column_Fields[i]);
+  }
+
+  m_config.endGroup();
 }

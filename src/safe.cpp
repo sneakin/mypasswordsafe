@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.10 2004/06/23 02:24:20 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.11 2004/06/24 04:16:28 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -454,15 +454,10 @@ bool Safe::delItem(SafeItem *item)
 
 void Safe::empty()
 {
-/*
-  if(!m_items.empty())
-    for_each(m_items.begin(), m_items.end(), SafeCleaner());
-*/
   for(ItemList::iterator i = m_items.begin();
     i != m_items.end();
     i++) {
     if(*i != NULL) {
-      // FIXME: i->first is CONST!!
       delete(*i);
     }
   }
@@ -473,7 +468,7 @@ const char *Safe::errorToString(Safe::Error e)
 {
   static const char *errors[] = { QT_TR_NOOP("Failed to open safe"),
 				  QT_TR_NOOP("Safe successfully opened"),
-				  QT_TR_NOOP("Wrong or unsupported filter used"),
+				  QT_TR_NOOP("Wrong filter used or the file is bad"),
 				  QT_TR_NOOP("Trouble reading the file"),
 				  QT_TR_NOOP("Unable to generate a UUID")
   };
