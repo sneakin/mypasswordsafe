@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.6 2004/06/24 04:16:28 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.7 2004/06/27 10:09:36 nolan Exp $
  */
 #include <qpixmap.h>
 #include <assert.h>
@@ -87,22 +87,22 @@ QString SafeListViewItem::text(int col) const
 
 void SafeListViewItem::setName(const QString &name)
 {
-  m_item->setName((const char *)name.utf8());
+  m_item->setName(name);
 }
 
 QString SafeListViewItem::getName() const
 {
-  return QString::fromUtf8(m_item->getName());
+  return m_item->getName();
 }
 
 void SafeListViewItem::setUser(const QString &user)
 {
-  m_item->setUser((const char *)user.utf8());
+  m_item->setUser(user);
 }
 
 QString SafeListViewItem::getUser() const
 {
-  return QString::fromUtf8(m_item->getUser());
+  return m_item->getUser();
 }
 
 void SafeListViewItem::setPassword(const EncryptedString &pword)
@@ -117,24 +117,24 @@ const EncryptedString &SafeListViewItem::getPassword() const
 
 void SafeListViewItem::setNotes(const QString &notes)
 {
-  m_item->setNotes((const char *)notes.utf8());
+  m_item->setNotes(notes);
 }
 
 QString SafeListViewItem::getNotes() const
 {
-  return QString::fromUtf8(m_item->getNotes());
+  return m_item->getNotes();
 }
 
 
 void SafeListViewItem::setGroup(const QString &group)
 {
-  m_item->setGroup((const char *)group.utf8());
+  m_item->setGroup(group);
 }
 
 
 QString SafeListViewItem::getGroup() const
 {
-  return QString::fromUtf8(m_item->getGroup());
+  return m_item->getGroup();
 }
 
 

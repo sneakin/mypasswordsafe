@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.9 2004/06/24 07:46:21 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.10 2004/06/27 10:09:36 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -405,49 +405,36 @@ int BlowfishLizer::readEntry(FILE *in, SafeItem &item,
 Safe::Error BlowfishLizer::load(Safe &safe, const QString &path, const EncryptedString &passphrase, const QString &def_user)
 {
   //That passkey had better be the same one that came from CheckPassword(...)
+  FILE * in = fopen(path, "rb");
 
-#if 0
-  try {
-#endif
-    FILE * in = fopen(path, "rb");
+  if (in == NULL)
+    return Safe::Failed;
 
-    if (in == NULL)
-      return Safe::Failed;
+  unsigned char randstuff[8];
+  unsigned char randhash[20];
+  unsigned char* salt = new unsigned char[SaltLength];
+  unsigned char ipthing[8];
+  readHeader(in, randstuff, randhash, salt, ipthing);
 
-    unsigned char randstuff[8];
-    unsigned char randhash[20];
-    unsigned char* salt = new unsigned char[SaltLength];
-    unsigned char ipthing[8];
-    readHeader(in, randstuff, randhash, salt, ipthing);
+  SafeItem temp;
 
-    SafeItem temp;
+  // NOTE: the passphrase is decrypted here
+  SmartPtr<BlowFish> fish(MakeBlowFish((const unsigned char *)
+				       passphrase.get().get(),
+				       passphrase.length(),
+				       salt, SaltLength));
+  int numread = 0;
+  do {
+    temp.clear();
+    numread = readEntry(in, temp, fish, ipthing, def_user);
+    if(numread > 0)
+      safe.addItem(temp);
+  } while(numread > 0);
 
-    // NOTE: the passphrase is decrypted here
-    SmartPtr<BlowFish> fish(MakeBlowFish((const unsigned char *)
-					 passphrase.get().get(),
-					 passphrase.length(),
-					 salt, SaltLength));
-    int numread = 0;
-    do {
-      temp.clear();
-      numread = readEntry(in, temp, fish, ipthing, def_user);
-      if(numread > 0)
-	safe.addItem(temp);
-    } while(numread > 0);
+  delete [] salt;
+  fclose(in);
 
-    delete [] salt;
-    fclose(in);
-
-    return Safe::Success;
-#if 0
-  }
-  catch(...) {
-    // This is probably due to passphrase not being the same as the one
-    // passed to checkPassword
-    cout << "Exception caught" << endl;
-    return false;
-  }
-#endif
+  return Safe::Success;
 }
 
 Safe::Error BlowfishLizer::save(Safe &safe, const QString &path, const QString &def_user)
@@ -829,7 +816,7 @@ int BlowfishLizer2::readEntry(FILE *in, SafeItem &item,
       item.setUUID(uuid);
     } break;
     case GROUP: {
-      string group(data.get());
+      QString group(data.get());
 
       DBGOUT("Group: " << group << "\t" << parseGroup(group));
       item.setGroup(parseGroup(group));
@@ -885,21 +872,33 @@ int BlowfishLizer2::writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
   uuid.toArray(uuid_array);
   data.set((const char *)uuid_array, 16);
   num_written += writeCBC(out, fish, data, UUID_BLOCK, ipthing);
-  
-  data.set(item.getName().utf8());
-  num_written += writeCBC(out, fish, data, TITLE, ipthing);
-  
-  data.set(item.getUser().utf8());
-  num_written += writeCBC(out, fish, data, USER, ipthing);
 
-  data.set(item.getPassword().get()); // NOTE: decrypted password
-  num_written += writeCBC(out, fish, data, PASSWORD, ipthing);
+  // FIXME: clear data after each write
 
-  data.set(readyGroup(item.getGroup()));
-  num_written += writeCBC(out, fish, data, GROUP, ipthing);
+  if(!item.getName().isEmpty()) {
+    data.set(item.getName().utf8());
+    num_written += writeCBC(out, fish, data, TITLE, ipthing);
+  }
   
-  data.set(item.getNotes().utf8());
-  num_written += writeCBC(out, fish, data, NOTES, ipthing);
+  if(!item.getUser().isEmpty()) {
+    data.set(item.getUser().utf8());
+    num_written += writeCBC(out, fish, data, USER, ipthing);
+  }
+
+  if(item.getPassword().length() > 0) {
+    data.set(item.getPassword().get()); // NOTE: decrypted password
+    num_written += writeCBC(out, fish, data, PASSWORD, ipthing);
+  }
+
+  if(!item.getGroup().isEmpty()) {
+    data.set(readyGroup(item.getGroup()).utf8());
+    num_written += writeCBC(out, fish, data, GROUP, ipthing);
+  }
+
+  if(!item.getNotes().isEmpty()) {
+    data.set(item.getNotes().utf8());
+    num_written += writeCBC(out, fish, data, NOTES, ipthing);
+  }
 
   // CTIME, MTIME, ATIME, LTIME, POLICY
   time_t time = item.getCreationTime();
