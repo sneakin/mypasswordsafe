@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.24 2004/11/01 17:10:40 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.25 2004/11/01 17:34:37 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -549,16 +549,28 @@ bool MyPasswordSafe::browseForSafe( QString &filename, QString &filter, bool sav
   QString all_files(tr("All Files (*)"));
 
   QString types(QString("%1\n%2\n%3").arg(all_safes).arg(Safe::getTypes()).arg(all_files));
-
-  QFileDialog file_dlg(QString::null, types, this, "file",
-		       true);
-  if(saving)
-    file_dlg.setMode(QFileDialog::AnyFile);
-
+  QString f;
   bool ret = false;
+
   do {
-    if(file_dlg.exec() == QDialog::Accepted) {
-      QString f = file_dlg.selectedFile();
+    if(saving) {
+      f = QFileDialog::getSaveFileName(QString::null,
+				       types,
+				       this,
+				       "save file dialog",
+				       tr("Enter a file to save to"),
+				       &filter);
+    }
+    else {
+      f = QFileDialog::getOpenFileName(QString::null,
+				       types,
+				       this,
+				       "open file dialog",
+				       tr("Choose a file to open"),
+				       &filter);
+    }
+  
+    if(!f.isEmpty()) {
       if(saving) {
 	QFileInfo info(f);
 	if(info.exists()) {
@@ -571,9 +583,8 @@ bool MyPasswordSafe::browseForSafe( QString &filename, QString &filter, bool sav
       }
 
       filename = f;
-      QString temp(file_dlg.selectedFilter());
-      if(temp != all_safes && temp != all_files)
-	filter = file_dlg.selectedFilter();
+      if(filter == all_safes)
+	filter = QString::null;
 
       ret = true;
     }
