@@ -767,19 +767,19 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     </message>
     <message>
         <source>Ctrl+A</source>
-        <translation>Ctrl+A</translation>
+        <translation type="obsolete">Ctrl+A</translation>
     </message>
     <message>
         <source>Delete Password</source>
-        <translation>Supprimer Mot de passe</translation>
+        <translation type="obsolete">Supprimer Mot de passe</translation>
     </message>
     <message>
         <source>Ctrl+D</source>
-        <translation>Ctrl+D</translation>
+        <translation type="obsolete">Ctrl+D</translation>
     </message>
     <message>
         <source>Edit Password</source>
-        <translation>Editer Mot de passe</translation>
+        <translation type="obsolete">Editer Mot de passe</translation>
     </message>
     <message>
         <source>Return</source>
@@ -795,7 +795,7 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     </message>
     <message>
         <source>Make Active</source>
-        <translation>Activer</translation>
+        <translation type="obsolete">Activer</translation>
     </message>
     <message>
         <source>Preferences</source>
@@ -811,7 +811,7 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     </message>
     <message>
         <source>Active safe opened</source>
-        <translation>Coffre-fort actif ouvert</translation>
+        <translation type="obsolete">Coffre-fort actif ouvert</translation>
     </message>
     <message>
         <source>MyPasswordSafe: &lt;untitled&gt;</source>
@@ -863,7 +863,7 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     </message>
     <message>
         <source>The safe must be saved before it can be made active.</source>
-        <translation>Le coffre-fort doit être sauvegardé avant d&apos;être activé.</translation>
+        <translation type="obsolete">Le coffre-fort doit être sauvegardé avant d&apos;être activé.</translation>
     </message>
     <message>
         <source>Error opening file</source>
@@ -871,7 +871,7 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     </message>
     <message>
         <source>Wrong pass phrase or unsupported file format</source>
-        <translation>Pass-phrase erronée ou format de fichier non supporté</translation>
+        <translation type="obsolete">Pass-phrase erronée ou format de fichier non supporté</translation>
     </message>
     <message>
         <source>Save safe?</source>
@@ -904,7 +904,7 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     </message>
     <message>
         <source>Sets the currently opened safe as the safe that gets opened when MyPasswordSafe starts.</source>
-        <translation>Le coffre-fort ouvert actuellement deviendra le coffre-fort ouvert par défaut au démarrage de MyPasswordSafe.</translation>
+        <translation type="obsolete">Le coffre-fort ouvert actuellement deviendra le coffre-fort ouvert par défaut au démarrage de MyPasswordSafe.</translation>
     </message>
     <message>
         <source>Shift+F1</source>
@@ -932,7 +932,7 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     </message>
     <message>
         <source>Invalid item selected??</source>
-        <translation>Article invalide sélectionné??</translation>
+        <translation type="obsolete">Article invalide sélectionné??</translation>
     </message>
     <message>
         <source>Username copied to clipboard</source>
@@ -940,11 +940,11 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     </message>
     <message>
         <source>Failed to open safe</source>
-        <translation>Echec à l&apos;ouverture du coffre-fort</translation>
+        <translation type="obsolete">Echec à l&apos;ouverture du coffre-fort</translation>
     </message>
     <message>
         <source>Unknown file type, save aborted</source>
-        <translation>Type de fichier inconnu, sauvegarde interrompue</translation>
+        <translation type="obsolete">Type de fichier inconnu, sauvegarde interrompue</translation>
     </message>
     <message>
         <source>Are you sure?</source>
@@ -961,6 +961,345 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     <message>
         <source>Delete cancelled</source>
         <translation>Suppression annulée</translation>
+    </message>
+    <message>
+        <source>&amp;Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creates a new safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Opens a safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save the safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save the safe to a different file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About MyPasswordSafe</source>
+        <translation type="unfinished">A propos de</translation>
+    </message>
+    <message>
+        <source>&amp;Add Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creates a new password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deletes the selected item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Del</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edits the selected item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Fetch Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy the selected password to the clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Make default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the safe that gets opened when MyPasswordSafe starts.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit your preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fetch &amp;User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manual</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open &amp;Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the default safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change pass-phrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change &amp;pass-phrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change the safe&apos;s pass-phrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo the last thing you did</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Redo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Redo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Redo what was undone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lock MyPasswordSafe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Lock MyPasswordSafe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+L</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lock on minimize?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Lock on minimize?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create &amp;Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a new group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+G</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear clipboard on exit?</source>
+        <translation type="unfinished">Vider le presse-papier en sortant?</translation>
+    </message>
+    <message>
+        <source>&amp;Clear clipboard on exit?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last Modified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last Accessed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created On</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lifetime</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Install clear timer?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No pass-phrase entered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The safe must be saved before it can be made the default.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No filename specified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong pass phrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong filter choosen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item added</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error adding item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add canceled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All Safes (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All Files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created new safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default safe opened</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to open the default safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pass-phrase changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Canceled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MyPasswordSafe unlocked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>What would you like to name the group?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create group canceled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The selected item is invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to create the group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created the group &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>NewPassPhraseDlg</name>
+    <message>
+        <source>New Pass-phrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished">Mot de passe:</translation>
+    </message>
+    <message>
+        <source>Re-type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished">Ok</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>What would you like your new password to be?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -994,7 +1333,7 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     </message>
     <message>
         <source>Active Safe:</source>
-        <translation>Coffre-fort actif:</translation>
+        <translation type="obsolete">Coffre-fort actif:</translation>
     </message>
     <message>
         <source>Default username:</source>
@@ -1002,7 +1341,7 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     </message>
     <message>
         <source>Clear clipboard on exit?</source>
-        <translation>Vider le presse-papier en sortant?</translation>
+        <translation type="obsolete">Vider le presse-papier en sortant?</translation>
     </message>
     <message>
         <source>Generated password length:</source>
@@ -1042,7 +1381,7 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     </message>
     <message>
         <source>Check this if you want the clipboard to be emptied when MyPasswordSafe exits.</source>
-        <translation>Cocher si vous voulez que MyPasswordSafe vide le presse-papier en sortant.</translation>
+        <translation type="obsolete">Cocher si vous voulez que MyPasswordSafe vide le presse-papier en sortant.</translation>
     </message>
     <message>
         <source>The default username is the username used when a new password is created.</source>
@@ -1067,6 +1406,10 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     <message>
         <source>This is the number of tries you have at guessing your pass-phrase before MyPasswordSafe gives up.</source>
         <translation>C&apos;est le nombre d&apos;essais dont vous disposez pour entrer votre pass-phrase avant que MyPasswordSafe abandonne.</translation>
+    </message>
+    <message>
+        <source>Default Safe:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1118,6 +1461,171 @@ And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
     <message>
         <source>Hide</source>
         <translation>Cacher</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created on: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Accessed on: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modified on: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lifetime: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UUID: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Safe</name>
+    <message>
+        <source>Failed to open safe</source>
+        <translation type="unfinished">Echec à l&apos;ouverture du coffre-fort</translation>
+    </message>
+    <message>
+        <source>Safe successfully opened</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong or unsupported filter used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trouble reading the file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to generate a UUID</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SafeListView</name>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nom</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation type="unfinished">Utilisateur</translation>
+    </message>
+    <message>
+        <source>Notes</source>
+        <translation type="unfinished">Notes</translation>
+    </message>
+    <message>
+        <source>Last Modified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Accessed on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lifetime</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StartupDlgBase</name>
+    <message>
+        <source>Welcome to MyPasswordSafe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>What would you like to do?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished">Parcourir</translation>
+    </message>
+    <message>
+        <source>Create new</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>What&apos;s the pass-phrase for %1?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pass-phrase:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Verify:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished">Ok</translation>
+    </message>
+    <message>
+        <source>Return</source>
+        <translation type="unfinished">Return</translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Esc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MyPasswordSafe</source>
+        <translation type="unfinished">MyPasswordSafe</translation>
+    </message>
+    <message>
+        <source>Unable to open %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please double check your pass-phrase.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An unknown action was selected.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
