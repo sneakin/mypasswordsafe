@@ -10,7 +10,6 @@ bin: MyPasswordSafe-$(DATE).bin.tgz
 MyPasswordSafe:
 	#cvs co -r $(BRANCH) $@
 	cvs co $@
-	cp ../ChangeLog MyPasswordSafe
 
 MyPasswordSafe-$(DATE).bin.tgz: MyPasswordSafe
 	make -C $< all
@@ -18,6 +17,7 @@ MyPasswordSafe-$(DATE).bin.tgz: MyPasswordSafe
 		$</doc/sshots $</locale
 
 MyPasswordSafe-$(DATE).src.tgz: MyPasswordSafe
+	make -C $< ChangeLog
 	tar cfz $@ $<
 
 clean:
