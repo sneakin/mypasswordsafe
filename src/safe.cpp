@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.23 2004/09/21 04:43:51 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.24 2004/11/01 17:39:44 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -53,7 +53,7 @@ using namespace std;
 SafeItem::SafeItem(SafeGroup *parent)
   : m_parent(NULL)
 {
-  assert(parent != this);
+  Q_ASSERT(parent != this);
 
   if(parent != NULL) {
     parent->addItem(this);
@@ -471,7 +471,7 @@ Safe::Error Safe::checkPassword(const QString &path, const QString &type, const 
 Safe::Error Safe::load(const QString &path, const QString &type,
 		       const EncryptedString &passphrase, const QString &def_user)
 {
-  assert(!path.isEmpty());
+  Q_ASSERT(!path.isEmpty());
 
   QFileInfo info(path);
   if(!info.exists())
@@ -539,7 +539,7 @@ Safe::Error Safe::load(const QString &path, const QString &type,
  */
 Safe::Error Safe::load(const QString &path, const EncryptedString &passphrase, const QString &def_user)
 {
-  assert(!path.isEmpty());
+  Q_ASSERT(!path.isEmpty());
   return load(path, NULL, passphrase, def_user);
 }
 
@@ -560,7 +560,7 @@ Safe::Error Safe::load(const QString &path, const EncryptedString &passphrase, c
 Safe::Error Safe::save(const QString &path, const QString &type,
 		       const QString &def_user)
 {
-  assert(!path.isEmpty());
+  Q_ASSERT(!path.isEmpty());
 
   QFileInfo info(path);
   QString ext(info.extension(false));

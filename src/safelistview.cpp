@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.16 2004/10/31 12:32:10 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.17 2004/11/01 17:39:44 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -33,7 +33,6 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <qpixmap.h>
-#include <assert.h>
 #include <qdatetime.h>
 #include <qvaluelist.h>
 #include <qdragobject.h>
@@ -45,7 +44,7 @@
 SafeListViewItem::SafeListViewItem(SafeListView *parent, SafeItem *i)
   : QListViewItem(parent), m_item(i)
 {
-  assert(m_item != NULL);
+  Q_ASSERT(m_item != NULL);
 
   setDragEnabled(true);
   setDropEnabled(true);
@@ -54,7 +53,7 @@ SafeListViewItem::SafeListViewItem(SafeListView *parent, SafeItem *i)
 SafeListViewItem::SafeListViewItem(SafeListViewGroup *parent, SafeItem *i)
   : QListViewItem(parent), m_item(i)
 {
-  assert(m_item != NULL);
+  Q_ASSERT(m_item != NULL);
 
   setDragEnabled(true);
   setDropEnabled(true);
