@@ -1,0 +1,23 @@
+   _        ___  ____ ____  ____                _     _
+  |_|_ _   / _ \/ ___/ ___||  _ \   _   _ _   _(_) __| |
+  _|_||_| | | | \___ \___ \| |_) | | | | | | | | |/ _` |
+ |_||_|_| | |_| |___) |__) |  __/  | |_| | |_| | | (_| |
+  |_|_|_|  \___/|____/____/|_|      \__,_|\__,_|_|\__,_|
+
+  OSSP uuid - Universally Unique Identifier
+
+  TODO
+  ====
+
+  - <none>
+
+  CANDO
+  =====
+
+  - additional Perl API for covering Perl language
+  - getopt_long support for CLI?
+  - a more sophisticated test suite?!
+  - more platform support in uuid_mac.c?!
+  - global memory locking according to standard??
+  - persistent/non-volatile state writing according to standard??
+

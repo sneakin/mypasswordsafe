@@ -1,0 +1,441 @@
+##
+##  OSSP uuid - Universally Unique Identifier
+##  Copyright (c) 2004 Ralf S. Engelschall <rse@engelschall.com>
+##  Copyright (c) 2004 The OSSP Project <http://www.ossp.org/>
+##
+##  This file is part of OSSP uuid, a library for the generation
+##  of UUIDs which can found at http://www.ossp.org/pkg/lib/uuid/
+##
+##  Permission to use, copy, modify, and distribute this software for
+##  any purpose with or without fee is hereby granted, provided that
+##  the above copyright notice and this permission notice appear in all
+##  copies.
+##
+##  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+##  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+##  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+##  IN NO EVENT SHALL THE AUTHORS AND COPYRIGHT HOLDERS AND THEIR
+##  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+##  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+##  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+##  USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+##  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+##  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+##  OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+##  SUCH DAMAGE.
+##
+##  uuid.pod: manual page
+##
+
+=pod
+
+=head1 NAME
+
+B<OSSP uuid> - B<Universally Unique Identifier>
+
+=head1 VERSION
+
+OSSP uuid UUID_VERSION_STR
+
+=head1 DESCRIPTION
+
+B<OSSP uuid> is a ISO-C application programming interface (API) and
+corresponding command line interface (CLI) for the generation of DCE
+1.1 and ISO/IEC 11578:1996 compliant I<Universally Unique Identifier>
+(UUID). It supports DCE 1.1 variant UUIDs of version 1 (time and node
+based), version 3 (name based) and version 4 (random number based).
+
+UUIDs are 128 bit numbers which are intended to have a high likelihood
+of uniqueness over space and time and are computationally difficult
+to guess. They are globally unique identifiers which can be locally
+generated without contacting a global registration authority. UUIDs
+are intended as unique identifiers for both mass tagging objects
+with an extremely short lifetime and to reliably identifying very
+persistent objects across a network.
+
+This is the ISO-C application programming interface (API) of B<OSSP uuid>.
+
+=head2 UUID Binary Representation
+
+According to the DCE 1.1 and ISO/IEC 11578:1996 standards, a DCE 1.1
+variant UUID is a 128 bit number defined out of 7 fields, each field a
+multiple of an octet in size and stored in network byte order:
+
+  0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ 0|                          time_low                             |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ 1|       time_mid                |         time_hi_and_version   |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ 2|clk_seq_hi_res |  clk_seq_low  |         node (0-1)            |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ 3|                         node (2-5)                            |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+An example of a UUID binary representation is the octet stream "C<0xEC
+0xB9 0xF3 0x5F 0x44 0x2A 0x11 0xD8 0x8A 0x24 0x00 0x90 0x27 0x2F 0xF7
+0x25>". The binary representation format is exactly what the B<OSSP
+uuid> API functions B<uuid_import>() and B<uuid_export>() deal with
+under C<UUID_FMT_BIN>.
+
+=head2 UUID ASCII String Representation
+
+According to the DCE 1.1 and ISO/IEC 11578:1996 standards, a DCE
+1.1 variant UUID is represented as an ASCII string consisting
+of 8 hexadecimal digits followed by a hyphen, then three groups
+of 4 hexadecimal digits each followed by a hyphen, then 12
+hexadecimal digits. Formally, the string representation is defined by
+the following grammar:
+
+ uuid                   = <time_low> "-" <time_mid> "-"
+                          <time_high_and_version> "-"
+                          <clock_seq_and_reserved>
+                          <clock_seq_low> "-" <node>
+ time_low               = 4*<hex_octet>
+ time_mid               = 2*<hex_octet>
+ time_high_and_version  = 2*<hex_octet>
+ clock_seq_and_reserved = <hex_octet>
+ clock_seq_low          = <hex_octet>
+ node                   = 6*<hex_octet>
+ hex_octet              = <hex_digit> <hex_digit>
+ hex_digit              = "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"
+                         |"a"|"b"|"c"|"d"|"e"|"f"
+                         |"A"|"B"|"C"|"D"|"E"|"F"
+
+An example of a UUID string representation is the ASCII string
+"C<54531d28-402b-11d8-af12-0002a5094c23>". The string representation
+format is exactly what the B<OSSP uuid> API functions B<uuid_import>()
+and B<uuid_export>() deal with under C<UUID_FMT_STR>.
+
+=head2 UUID Variants and Versions
+
+A UUID has a variant and version. The variant defines the layout of the
+UUID. The version defines the content of the UUID. The UUID variant
+supported in B<OSSP uuid> is the DCE 1.1 variant only. The DCE 1.1 UUID
+variant versions supported in B<OSSP uuid> are:
+
+=over 4
+
+=item B<Version 1> (time and node based)
+
+These are the classical UUIDs, created out of a 60-bit system time,
+a 14-bit local clock sequence and 48-bit system MAC address. The MAC
+address can be either the real one of a physical network interface card
+(NIC) or a random multi-cast MAC address. Version 1 UUIDs are usually
+used as one-time global unique identifiers.
+
+=item B<Version 3> (name based)
+
+These are UUIDs which are based on the 128-bit MD5 message digest of the
+concatenation of a 128-bit namespace UUID and a name string of arbitrary
+length. Version 3 UUIDs are usually used for non-unique but repeatable
+message digest identifiers.
+
+=item B<Version 4> (random data based)
+
+These are UUIDs which are based on just 128-bit of random data. Version
+4 UUIDs are usually used as one-time local unique identifiers.
+
+=back
+
+=head2 UUID Uniqueness
+
+Version 1 UUIDs are guaranteed to be unique through combinations of
+hardware addresses, time stamps and random seeds. There is a reference
+in the UUID to the hardware (MAC) address of the first network interface
+card (NIC) on the host which generated the UUID -- this reference
+is intended to ensure the UUID will be unique in space as the MAC
+address of every network card is assigned by a single global authority
+(IEEE) and is guaranteed to be unique. The next component in a UUID
+is a timestamp which, as clock always (should) move forward, will
+be unique in time. Just in case some part of the above goes wrong
+(the hardware address cannot be determined or the clock moved steps
+backward), there is a random clock sequence component placed into the
+UUID as a "catch-all" for uniqueness.
+
+Version 3 UUIDs are guaranteed to be inherently globally unique if the
+combination of namespace and name used to generate them is unique.
+
+Version 4 UUIDs are not guaranteed to be globally unique, because they
+are generated out of locally gathered pseudo-random numbers only.
+Nevertheless there is still a high likelihood of uniqueness over space
+and time and that they are computationally difficult to guess.
+
+=head2 Nil UUID
+
+There is a special I<Nil> UUID consisting of all octets set to zero in
+the binary representation. It can be used as a special UUID value which does
+not conflict with real UUIDs.
+
+=head1 APPLICATION PROGRAMMING INTERFACE
+
+The ISO-C Application Programming Interface (API) of B<OSSP uuid>
+consists of the following components.
+
+=head2 CONSTANTS
+
+The following constants are provided:
+
+=over 4
+
+=item B<UUID_VERSION>
+
+The hexadecimal encoded B<OSSP uuid> version. This allows compile-time
+checking of the B<OSSP uuid> version. For run-time checking use
+B<uuid_version>() instead.
+
+The hexadecimal encoding for a version "$I<v>.$I<r>$I<t>$I<l>" is
+calculated with the B<GNU shtool> B<version> command and is (in
+Perl-style for concise description) "sprintf('0x%x%02x%d%02x', $I<v>,
+$I<r>, {qw(s 9 . 2 b 1 a 0)}->{$I<t>}, ($I<t> eq 's' ? 99 : $I<l>))",
+i.e., the version 0.9.6 is encoded as "0x009206".
+
+=item B<UUID_LEN_BIN>, B<UUID_LEN_STR>
+
+The number of octets of the UUID binary and string representations.
+Notice that the lengths of the string representation does I<not> include
+the necessary C<NUL> termination character.
+
+=item B<UUID_MAKE_V1>, B<UUID_MAKE_V3>, B<UUID_MAKE_V4>, B<UUID_MAKE_MC>
+
+The I<mode> bits for use with B<uuid_make>(). The B<UUID_MAKE_V>I<N>
+specify which UUID version to generate. The B<UUID_MAKE_MC> forces the
+use of a random multi-cast MAC address instead of the real physical MAC
+address in version 1 UUIDs.
+
+=item B<UUID_RC_OK>, B<UUID_RC_ARG>, B<UUID_RC_MEM>, B<UUID_RC_SYS>, B<UUID_RC_INT>, B<UUID_RC_IMP>
+
+The possible numerical return-codes of API functions.
+The C<UUID_RC_OK> indicates success, the others indicate errors.
+Use B<uuid_error>() to translate them into string versions.
+
+=item B<UUID_FMT_BIN>, B<UUID_FMT_STR>, B<UUID_FMT_TXT>
+
+The I<fmt> formats for use with B<uuid_import>() and B<uuid_export>().
+The B<UUID_FMT_BIN> indicates the UUID binary representation (of
+length B<UUID_LEN_BIN>), the B<UUID_FMT_STR> indicates the UUID string
+representation (of length B<UUID_LEN_STR>) and the B<UUID_FMT_TXT>
+indicates the textual description (of arbitrary length) of a UUID.
+
+=back
+
+=head2 FUNCTIONS
+
+The following functions are provided:
+
+=over 4
+
+=item uuid_rc_t B<uuid_create>(uuid_t **I<uuid>);
+
+Create a new UUID object and store a pointer to it in C<*>I<uuid>.
+A UUID object consists of an internal representation of a UUID, the
+internal PRNG and MD5 generator contexts, and cached MAC address and
+timestamp information. The initial UUID is the I<Nil> UUID.
+
+=item uuid_rc_t B<uuid_destroy>(uuid_t *I<uuid>);
+
+Destroy UUID object I<uuid>.
+
+=item uuid_rc_t B<uuid_isnil>(uuid_t *I<uuid>, int *I<result>);
+
+Checks whether the UUID in I<uuid> is the I<Nil> UUID.
+If this is the case, it returns I<true> in C<*>I<result>.
+Else it returns I<false> in C<*>I<result>.
+
+=item uuid_rc_t B<uuid_compare>(uuid_t *I<uuid>, uuid_t *I<uuid2>, int *I<result>);
+
+Compares the order of the two UUIDs in I<uuid1> and I<uuid2>
+and returns the result in C<*>I<result>: C<-1> if I<uuid1> is
+smaller than I<uuid2>, C<0> if I<uuid1> is equal to I<uuid2>
+and C<+1> if I<uuid1> is greater than I<uuid2>.
+
+=item uuid_rc_t B<uuid_import>(uuid_t *I<uuid>, uuid_fmt_t I<fmt>, const void *I<data_ptr>, size_t I<data_len>);
+
+Imports a UUID I<uuid> from an external representation of format I<fmt>.
+The data is read from the buffer at I<data_ptr> which contains at least
+I<data_len> bytes.
+
+The format of the external representation is specified by I<fmt> and the
+minimum expected length in I<data_len> depends on it. Valid values for
+I<fmt> are B<UUID_FMT_BIN> and B<UUID_FMT_STR>.
+
+=item uuid_rc_t B<uuid_export>(uuid_t *I<uuid>, uuid_fmt_t I<fmt>, void **I<data_ptr>, size_t *I<data_len>);
+
+Exports a UUID I<uuid> into an external representation of format I<fmt>.
+The data is written to the buffer at C<*>I<data_ptr> which has room
+for at least C<*>I<data_len> bytes. If C<*>I<data_ptr> is C<NULL>,
+a new buffer is allocated (and I<data_len> ignored as input). If
+I<data_len> is not C<NULL>, the number of written bytes are stored into
+C<*>I<data_len>.
+
+The format of the external representation is specified by I<fmt> and the
+minimum required length in C<*>I<data_len> depends on it. Valid values
+for I<fmt> are B<UUID_FMT_BIN>, B<UUID_FMT_STR> and B<UUID_FMT_TXT>.
+
+=item uuid_rc_t B<uuid_load>(uuid_t *I<uuid>, const char *I<name>);
+
+Loads a pre-defined UUID value into the UUID object I<uuid>. The
+following I<name> arguments are currently known:
+
+=over 4
+
+=item I<name>      I<UUID>
+
+=item nil       00000000-0000-0000-0000-000000000000
+
+=item ns:DNS    6ba7b810-9dad-11d1-80b4-00c04fd430c8
+
+=item ns:URL    6ba7b811-9dad-11d1-80b4-00c04fd430c8
+
+=item ns:OID    6ba7b812-9dad-11d1-80b4-00c04fd430c8
+
+=item ns:X500   6ba7b814-9dad-11d1-80b4-00c04fd430c8
+
+=back
+
+The "C<ns:>I<XXX>" are names of pre-defined name-space UUIDs for use in
+the generation of DCE 1.1 version 3 UUIDs.
+
+=item uuid_rc_t B<uuid_make>(uuid_t *I<uuid>, unsigned int I<mode>, ...);
+
+Generates a new UUID in I<uuid> according to I<mode> and optional
+arguments (dependent on I<mode>).
+
+If I<mode> contains the C<UUID_MAKE_V1> bit, a DCE 1.1 variant UUID of
+version 1 is generated. Then optionally the bit C<UUID_MAKE_MC> forces
+the use of random multi-cast MAC address instead of the real physical
+MAC address (the default). The UUID is generated out of the 60-bit current
+system time, a 12-bit clock sequence and the 48-bit MAC address.
+
+If I<mode> contains the C<UUID_MAKE_V3> bit, a DCE 1.1 variant UUID
+of version 3 is generated and two additional C<NUL>-terminated string
+arguments of type "C<const char *>" are expected: first a namespace,
+given as an internally pre-defined id (currently known are ids "C<DNS>",
+"C<URL>", "C<OID>", and "C<X500>") or a UUID in string representation.
+Second, a name string of arbitrary length. The UUID is generated out of
+the 128-bit MD5 from the concatenated octet stream of namespace UUID and name
+string.
+
+If I<mode> contains the C<UUID_MAKE_V4> bit, a DCE 1.1 variant UUID
+of version 4 is generated. The UUID is generated out of 128-bit random
+data.
+
+=item char *B<uuid_error>(uuid_rc_t I<rc>);
+
+Returns a constant string representation corresponding to the
+return-code I<rc> for use in displaying B<OSSP uuid> errors.
+
+=item unsigned long B<uuid_version>(void);
+
+Returns the hexadecimal encoded B<OSSP uuid> version as compiled into
+the library object files. This allows run-time checking of the B<OSSP
+uuid> version. For compile-time checking use C<UUID_VERSION> instead.
+
+=back
+
+=head1 EXAMPLE
+
+The following shows an example usage of the API. Error handling is
+omitted for code simplification and has to be re-added for production
+code.
+
+ /* generate a DCE 1.1 v1 UUID from system environment */
+ char *uuid_v1(void)
+ {
+     uuid_t *uuid;
+     char *str = NULL;
+
+     uuid_create(&uuid);
+     uuid_make(uuid, UUID_MAKE_V1);
+     uuid_export(uuid, UUID_FMT_STR, (void **)&str, NULL);
+     uuid_destroy(uuid);
+     return str;
+ }
+
+ /* generate a DCE 1.1 v3 UUID from an URL */
+ char *uuid_v3(const char *url)
+ {
+     uuid_t *uuid;
+     uuid_t *uuid_ns;
+     char *str = NULL;
+
+     uuid_create(&uuid);
+     uuid_create(&uuid_ns);
+     uuid_load(uuid_ns, "ns:URL");
+     uuid_make(uuid, UUID_MAKE_V3, uuid_ns, url);
+     uuid_export(uuid, UUID_FMT_STR, (void **)&str, NULL);
+     uuid_destroy(uuid_ns);
+     uuid_destroy(uuid);
+     return str;
+ }
+
+=head1 SEE ALSO
+
+See the following are references to more B<UUID> documentation and specifications:
+
+=over 4
+
+=item
+
+B<UUIDs and GUIDs>,
+IETF Internet Draft (expired),
+Paul J. Leach, Rich Salz,
+February 1998, 27 pages,
+http://www.opengroup.org/dce/info/draft-leach-uuids-guids-01.txt
+
+=item
+
+B<DCE 1.1: Remote Procedure Call>,
+appendix B<Universally Unique Identifier>,
+Open Group Technical Standard
+Document Number C706, August 1997, 737 pages,
+(supersedes C309 DCE: Remote Procedure Call 8/1994,
+which was basis for ISO/IEC 11578:1996 specification),
+http://www.opengroup.org/publications/catalog/c706.htm
+
+=item
+
+B<Information technology -- Open Systems Interconnection (OSI) -- Remote Procedure Call (RPC)>,
+ISO/IEC 11578:1996,
+August 2001, 570 pages, (CHF 340,00),
+http://www.iso.ch/cate/d2229.html
+
+=item
+
+B<HTTP Extensions for Distributed Authoring (WebDAV)>,
+section B<6.4.1 Node Field Generation Without the IEEE 802 Address>,
+IETF RFC 2518,
+February 1999, 94 pages,
+http://www.ietf.org/rfc/rfc2518.txt
+
+=item
+
+B<A UUID URN Namespace>,
+P. Leach, M. Mealling, R. Salz,
+IETF Internet Draft draft-mealling-uuid-urn-02,
+January 2004, 31 pages,
+http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-02.txt
+
+=item
+
+B<DCE 1.1 compliant UUID functions>,
+FreeBSD manual pages uuid(3) and uuidgen(2),
+http://www.freebsd.org/cgi/man.cgi?query=uuid&manpath=FreeBSD+5.2-RELEASE
+
+=back
+
+=head1 HISTORY
+
+B<OSSP uuid> was implemented in January 2004 by Ralf S. Engelschall
+E<lt>rse@engelschall.comE<gt>. It was prompted by the use of UUIDs
+in the B<OSSP as> and B<OpenPKG> projects. It is a clean room
+implementation intended to be strictly standards compliant and maximum
+portable.
+
+=head1 SEE ALSO
+
+uuid(1), uuid-config(1).
+
+=cut
+

@@ -1,0 +1,213 @@
+   _        ___  ____ ____  ____                _     _
+  |_|_ _   / _ \/ ___/ ___||  _ \   _   _ _   _(_) __| |
+  _|_||_| | | | \___ \___ \| |_) | | | | | | | | |/ _` |
+ |_||_|_| | |_| |___) |__) |  __/  | |_| | |_| | | (_| |
+  |_|_|_|  \___/|____/____/|_|      \__,_|\__,_|_|\__,_|
+
+  OSSP uuid - Universally Unique Identifier
+
+  CHANGELOG
+
+  This is a list of all changes to OSSP uuid.
+  For a more brief summary please have a look at the NEWS file.
+
+  Changes between 0.9.7 and 1.0.0 (13-Feb-2004 to 16-Feb-2004)
+
+   o Replace remaining (old) UUID_VERSIONX names with UUID_MAKE_VX
+     in the documentation (uuid.pod).
+     [Ralf S. Engelschall]
+
+   o Resolve namespace conflicts with GCC 3.4 internal pow10() and round()
+     functions within uuid_str.c.
+     [Ralf S. Engelschall]
+
+   o Fix buffer handling in "uuid_export(..., UUID_FMT_TXT, vp, ...)" in
+     case "vp" is not NULL.
+     [Fuyuki <fuyuki@nigredo.org>]
+
+  Changes between 0.9.6 and 0.9.7 (11-Feb-2004 to 13-Feb-2004)
+
+   o remove --with-rfc2518 option and functionality because
+     even the IETF/IESG has finally approved our report about the broken
+     random multicast MAC address generation in the standard (and
+     will fix it in new versions of the draft-mealling-uuid-urn). So,
+     finally get rid of this broken-by-design backward compatibility
+     functionality.
+     [Ralf S. Engelschall]
+
+   o Add support to uuid(1) CLI for decoding from stdin for
+     both binary and string representations.
+     [Ralf S. Engelschall]
+
+   o Add missing documentation entries for UUID_XXXX API constants and
+     uuid_version() function.
+     [Fuyuki <fuyuki@nigredo.org>]
+
+   o Adjust references for new draft-mealling-uuid-urn-02.txt.
+     [Fuyuki <fuyuki@nigredo.org>]
+
+   o Replaced overlooked references to old
+     uuid_{unpack,pack,parse,format,dump}() functions with their
+     current uuid_{import,export}() replacements.
+     [Fuyuki <fuyuki@nigredo.org>]
+
+   o Fixed "uuid -h" command.
+     [Fuyuki <fuyuki@nigredo.org>]
+
+  Changes between 0.9.5 and 0.9.6 (06-Feb-2004 to 11-Feb-2004)
+
+   o Added an experimental additional DCE 1.1 API for backward
+     compatibility with existing applications.
+     [Ralf S. Engelschall]
+
+  Changes between 0.9.4 and 0.9.5 (19-Jan-2004 to 06-Feb-2004)
+
+   o Fixed filedescriptor leak in the PRNG sub-API.
+     [Guerry Semones <guerry@tsunamiresearch.com>]
+
+   o Upgraded build environment to GNU libtool 1.5.2.
+     [Ralf S. Engelschall]
+
+  Changes between 0.9.3 and 0.9.4 (16-Jan-2004 to 19-Jan-2004)
+
+   o Include <string.h> in uuid.h because of size_t usage.
+     [Ralf S. Engelschall]
+
+   o INCOMPATIBILITY: Refactor the API and rename uuid_generate()
+     to uuid_make() and use a "uuid_t" pointer for the namespace
+     on UUID_VERSION3 generation. To allow access to the internal
+     pre-defined namespace UUIDs, provide a new uuid_load() function.
+     Because uuid_load() now also allows the loading of the "nil" UUID,
+     remove uuid_nil() from the API. After this second refactoring the
+     API is now the one we originally wished for the forthcoming version
+     1.0 of OSSP uuid.
+     [Ralf S. Engelschall]
+
+   o INCOMPATIBILITY: rename UUID_VERSIONx to UUID_MAKE_Vx and
+     UUID_MCASTRND to UUID_MAKE_MC to be more consistent throughout API.
+     [Ralf S. Engelschall]
+
+   o Add version support to API via UUID_VERSION (compile-time)
+     and uuid_version() (link-time).
+     [Ralf S. Engelschall]
+
+   o INCOMPATIBILITY: Refactor the API by merging
+     uuid_{unpack,pack,parse,format,dump}() functions into unified
+     uuid_{import,export}() functions. This allows us to easily add
+     support for other formats (e.g. XML) in the future without having
+     the change the API in principle.
+     [Ralf S. Engelschall]
+
+   o Document what DCE 1.1 UUID versions exist and what they are
+     intended for.
+     [Ralf S. Engelschall]
+
+   o Cleanup the C code to also pass warning-free a C++ compiler.
+     [Ralf S. Engelschall]
+
+   o Support C++ by enclosing the C API declarations in
+     'extern "C" {...}' within uuid.h.
+     [Guerry Semones <guerry@tsunamiresearch.com>]
+
+   o Improvide decoding in uuid_dump() by at least hex-dumping the
+     binary representation in case of v3, v4 and Nil UUIDs. Also,
+     annotate with better hints.
+     [Ralf S. Engelschall]
+
+   o Recognize special "Nil UUID" on decoding in uuid_dump().
+     [Ralf S. Engelschall]
+
+  Changes between 0.9.2 and 0.9.3 (15-Jan-2004 to 16-Jan-2004)
+
+   o Tested OSSP uuid on 16 particular Unix platforms and list
+     those in the new PORTING file.
+     [Ralf S. Engelschall]
+
+   o Fixed minor formatting bug in call to str_rsprintf().
+     [Ralf S. Engelschall]
+
+   o Fix syntax error in uuid.ac.
+     [Ralf S. Engelschall]
+
+  Changes between 0.9.1 and 0.9.2 (13-Jan-2004 to 15-Jan-2004)
+
+   o Provide both incorrect RFC2518-based and correct IEEE 802
+     multicast address generation. The default now is the correct
+     IEEE 802 multicast address generation but compile-time option
+     --with-rfc2518 selects the broken variant.
+     [Ralf S. Engelschall]
+
+   o Decode also the IEEE 802 MAC address local/global bit.
+     [Ralf S. Engelschall]
+
+   o Added missing documentation for uuid_dump().
+     [Ralf S. Engelschall]
+
+   o Fixed BM_POW2() macro implementation.
+     [Ralf S. Engelschall]
+
+   o Use BM_XXX() and str_xxx() APIs throughout internal implementation.
+     [Ralf S. Engelschall]
+
+   o Added missing manual page uuid-config(1).
+     [Ralf S. Engelschall]
+
+   o Fixed output of "uuid-config --version"
+     [Ralf S. Engelschall]
+
+   o Fixed typos in uuid.pod
+     [Ralf S. Engelschall]
+
+   o Cleanup uuid.ac for unused elements.
+     [Ralf S. Engelschall]
+
+   o Moved uuid_[u]int{8,16,32}_t auto-configuration into
+     own internal header uuid_ac.h.
+     [Ralf S. Engelschall]
+
+   o Fixed portability by replacing accidentally introduced
+     uint{8,16,32}_t with the portable uuid_uint{8,16,32}_t.
+     [Guerry Semones <guerry@tsunamiresearch.com>]
+
+   o Prefix all variable symbols in uuid.h with underscores
+     to avoid namespace conflicts.
+     [Ralf S. Engelschall]
+
+   o Add decoding examples to uuid(1) manual page.
+     [Ralf S. Engelschall]
+
+  Changes between 0.9.0 and 0.9.1 (11-Jan-2004 to 13-Jan-2004)
+
+   o Make "md5_init" and "mac_address" symbols namespace clean
+     by adding correct embedding support via "uuid_" prefix.
+     [Ralf S. Engelschall]
+
+   o Implement uuid_dump() and corresponding uuid CLI "-d"
+     option for dumping a given UUID into clear text. For convinience
+     reasons add uuid_bm.h (bit mask API) and uuid_str (string
+     formatting API) sub-modules.
+     [Ralf S. Engelschall]
+
+   o Add "-m" option to CLI for allowing to generate v1 UUIDs
+     with random multi-cast addresses (API UUID_MCASTRND option).
+     [Ralf S. Engelschall]
+
+   o Disable the C++ and F77 checks in GNU libtool.
+     [Ralf S. Engelschall]
+
+   o Print involved option character (instead of '?') on invalid
+     option for uuid(1) CLI.
+     [Matthias Andree <matthias.andree@gmx.de>]
+
+   o Fixed "make install" and "make uninstall": the uuid(1) CLI
+     has to be [un]installed through GNU libtool, too.
+     [Matthias Andree <matthias.andree@gmx.de>]
+
+   o Document in uuid(1) [uuid_cli.pod] that for version 3
+     UUIDs additional arguments are required and what pre-defined
+     namespace ids are known.
+     [Ralf S. Engelschall, M.Daniel <mdaniel@scdi.com>]
+
+   o cleaned up source tree documentation files.
+     [Ralf S. Engelschall]
+
