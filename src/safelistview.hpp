@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.8 2004/07/31 00:03:52 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.9 2004/08/02 04:03:49 nolan Exp $
  */
 #ifndef SAFELISTVIEW_HPP
 #define SAFELISTVIEW_HPP
@@ -22,6 +22,9 @@ public:
   inline SafeItem *item() const { return m_item; }
   void setItem(SafeItem *i);
 
+  virtual bool acceptDrop(const QMimeSource *mime) const;
+  virtual void dropped(QDropEvent *event);
+
 private:
   SafeItem *m_item;
 };
@@ -42,32 +45,7 @@ public:
 
   inline SafeEntry *entry() const { return (SafeEntry *)item(); }
 
-  /*
-  void setName(const QString &name);
-  QString getName() const;
-
-  void setUser(const QString &user);
-  QString getUser() const;
-
-  void setPassword(const EncryptedString &pword);
-  const EncryptedString &getPassword() const;
-
-  void setNotes(const QString &notes);
-  QString getNotes() const;
-
-  void setGroup(const QString &group);
-  QString getGroup() const;
-
-  inline time_t getCreationTime() const { return m_item->getCreationTime(); }
-  inline time_t getModificationTime() const { return m_item->getModificationTime(); }
-  inline time_t getAccessTime() const { return m_item->getAccessTime(); }
-  inline time_t getLifetime() const { return m_item->getLifetime(); }
-
-  inline QString getUUID() const { return QString(m_item->getUUID().toString().c_str()); } // FIXME: decouple!!
-
-  inline void updateModTime() { m_item->updateModTime(); }
-  inline void updateAccessTime() { m_item->updateAccessTime(); }
-  */
+  virtual void dropped(QDropEvent *event);
 };
 
 class SafeListViewGroup: public SafeListViewItem
@@ -84,10 +62,9 @@ public:
 
   virtual QString text(int col = 0) const;
 
-  virtual bool acceptDrop(const QMimeSource *mime) const;
-  virtual void dropped(QDropEvent *event);
-
   inline SafeGroup *group() const { return (SafeGroup *)item(); }
+
+  virtual void dropped(QDropEvent *event);
 
 protected:
   void init();
@@ -108,6 +85,7 @@ public:
   SafeItem *getSelectedItem();
 
   virtual void startDrag();
+  //void dropped(QDropEvent *, SafeListViewItem *);
 
   //signals:
   //void contextMenuRequested(QListViewItem *, const QPoint &, int);
@@ -116,6 +94,11 @@ public:
   void itemChanged(SafeItem *);
   void itemAdded(SafeItem *, SafeGroup *);
   void itemDeleted(SafeItem *);
+
+  void dropped(QDropEvent *, SafeListViewItem *);
+
+public slots:
+ void dropped(QDropEvent *);
 
 private:
   SafeListViewItem *findItem(SafeItem *);

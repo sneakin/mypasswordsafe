@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.18 2004/08/01 09:11:28 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.19 2004/08/02 04:03:48 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -406,7 +406,7 @@ void MyPasswordSafe::pwordEdit()
       dlg.setItemName(entry->name());
       dlg.setUser(entry->user());
       // NOTE: password decrypted
-      dlg.setPassword(entry->password().get().get());
+      dlg.setPassword(QString::fromUtf8(entry->password().get().get()));
       dlg.setNotes(entry->notes());
       dlg.setAccessedOn(entry->accessTime());
       dlg.setCreatedOn(entry->creationTime());

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.12 2004/08/01 09:11:28 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.13 2004/08/02 04:03:49 nolan Exp $
  */
 #include <qpixmap.h>
 #include <assert.h>
@@ -7,16 +7,24 @@
 #include <qdragobject.h>
 #include "myutil.hpp"
 #include "safelistview.hpp"
+#include "safedragobject.hpp"
 
 SafeListViewItem::SafeListViewItem(SafeListView *parent, SafeItem *i)
   : QListViewItem(parent), m_item(i)
 {
   assert(m_item != NULL);
+
+  setDragEnabled(true);
+  setDropEnabled(true);
 }
 
 SafeListViewItem::SafeListViewItem(SafeListViewGroup *parent, SafeItem *i)
   : QListViewItem(parent), m_item(i)
 {
+  assert(m_item != NULL);
+
+  setDragEnabled(true);
+  setDropEnabled(true);
 }
 
 SafeListViewItem::~SafeListViewItem()
@@ -28,14 +36,23 @@ void SafeListViewItem::setItem(SafeItem *i)
   m_item = i;
 }
 
+bool SafeListViewItem::acceptDrop(const QMimeSource *mime) const
+{
+  return SafeDragObject::canDecode(mime);
+}
+
+void SafeListViewItem::dropped(QDropEvent *event)
+{
+  SafeListView *view = (SafeListView *)listView();
+  view->dropped(event, this);
+}
+
 
 
 SafeListViewEntry::SafeListViewEntry(SafeListView *parent, SafeEntry *item)
   : SafeListViewItem(parent, item)
 {
   //setPixmap(0, QPixmap::fromMimeSource("password.png"));
-  setDragEnabled(true);
-  setDropEnabled(true);
 }
 
 SafeListViewEntry::SafeListViewEntry(SafeListViewGroup *parent,
@@ -43,8 +60,6 @@ SafeListViewEntry::SafeListViewEntry(SafeListViewGroup *parent,
   : SafeListViewItem(parent, item)
 {
   //setPixmap(0, QPixmap::fromMimeSource("password.png"));
-  setDragEnabled(true);
-  setDropEnabled(true);
 }
 
 SafeListViewEntry::~SafeListViewEntry()
@@ -96,6 +111,12 @@ QString SafeListViewEntry::text(int col) const
   }
 }
 
+void SafeListViewEntry::dropped(QDropEvent *event)
+{
+  SafeListView *view = (SafeListView *)listView();
+  view->dropped(event, this);
+}
+
 
 
 SafeListViewGroup::SafeListViewGroup(SafeListView *parent,
@@ -117,8 +138,6 @@ void SafeListViewGroup::init()
 {
   setPixmap(0, QPixmap::fromMimeSource("folder_blue.png"));
   //setRenameEnabled(0, true);
-  setDragEnabled(true);
-  setDropEnabled(true);
 }
 
 void SafeListViewGroup::setOpen(bool yes)
@@ -138,6 +157,12 @@ QString SafeListViewGroup::text(int col) const
     return group()->name();
   else
     return QString::null;
+}
+
+void SafeListViewGroup::dropped(QDropEvent *event)
+{
+  SafeListView *view = (SafeListView *)listView();
+  view->dropped(event, this);
 }
 
 /*
@@ -187,17 +212,6 @@ void SafeListViewGroup::updateItems()
 */
 
 
-bool SafeListViewGroup::acceptDrop(const QMimeSource *mime) const
-{
-  return false;
-}
-
-
-void SafeListViewGroup::dropped(QDropEvent *event)
-{
-  DBGOUT("Drop on group");
-}
-
 
 SafeListView::SafeListView(QWidget *parent, const char *name, Safe *safe)
   : QListView(parent, name)
@@ -219,6 +233,8 @@ SafeListView::SafeListView(QWidget *parent, const char *name, Safe *safe)
   addColumn(tr("Group"));
 #endif
   setSafe(safe);
+
+  connect(this, SIGNAL(dropped(QDropEvent *)), SLOT(dropped(QDropEvent *)));
 }
 
 SafeListView::~SafeListView()
@@ -356,6 +372,10 @@ SafeListViewGroup *SafeListView::addGroup(const QString &group_name)
 void SafeListView::startDrag()
 {
   DBGOUT("Drag started");
+
+  SafeDragObject *d = new SafeDragObject(viewport());
+  bool drag_ret = d->drag();
+  DBGOUT("drag() returned " << drag_ret);
 }
 
 void SafeListView::itemChanged(SafeItem *item)
@@ -396,6 +416,23 @@ void SafeListView::itemDeleted(SafeItem *item)
   DBGOUT("Item deleted");
   SafeListViewItem *list_item = findItem(item);
   delete list_item;
+}
+
+void SafeListView::dropped(QDropEvent *event, SafeListViewItem *target)
+{
+  DBGOUT("Item dropped");
+  if(target) {
+    if(target->rtti() == SafeListViewEntry::RTTI)
+      DBGOUT(" onto " << target->text(0));
+  }
+  else {
+    DBGOUT("onto view");
+  }
+}
+
+void SafeListView::dropped(QDropEvent *event)
+{
+  dropped(event, NULL);
 }
 
 SafeListViewItem *SafeListView::findItem(SafeItem *item)

@@ -28,6 +28,7 @@ Safe::Error PlainTextLizer::checkPassword(const QString &path, const SecuredStri
   QFile file(path);
   if(file.open(IO_ReadOnly)) {
     QTextStream stream(&file);
+    stream.setEncoding(QTextStream::UnicodeUTF8);
     QString line;
     line = stream.readLine();
     if(line == password.get())
@@ -47,6 +48,7 @@ Safe::Error PlainTextLizer::load(Safe &safe, const QString &path, const Encrypte
   QFile file(path);
   if(file.open(IO_ReadOnly)) {
     QTextStream stream(&file);
+    stream.setEncoding(QTextStream::UnicodeUTF8);
     QString line;
 
     line = stream.readLine();
@@ -65,7 +67,7 @@ Safe::Error PlainTextLizer::load(Safe &safe, const QString &path, const Encrypte
 	SafeEntry *item = new SafeEntry(group);
 	item->setName(field(items, 0));
 	item->setUser(field(items, 1));
-	item->setPassword(field(items, 2));
+	item->setPassword(field(items, 2).utf8());
 	item->setCreationTime(QDateTime::fromString(field(items, 4), Qt::ISODate));
 	item->setModifiedTime(QDateTime::fromString(field(items, 5), Qt::ISODate));
 	item->setAccessTime(QDateTime::fromString(field(items, 6), Qt::ISODate));
@@ -117,6 +119,7 @@ Safe::Error PlainTextLizer::save(Safe &safe, const QString &path, const QString 
   QFile file(path);
   if(file.open(IO_WriteOnly)) {
     QTextStream stream(&file);
+    stream.setEncoding(QTextStream::UnicodeUTF8);
     // NOTE: the passphrase is decrypted...AND SAVED TO DISK!!
     SecuredString password(safe.getPassPhrase().get());
     stream << password.get() << endl;
@@ -163,7 +166,7 @@ Safe::Error PlainTextLizer::saveEntry(QTextStream &file, const SafeEntry *entry,
 {
   saveText(file, entry->name());
   saveText(file, entry->user());
-  saveText(file, entry->password().get().get());
+  saveText(file, QString::fromUtf8(entry->password().get().get()));
   saveText(file, group_name);
   saveDate(file, entry->creationTime());
   saveDate(file, entry->modifiedTime());
@@ -190,7 +193,7 @@ Safe::Error PlainTextLizer::saveEntry(QTextStream &file, const SafeEntry *entry,
 void PlainTextLizer::saveText(QTextStream &file, const QString &text)
 {
   if(!text.isEmpty())
-    file << text.utf8();
+    file << text;
   file << '\t';
 }
 

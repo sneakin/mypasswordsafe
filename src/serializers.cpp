@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.15 2004/08/01 09:11:28 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.16 2004/08/02 04:03:49 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -714,8 +714,12 @@ int BlowfishLizer2::readEntry(FILE *in, SafeEntry &item, QString &group,
     num_read += readCBC(in, fish, data, type, ipthing);
     total_num_read += num_read;
 
-    DBGOUT("Data: " << type << "\t"
-	   << data.length() << " \"" << data.get() << "\"");
+#ifdef DEBUG
+    if(data.length()) {
+      DBGOUT("Data: " << type << "\t"
+	     << data.length() << " \"" << data.get() << "\"");
+    }
+#endif
 
     if(data.length() == 0) {
       DBGOUT("data empty");
@@ -794,8 +798,9 @@ int BlowfishLizer2::writeString(FILE *out, BlowFish *fish,
 			       int type, unsigned char *ipthing)
 {
   if(!str.isEmpty()) {
-    return writeCBC(out, fish, (const char *)str.utf8(),
-		    str.length(), type, ipthing);
+    QCString utf(str.utf8());
+    return writeCBC(out, fish, (const char *)utf,
+		    utf.length(), type, ipthing);
   }
   else {
     return 0;
