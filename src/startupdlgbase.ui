@@ -1,0 +1,310 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>StartupDlgBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>StartupDlgBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>384</width>
+            <height>323</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Welcome to MyPasswordSafe</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>pixmapLabel2</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>LineEditPanel</enum>
+            </property>
+            <property name="pixmap">
+                <pixmap>about_banner.png</pixmap>
+            </property>
+            <property name="scaledContents">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout4</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>What would you like to do?</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>Open default</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Browse</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Create new</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>actionBox</cstring>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QWidgetStack">
+            <property name="name">
+                <cstring>passPhraseStack</cstring>
+            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>passPhrase</cstring>
+                </property>
+                <attribute name="id">
+                    <number>0</number>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <widget class="QLineEdit" row="1" column="0">
+                        <property name="name">
+                            <cstring>passPhraseBox</cstring>
+                        </property>
+                        <property name="echoMode">
+                            <enum>Password</enum>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget" row="0" column="0">
+                        <property name="name">
+                            <cstring>layout23</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>pixmapLabel1</cstring>
+                                </property>
+                                <property name="sizePolicy">
+                                    <sizepolicy>
+                                        <hsizetype>0</hsizetype>
+                                        <vsizetype>0</vsizetype>
+                                        <horstretch>0</horstretch>
+                                        <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                </property>
+                                <property name="pixmap">
+                                    <pixmap>Padlock.xpm</pixmap>
+                                </property>
+                                <property name="scaledContents">
+                                    <bool>true</bool>
+                                </property>
+                            </widget>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>openLabel</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>What's the pass-phrase for %1?</string>
+                                </property>
+                                <property name="alignment">
+                                    <set>WordBreak|AlignCenter</set>
+                                </property>
+                            </widget>
+                        </hbox>
+                    </widget>
+                </grid>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>newPassPhrase</cstring>
+                </property>
+                <attribute name="id">
+                    <number>1</number>
+                </attribute>
+                <grid>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <widget class="QLineEdit" row="0" column="1">
+                        <property name="name">
+                            <cstring>newPassPhraseBox</cstring>
+                        </property>
+                        <property name="echoMode">
+                            <enum>Password</enum>
+                        </property>
+                    </widget>
+                    <widget class="QLineEdit" row="1" column="1">
+                        <property name="name">
+                            <cstring>verifyBox</cstring>
+                        </property>
+                        <property name="echoMode">
+                            <enum>Password</enum>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="0" column="0">
+                        <property name="name">
+                            <cstring>textLabel2_2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Pass-phrase:</string>
+                        </property>
+                    </widget>
+                    <widget class="QLabel" row="1" column="0">
+                        <property name="name">
+                            <cstring>textLabel3</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Verify:</string>
+                        </property>
+                    </widget>
+                </grid>
+            </widget>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout19</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>versionLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>%1 %1</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>100</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>okButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Ok</string>
+                    </property>
+                    <property name="accel">
+                        <string>Return</string>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>quitButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Quit</string>
+                    </property>
+                    <property name="accel">
+                        <string>Esc</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>quitButton</sender>
+        <signal>clicked()</signal>
+        <receiver>StartupDlgBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>okButton</sender>
+        <signal>clicked()</signal>
+        <receiver>StartupDlgBase</receiver>
+        <slot>okClicked()</slot>
+    </connection>
+    <connection>
+        <sender>actionBox</sender>
+        <signal>activated(int)</signal>
+        <receiver>StartupDlgBase</receiver>
+        <slot>actionChanged(int)</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>passPhraseBox</tabstop>
+    <tabstop>newPassPhraseBox</tabstop>
+    <tabstop>verifyBox</tabstop>
+    <tabstop>actionBox</tabstop>
+    <tabstop>okButton</tabstop>
+    <tabstop>quitButton</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in implementation">startupdlgbase.ui.h</include>
+</includes>
+<forwards>
+    <forward>class MyPasswordSafe</forward>
+</forwards>
+<variables>
+    <variable access="private">QString m_filter;</variable>
+    <variable access="private">QString m_filename;</variable>
+    <variable access="private">MyPasswordSafe *m_myps;</variable>
+</variables>
+<slots>
+    <slot>okClicked()</slot>
+    <slot>actionChanged( int action, bool browse )</slot>
+    <slot returnType="const QString &amp;">getFilter()</slot>
+    <slot>setFilter( const QString &amp; filter )</slot>
+    <slot>setActionBoxItem( int item )</slot>
+    <slot>setMyPasswordSafe( MyPasswordSafe * myps )</slot>
+    <slot>actionChanged( int action )</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function>setFilename( const QString &amp; filename )</function>
+    <function returnType="const QString &amp;">getFilename()</function>
+    <function returnType="QString">getPassPhrase()</function>
+    <function returnType="int">getActionBoxItem()</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

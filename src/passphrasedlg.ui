@@ -1,0 +1,166 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>PassPhraseDlg</class>
+<comment>Prompts the user for their pass-phrase.</comment>
+<author>Nolan Eakins</author>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>PassPhraseDlg</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>360</width>
+            <height>110</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>0</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="minimumSize">
+        <size>
+            <width>360</width>
+            <height>110</height>
+        </size>
+    </property>
+    <property name="maximumSize">
+        <size>
+            <width>335</width>
+            <height>110</height>
+        </size>
+    </property>
+    <property name="caption">
+        <string>What's your pass-phrase?</string>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout34</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout33</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>pixmapLabel1</cstring>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>Padlock.xpm</pixmap>
+                            </property>
+                            <property name="scaledContents">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel5</cstring>
+                            </property>
+                            <property name="text">
+                                <string>What is the pass-phrase?</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>pwordBox</cstring>
+                    </property>
+                    <property name="echoMode">
+                        <enum>Password</enum>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout29</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>okButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Ok</string>
+                    </property>
+                    <property name="accel">
+                        <string>Return</string>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>cancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+    </hbox>
+</widget>
+<connections>
+    <connection>
+        <sender>okButton</sender>
+        <signal>pressed()</signal>
+        <receiver>PassPhraseDlg</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>cancelButton</sender>
+        <signal>pressed()</signal>
+        <receiver>PassPhraseDlg</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>pwordBox</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>PassPhraseDlg</receiver>
+        <slot>pwordBox_textChanged(const QString&amp;)</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>pwordBox</tabstop>
+    <tabstop>okButton</tabstop>
+    <tabstop>cancelButton</tabstop>
+</tabstops>
+<includes>
+    <include location="local" impldecl="in declaration">securedstring.hpp</include>
+    <include location="local" impldecl="in implementation">passphrasedlg.ui.h</include>
+</includes>
+<variables>
+    <variable access="private">QString m_passkey;</variable>
+</variables>
+<slots>
+    <slot>pwordBox_textChanged( const QString &amp; text )</slot>
+    <slot>hideCancel( bool yes )</slot>
+</slots>
+<functions>
+    <function specifier="non virtual" returnType="const QString">getText() const</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

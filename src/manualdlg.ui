@@ -1,0 +1,344 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>ManualDlg</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>ManualDlg</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>600</width>
+            <height>480</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>MyPasswordSafe Manual</string>
+    </property>
+    <property name="icon">
+        <pixmap>help.png</pixmap>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QTextBrowser">
+            <property name="name">
+                <cstring>textBrowser</cstring>
+            </property>
+            <property name="text">
+                <string>&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;MyPasswordSafe Manual&lt;/title&gt;
+    &lt;style type="text/css"&gt;
+    H1 {
+    	border-bottom: solid 2px #0080ff;
+    }
+    .title {
+    	text-align: center;
+    }
+    .title H1 {
+    	font-size: 32pt;
+	border: none;
+    }
+    .contents {
+    }
+    &lt;/style&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+	&lt;div class="title"&gt;&lt;center&gt;
+		&lt;h1&gt;&lt;a name="top"&gt;MyPasswordSafe&lt;/a&gt;&lt;/h1&gt;
+		&amp;copy; 2004
+		Semantic Gap Solutions&lt;br/&gt;
+		&lt;i&gt;http://www.semanticgap.com/&lt;/i&gt;
+	&lt;/center&gt;&lt;/div&gt;
+	&lt;div class="contents"&gt;
+		&lt;h1&gt;Contents&lt;/h1&gt;
+		&lt;ul&gt;
+			&lt;li&gt;&lt;a href="#intro"&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+			&lt;li&gt;&lt;a href="#license"&gt;License&lt;/a&gt;&lt;/li&gt;
+			&lt;li&gt;&lt;a href="#install"&gt;Installing&lt;/a&gt;&lt;/li&gt;
+			&lt;ul&gt;
+				&lt;li&gt;&lt;a href="#frombin"&gt;...from Binaries&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href="#fromsrc"&gt;...from Source&lt;/a&gt;&lt;/li&gt;
+			&lt;/ul&gt;
+			&lt;li&gt;&lt;a href="#usage"&gt;Usage&lt;/a&gt;&lt;/li&gt;
+			&lt;ul&gt;
+				&lt;li&gt;&lt;a href="#starting"&gt;Starting MyPasswordSafe&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href="#mainwindow"&gt;The Main Window&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href="#passwords"&gt;Managing passwords&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href="#editpword"&gt;Edit Password Dialog&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href="#safes"&gt;Opening and saving safes&lt;/a&gt;&lt;/li&gt;
+				&lt;li&gt;&lt;a href="#prefs"&gt;Preferences&lt;/a&gt;&lt;/li&gt;
+			&lt;/ul&gt;
+			&lt;li&gt;&lt;a href="#faq"&gt;FAQ&lt;/a&gt;&lt;/li&gt;
+			&lt;li&gt;&lt;a href="#contact"&gt;Contact&lt;/a&gt;&lt;/li&gt;
+			&lt;li&gt;&lt;a href="#credits"&gt;Credits&lt;/a&gt;&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/div&gt;
+	&lt;h1&gt;&lt;a name="intro"&gt;Introduction&lt;/a&gt;&lt;/h1&gt;
+	&lt;p&gt;
+		MyPasswordSafe is a straight-forward, easy-to-use password manager that
+		maintains compatibility with Password Safe &lt;i&gt;http://passwordsafe.sourceforge.net/&lt;/i&gt; files. MyPasswordSafe
+		has the following features:
+		&lt;ul&gt;
+			&lt;li&gt;Safes are encrypted when they are stored to disk.&lt;/li&gt;
+			&lt;li&gt;Passwords never have to be seen, because they are copied to
+			the clipboard&lt;/li&gt;
+			&lt;li&gt;Random passwords can be generated.&lt;/li&gt;
+			&lt;li&gt;Window size, position, and column widths are remembered.&lt;/li&gt;
+			&lt;li&gt;A safe can be made active so it will always be opened when
+			MyPasswordSafe starts.&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/p&gt;
+	&lt;a href="#top"&gt;Back to top&lt;/a&gt;
+	&lt;h1&gt;&lt;a name="license"&gt;License&lt;/a&gt;&lt;/h1&gt;
+		Copyright &amp;copy; 2004, Semantic Gap Solutions&lt;br/&gt;
+		All rights reserved.
+
+		&lt;p&gt;
+		Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+		&lt;ul&gt;
+		&lt;li&gt;Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.&lt;/li&gt;
+		&lt;li&gt;Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.&lt;/li&gt;
+		&lt;li&gt;Neither the name of Semantic Gap Solutions nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.&lt;/li&gt;
+		&lt;/ul&gt;
+		&lt;/p&gt;
+		&lt;p&gt;
+		THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+		&lt;/p&gt;
+	&lt;a href="#top"&gt;Back to top&lt;/a&gt;
+	&lt;h1&gt;&lt;a name="install"&gt;Installing&lt;/a&gt;&lt;/h1&gt;
+	&lt;p&gt;If you're reading this then you're either warm or hot. MyPasswordSafe
+	comes in two distributions: a binary distribution and the source distribution.
+	MyPasswordSafe requires Qt 3 &lt;i&gt;http://www.trolltech.com/&lt;/i&gt;, so
+	make sure you have that. That maybe the only dependency.
+	&lt;h2&gt;&lt;a name="frombin"&gt;...From Binaries&lt;/a&gt;&lt;/h2&gt;
+	&lt;p&gt;The binary distribution is precompiled. It can be downloaded from
+	&lt;i&gt;http://www.semanticgap.com/myps/release/&lt;/i&gt;. Once that's downloaded, just untar it:
+	&lt;/p&gt;
+	&lt;pre&gt;tar xvfz MyPasswordSafe-bin.tgz&lt;/pre&gt;
+	&lt;p&gt;That should create a directory with the MyPasswordSafe binary, this file,
+	and some other documentation. You can copy MyPasswordSafe to some place
+	in your path if you want. That should be all assuming it works. If it didn't
+	keep reading.
+	&lt;h2&gt;&lt;a name="fromsrc"&gt;...From Source&lt;/a&gt;&lt;/h2&gt;
+	&lt;p&gt;So you want to compile it for yourself.
+	Goto &lt;i&gt;http://www.semanticgap.com/myps/release/&lt;/i&gt; and
+	download the sources and do the following in some directory:
+	&lt;/p&gt;
+	&lt;pre&gt;tar xvfz MyPasswordSafe-20040104-src.tgz
+cd MyPasswordSafe
+qmake MyPasswordSafe.pro
+make&lt;/pre&gt;
+	&lt;p&gt;Now if that was successful, you can follow the directions for installing
+	the binary distribution. All you need to do is copy MyPasswordSafe
+	somewhere in your PATH.
+	&lt;/p&gt;
+	&lt;a href="#top"&gt;Back to top&lt;/a&gt;
+	&lt;h1&gt;&lt;a name="usage"&gt;Usage&lt;/a&gt;&lt;/h1&gt;
+	&lt;p&gt;
+		MyPasswordSafe is straight-forward to use. Nearly all of the
+		commands can be accessed from the menu, toolbar, context menu, or by
+		keyboard. Before we delve into actual usage, let's cover how
+		MyPasswordSafe can be started.
+	&lt;/p&gt;
+	&lt;h2&gt;&lt;a name="starting"&gt;Starting MyPasswordSafe&lt;/a&gt;&lt;/h2&gt;
+	&lt;p&gt;Starting MyPasswordSafe is just like any other program, you just need to
+		run it. If you copied the binary into your PATH, all you need to is type
+		&lt;i&gt;MyPasswordSafe&lt;/i&gt;. Otherwise you need to either change to the directory
+		where the binary is or include that in the command line. Adding an icon
+		to your favorite launcher may also be desired.
+	&lt;/p&gt;
+	&lt;p&gt;When MyPasswordSafe starts for the first time, an empty safe
+		is created. As you'll learn later, MyPasswordSafe has a thing
+		called the active safe. The active safe gets opened when
+		MyPasswordSafe starts saving you from having to always find
+		it over and over.
+	&lt;/p&gt;
+	&lt;h2&gt;&lt;a name="mainwindow"&gt;The Main Window&lt;/a&gt;&lt;/h2&gt;
+	&lt;p&gt;The main window isn't to complex. There's a list box, tool-bar, and menu.
+	The tool-bar and menu duplicate each other quite a bit. Most of the action
+	happens in the list box.
+	&lt;/p&gt;
+	&lt;center&gt;&lt;img src="mainwindow.jpg"
+	alt="Screenshot of MyPasswordSafe's main window"/&gt;&lt;/center&gt;
+	&lt;p&gt;The list box contains the passwords from the current safe.
+	Double clicking on a password in the list box fetches the password for
+	that item, and right clicking convienently pops up the edit menu next to
+	the pointer. So what do those commands do?
+	&lt;/p&gt;
+	&lt;a href="#top"&gt;Back to top&lt;/a&gt;
+	&lt;h2&gt;&lt;a name="passwords"&gt;Managing Passwords&lt;/a&gt;&lt;/h2&gt;
+	&lt;p&gt;
+		The edit menu contains the commands used to manage passwords. Each
+		command's name is descriptive of what it does. For example,
+		&lt;i&gt;Add Password&lt;/i&gt; really does add a new password.
+		&lt;i&gt;Delete Password&lt;/i&gt; deletes the password selected password.
+		And &lt;i&gt;Edit Password&lt;/i&gt; opens up a dialog to edit the selected
+		password.
+	&lt;/p&gt;
+	&lt;p&gt;
+		The last two commands may need some explanation. They are
+		&lt;i&gt;Fetch User&lt;/i&gt; and &lt;i&gt;Fetch Password&lt;/i&gt;. Both copy
+		information to the clipboard. One copies the user, and
+		the other copies the password field.
+	&lt;/p&gt;
+	&lt;a href="#top"&gt;Back to top&lt;/a&gt;
+	&lt;h2&gt;&lt;a name="editpword"&gt;Edit Password Dialog&lt;/a&gt;&lt;/h2&gt;
+	&lt;center&gt;&lt;img src="editdialog.jpg" alt="Screenshot of the
+	edit password dialog"/&gt;&lt;/center&gt;
+	&lt;p&gt;
+		Both &lt;i&gt;Add Password&lt;/i&gt; and &lt;i&gt;Edit Password&lt;/i&gt; make use
+		of the same dialog to edit a password's data. Passwords
+		have four fields of information: name, user, password, and
+		notes. All but the password field is displayed in the main
+		window. The dialog also has three buttons that affect
+		the password field.
+		&lt;ul&gt;
+			&lt;li&gt;Show: turns off the password masking making the
+			password visible&lt;/li&gt;
+			&lt;li&gt;Fetch: copies the password to the clipboard&lt;/li&gt;
+			&lt;li&gt;Generate: fills in the password field with a
+			random password&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/p&gt;
+	&lt;a href="#top"&gt;Back to top&lt;/a&gt;
+	&lt;h2&gt;&lt;a name="safes"&gt;Opening and saving safes&lt;/a&gt;&lt;/h2&gt;
+	&lt;p&gt;Safes can be created, opened, and saved from the file menu. The
+	commands work like any other application except when a pass-phrase
+	is needed. MyPasswordSafe does support multiple file formats.
+	Currently MyPasswordSafe only two file formats are supported, Password
+	Safe safes and text files.
+	&lt;/p&gt;
+	&lt;p&gt;Password Safe is a similiar to MyPasswordSafe, but runs only
+		on Windows. Files created by Password Safe can be opened by
+		MyPasswordSafe and vice-versa. The files are encrypted using
+		the Blowfish algorithm, and are presumed to be secure. Use
+		&lt;i&gt;dat&lt;/i&gt; for the extension.
+	&lt;/p&gt;
+	&lt;p&gt;Text files should &lt;b&gt;&lt;font color="red"&gt;NEVER&lt;/font&gt;&lt;/b&gt;
+	be used. All information is stored unencrypted. If you find
+	them useful, go ahead and use them.
+	&lt;/p&gt;
+	&lt;a href="#top"&gt;Back to top&lt;/a&gt;
+	&lt;h2&gt;&lt;a name="prefs"&gt;Preferences&lt;/a&gt;&lt;/h2&gt;
+	&lt;center&gt;&lt;img src="prefsdialog.jpg"
+	alt="Screenshot of the Preferences Dialog"/&gt;&lt;/center&gt;
+	&lt;p&gt;MyPasswordSafe isn't the most configurable, but it does
+	have some options.
+		&lt;ul&gt;
+			&lt;li&gt;Active safe: this is the safe that MyPasswordSafe
+			opens when it starts up; this can also be set using
+			the &lt;i&gt;Make Active&lt;/i&gt; item in the File menu&lt;/li&gt;
+			&lt;li&gt;Default user name: this is the username used for
+			new passwords&lt;/li&gt;
+			&lt;li&gt;Clear clipboard on exit?: if this is checked,
+			the clipboard is cleared when MyPasswordSafe closes&lt;/li&gt;
+			&lt;li&gt;Generated password length: sets the length of
+			the passwords generated by pressing the Generate
+			button in the Edit Password dialog&lt;/li&gt;
+			&lt;li&gt;Number of guesses: this is the number of times
+			MyPasswordSafe will attempt to get the correct pass-phrase
+			from you before it gives up.&lt;/li&gt;
+		&lt;/ul&gt;&lt;/p&gt;
+		&lt;p&gt;MyPasswordSafe also stores the position and size of the window
+		as well as the column widths. These are set by changing them,
+		and are not available in the Preferences dialog.
+	&lt;/p&gt;
+	&lt;a href="#top"&gt;Back to top&lt;/a&gt;
+	&lt;h1&gt;&lt;a name="faq"&gt;FAQ&lt;/a&gt;&lt;/h1&gt;
+		&lt;h2&gt;How secure is MyPasswordSafe?&lt;/h2&gt;
+		&lt;p&gt;It beats me. The safes should be secure unless the Blowfish
+		algorithm gets cracked. It's when the program is running
+		that I'm unsure of the security. I'm sure some pesky
+		program could find your passwords in memory.
+		&lt;/p&gt;
+		&lt;p&gt;If you know anything about how to make this program bullet
+		proof, send me an email or a patch.
+		&lt;/p&gt;
+		&lt;h2&gt;Where is the Windows version?&lt;/h2&gt;
+		&lt;p&gt;I really wish there was a Windows version, but I can't
+		afford a Qt license. If you need a password manager for
+		Windows, get Password
+		Safe. Versions &amp;lt; 2 create files that MyPasswordSafe can load
+		and save. [ Note to developers: if you have Qt for Windows,
+		could you compile and package it for me? ]&lt;/p&gt;
+	&lt;a href="#top"&gt;Back to top&lt;/a&gt;
+	&lt;h1&gt;&lt;a name="contact"&gt;Contact&lt;/a&gt;&lt;/h1&gt;
+	Semantic Gap Solutions can be contacted using the following:
+	&lt;ul&gt;
+		&lt;li&gt;Web: http://www.semanticgap.com/&lt;/li&gt;
+		&lt;li&gt;Email: &lt;a href="mailto:support@semanticgap.com"&gt;support@semanticgap.com&lt;/a&gt;&lt;/li&gt;
+		&lt;li&gt;Mail:&lt;br/&gt;
+		Semantic Gap Solutions&lt;br/&gt;
+		527 Park Dr.&lt;br/&gt;
+		Greenwood, IN 46143
+		&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;h1&gt;&lt;a name="credits"&gt;Credits&lt;/a&gt;&lt;/h1&gt;
+	Programming and design:&lt;br/&gt;
+	Nolan Eakins&lt;br/&gt;
+	&lt;br/&gt;
+	Some of the file loading and saving code is from Password Safe &lt;i&gt;http://passwordsafe.sourceforge.net/&lt;/i&gt;&lt;br/&gt;
+	&lt;br/&gt;
+	And most of the icons came from KDE &lt;i&gt;http://www.kde.org/&lt;/i&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>360</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>closeButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Close</string>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>closeButton</sender>
+        <signal>clicked()</signal>
+        <receiver>ManualDlg</receiver>
+        <slot>close()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">manualdlg.ui.h</include>
+</includes>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

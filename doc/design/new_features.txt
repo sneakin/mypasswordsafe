@@ -1,0 +1,38 @@
+Features to be implemented in MyPasswordSafe
+  Better endian dectection for the pwsafe functions; PPC == big; intel == small
+//  Rename src/util.?pp to src/myutil.?pp
+  Undo and redo operations
+  Be able to lock the safe while it is opened. No operations or viewing could be done.
+  On startup show a dialog asking for the active safe's pass-phrase, but also has options to open another safe or create a new one.
+  Get the pass-phrase only on File->New, File->Open, and File->Change Pass-phrase
+  Create a two lined pass-phrase dialog that will only accept if both lines match
+  Gentoo ebuild file
+  Only display the first line of a note, unless the item is selected then display the whole note.
+//  Display the date MyPasswordSafe got compiled on in the AboutDlg
+//  Backup the safe when it is saved
+  Be able to specify a safe on the command line to open
+  Have a File->Open Active Safe item which opens the active safe.
+  Make PREFIX a run-time option too; the compile time setting will be the default
+  EncryptedString: move read and write methods into BlowfishLizer; remove the type from EncryptedString; 
+  Derive a couple of classes from QListView and QListViewItem and create one that works with a Safe; would remove the QListView dependency that Safe has
+  Be able to arrange passwords into groups, subgroups, etc.
+  Support for Password Safe 2 files
+  When a password is copied to the clipboard, install a timer to clear the clipboard after a specified interval. The setting of the timer and the interval is set in the preferences.
+  Be able to store your safe on an FTP server
+  Drag and drop between more than one instance of MyPasswordSafe
+
+More features:
+  Better command line support, ie: fetching passwords from a safe w/o opening the GUI
+  The ability to search by each individual field...a real database operation
+  Be able to distinguish between different errors with the loading, saving, and checkPassword methods; MyPasswordSafe::open could use them
+  Automatically include doc/manual.html into ManualDlg at compile time; links to anything other than anchors needs to be filtered, and image URIs need to be changed
+  Derive a password widget that uses EncryptedString from QLineEdit that only decrypts the password when masking is turned off.
+  Change the icon for fetching to be a clipboard instead of scissors
+//  Redesign the AboutDlg
+  Move BlowfishLizer off of FILE and onto C++ streams
+  Detect if KDE's klipper is running and display a warning because Klipper will grab any passwords.
+  KDE support
+  KPasman file support
+
+Another Project:
+A PHP version that uses Safe to open a database on your webserver and sends everything over SSL.

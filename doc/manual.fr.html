@@ -1,0 +1,358 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>MyPasswordSafe Manual</title>
+  <style type="text/css">
+    H1 {
+    	border-bottom: solid 2px #0080ff;
+    }
+    .title {
+    	text-align: center;
+    }
+    .title H1 {
+    	font-size: 32pt;
+	border: none;
+    }
+    .contents {
+    }
+    #header ul, #header ul li {
+    	display: inline;
+	list-style: none;
+    }
+    </style>
+</head>
+<body>
+<div id="header">
+Translations:
+<ul>
+<li><a href="manual.html">English</a></li>
+<li><a href="manual.fr.html">Fran&ccedil;aise</a></li>
+</ul>
+</div>
+<div class="title">
+<h1><a name="top">MyPasswordSafe</a></h1>
+&copy; 2004 <a href="http://www.semanticgap.com/">Semantic Gap
+Solutions</a> </div>
+<div class="contents">
+<h1>Contenu</h1>
+<ul>
+  <li><a href="#intro">Introduction</a></li>
+  <li><a href="#license">Licence</a></li>
+  <li><a href="#install">Installation</a></li>
+  <ul>
+    <li><a href="#frombin">...depuis les binaires</a></li>
+    <li><a href="#fromsrc">...depuis les sources</a></li>
+  </ul>
+  <li><a href="#usage">Usage</a></li>
+  <ul>
+    <li><a href="#starting">D&eacute;marrage de MyPasswordSafe</a></li>
+    <li><a href="#mainwindow">La fen&ecirc;tre principale</a></li>
+    <li><a href="#passwords">Gestion des mots de passe</a></li>
+    <li><a href="#editpword">Dialogue d'&eacute;dition des mots de passe</a></li>
+    <li><a href="#safes">Ouverture et sauvegarde des coffres-forts</a></li>
+    <li><a href="#prefs">Pr&eacute;f&eacute;rences</a></li>
+  </ul>
+  <li><a href="#faq">FAQ</a></li>
+  <li><a href="#contact">Contact</a></li>
+  <li><a href="#credits">Cr&eacute;dits</a></li>
+</ul>
+</div>
+<h1><a name="intro">Introduction</a></h1>
+<p>MyPasswordSafe est un gestionnaire de mots de passe simple a
+utiliser qui maintient la compatibilit&eacute; avec les fichiers
+utilis&eacute; par <a href="http://passwordsafe.sourceforge.net/">Password
+Safe</a>. MyPasswordSafe offre les fonctions suivantes: </p>
+<ul>
+  <li>Les coffres-forts sont chiffr&eacute;s lorsqu'ils sont
+stock&eacute;s sur disque.</li>
+  <li>Les mots de passe n'ont jamais a &ecirc;tre vus car ils sont
+copi&eacute;s dans le presse-papier</li>
+  <li>Des mots de passe al&eacute;atoires peuvent &ecirc;tre
+g&eacute;n&eacute;r&eacute;s.</li>
+  <li>Les taille, position et largeurs des colonnes des fen&ecirc;tres
+sont m&eacute;moris&eacute;es.</li>
+  <li>Un coffre-fort peut &ecirc;tre rendu actif de telle sorte qu'il
+soit toujours ouvert lorsque MyPasswordSafe d&eacute;marre.</li>
+</ul>
+<a href="#top">Retour au d&eacute;but</a>
+<h1><a name="license">Licence</a></h1>
+Copyright &copy; 2004, Semantic Gap Solutions<br>
+Tous droits r&eacute;serv&eacute;s.
+<p> La redistribution et l'utilisation du code source et binaire, avec
+ou sans modifications, sont permises tant que les conditions suivantes
+sont respect&eacute;es: </p>
+<ul>
+  <li>Les redistributions du code source doivent conserver l'indication
+de copyright ci-dessus, cette liste de conditions et la renonciation
+suivante.</li>
+  <li>Les redistributions sous forme binaire doivent reproduire
+l'indication de copyright ci-dessus, cette liste de conditions et la
+renonciation suivante dans la documentation et/ou les autres
+accessoires fournis avec la distribution.</li>
+  <li>Ni le nom de Semantic Gap Solutions ni les noms de ses
+collaborateurs ne peuvent &ecirc;tre utilis&eacute;s pour approuver ou
+promouvoir les produits d&eacute;riv&eacute;s de ce logiciel sans une
+permission &eacute;crite sp&eacute;cifique pr&eacute;alable.</li>
+</ul>
+<p>CE LOGICIEL EST FOURNI PAR LES DETENTEURS DU COPYRIGHT ET LES
+PARTICIPANTS "TEL QUEL" ET TOUTES LES GARANTIES EXPLICITES OU
+IMPLICITES, Y COMPRIS, MAIS NON LIMIT&Eacute;ES A CELLES-CI, LES
+GARANTIES IMPLICITES DE COMMERCIALISATION ET D'AD&Eacute;QUATION
+&Agrave; UN USAGE PARTICULIER SONT D&Eacute;NI&Eacute;ES. EN AUCUN CAS
+LES DETENTEURS DU COPYRIGHT OU LES PARTICIPANTS NE PEUVENT &Ecirc;TRE
+TENUS POUR RESPONSABLE DES DOMMAGES DIRECTS, INDIRECTS, FORTUITS,
+PARTICULIERS, EXEMPLAIRES OU CONS&Eacute;CUTIFS &Agrave; UNE ACTION (Y
+COMPRIS, MAIS NON LIMIT&Eacute;S &Agrave; CEUX-CI, L'ACQUISITION DE
+MARCHANDISES OU DE SERVICES DE REMPLACEMENT; LES PERTES D'UTILISATIONS,
+DE DONN&Eacute;ES OU FINANCI&Egrave;RES; OU L'INTERRUPTION
+D'ACTIVIT&Eacute;S) DE QUELQUE MANI&Egrave;RE QUE CES DOMMAGES SOIENT
+CAUS&Eacute;S ET CECI POUR TOUTES LES TH&Eacute;ORIES DE
+RESPONSABILIT&Eacute;S, QUE CE SOIT DANS UN CONTRAT, POUR DES
+RESPONSABILIT&Eacute;S STRICTES OU DES PR&Eacute;JUDICES (Y COMPRIS DUS
+&Agrave; UNE NEGLIGENCE OU AUTRE CHOSE) SURVENANT DE QUELQUE
+MANI&Egrave;RE QUE CE SOIT EN DEHORS DE L'UTILISATION DE CE LOGICIEL,
+M&Ecirc;ME EN CAS D'AVERTISSEMENT DE LA POSSIBILIT&Eacute; DE TELS
+DOMMAGES. </p>
+<a href="#top">Retour au d&eacute;but</a>
+<h1><a name="install">Installation</a></h1>
+<p>MyPasswordSafe existe en deux distributions: une distribution
+binaire et une&nbsp; distribution source. MyPasswordSafe
+n&eacute;cessite <a href="http://www.trolltech.com/download/index.html">Qt
+3</a> et <a href="http://www.boost.org/">Boost</a>, donc
+v&eacute;rifiez que vous en disposez.
+Boost n'est requis que pour compiler MyPasswordSafe, mais Qt a besoin
+d'&ecirc;tre
+install&eacute; pour ex&eacute;cuter les binaires. </p>
+<h2><a name="frombin">...Depuis les binaires<br>
+</a></h2>
+<p>La distribution binaire est pr&eacute;compil&eacute;e. Elle peut
+&ecirc;tre t&eacute;l&eacute;charg&eacute;e depuis cette <a
+ href="http://www.semanticgap.com/myps/release/">page</a>. Une fois
+t&eacute;l&eacute;charg&eacute;e, "d&eacute;tarez" la:<br>
+</p>
+<pre>tar xvfz MyPasswordSafe-bin.tgz</pre>
+<p>Cela devrait cr&eacute;er un r&eacute;pertoire contenant le binaire
+MyPasswordSafe, ce fichier, et d'autre documentation. Lancer "make
+install" dans le r&eacute;pertoire
+MyPasswordSafe directory va tout installer sous <i>/usr/local</i>.
+Cela devrait fonctionner dans d'autres endroits, mais les fichiers de
+langue ne seront pas trouv&eacute;s&nbsp; s'ils ne sont pas dans <i>/usr/local/share/MyPasswordSafe/locale</i>.
+Cela devrait &ecirc;tre tout si &ccedil;a fonctionne. Sinon continuez
+&agrave; lire.<br>
+</p>
+<h2><a name="fromsrc">...Depuis les sources</a></h2>
+<p>Vous voulez donc compiler vous m&ecirc;me. Assurez vous que Qt 3 est
+install&eacute;, et t&eacute;l&eacute;chargez <a
+ href="http://www.boost.org/">Boost</a>. <a
+ href="http://www.semanticgap.com/myps/release/">R&eacute;cup&eacute;rez
+les </a><a href="http://www.semanticgap.com/myps/release/">sources</a>
+et "d&eacute;tarez" MyPasswordSafe: </p>
+<pre>tar xvfz MyPasswordSafe.src.tgz</pre>
+<p>Vous pouvez "d&eacute;tarer" Boost dans le r&eacute;pertoire
+de&nbsp; MyPasswordSafe. Le fichier projet (MyPasswordSafe.pro) demande
+"boost-1.30.2" dans le r&eacute;pertoire. Vous pouvez changer le
+fichier projet &agrave; la main si votre chemin vers boost est
+diff&eacute;rent. Le Makefile contient &eacute;galement une variable
+PREFIX qui d&eacute;termine l'endroit o&ugrave; MyPasswordSafe
+s'installera. Changez la si <i>/usr/local</i> n'est pas l'endroit
+o&ugrave; vous voulez qu'il s'installe. Enfin vous pouvez lancer make: </p>
+<pre>cd MyPasswordSafe<br>make<br>make install</pre>
+<p>En cas de succ&egrave;s vous pouvez maintenant commencer &agrave;
+utiliser MyPasswordSafe. Sinon envoyez moi un email d&eacute;crivant
+votre situation. Au cas o&ugrave; vous souhaiteriez d&eacute;sinstaller
+MyPasswordSafe, le Makefile a une&nbsp;
+directive uninstall. Lancer "make uninstall" effacera les fichiers
+install&eacute;s.
+</p>
+<a href="file:///home/e/MyPasswordSafe/doc/manual.fr.html#top">Retour
+au d&eacute;but</a><a href="#top"></a>
+<h1><a name="usage">Usage</a></h1>
+<p> MyPasswordSafe est tr&egrave;s simple &agrave; utiliser. Presque
+toutes les commandes sont accessibles depuis le menu, la barre
+d'outils, le menu contextuel ou le clavier. Avant d'aborder
+l'utilisation proprement dite, regardons comment MyPasswordSafe peut
+&ecirc;tre d&eacute;marr&eacute;. </p>
+<h2><a name="starting">D&eacute;marrage de MyPasswordSafe</a></h2>
+<p>Le d&eacute;marrage de MyPasswordSafe est semblable &agrave; celui
+de n'importe quel autre programme, vous avez juste &agrave; le lancer.
+Si vous avez copi&eacute; le binaire dans votre PATH, tapez simplement <i>MyPasswordSafe</i>.
+Sinon vous devez soit vous positionnez dans le r&eacute;pertoire
+o&ugrave; se trouve le binaire, soit inclure celui-ci dans la ligne de
+commande. Vous pouvez &eacute;galement d&eacute;sirer ajouter une
+ic&ocirc;ne dans votre lanceur favori.<br>
+</p>
+<p>Lorsque MyPasswordSafe d&eacute;marre pour la premi&egrave;re fois,
+un coffre-fort vide est cr&eacute;&eacute;. Comme vous l'apprendrez
+plus tard, MyPasswordSafe poss&egrave;de une chose nomm&eacute;e le
+coffre-fort actif. Le coffre-fort actif est ouvert sans que vous ayez
+besoin de le localiser encore et encore.<br>
+</p>
+<h2><a name="mainwindow">La fen&ecirc;tre principale<br>
+</a></h2>
+<p>La fen&ecirc;tre principale n'est pas vraiment complexe. Il y a une
+bo&icirc;te &agrave; liste, une barre d'outils, et un menu. La barre
+d'outils et le menu font un peu double emploi. La plupart de l'action
+se d&eacute;roule dans la bo&icirc;te &agrave; liste.<br>
+</p>
+<center><img style="width: 332px; height: 330px;"
+ src="sshots/mainwindow.fr.jpg"
+ alt="Screenshot of MyPasswordSafe's main window"></center>
+<p>La bo&icirc;te &agrave; liste contient les mots de passe du
+coffre-fort courant. Double-cliquer sur un mot de passe dans la
+bo&icirc;te &agrave; liste r&eacute;cup&egrave;re le mot de passe de
+cette entr&eacute;e, et cliquer-droit fait surgir le menu
+d'&eacute;dition &agrave; c&ocirc;t&eacute; du pointeur. Alors que font
+ces commandes?<br>
+</p>
+<a href="file:///home/e/MyPasswordSafe/doc/manual.fr.html#top">Retour
+au d&eacute;but</a><a href="#top"></a>
+<h2><a name="passwords">Gestion des mots de passe<br>
+</a></h2>
+<p>Le menu d'&eacute;dition contient les commandes utilis&eacute;es
+pour g&eacute;rer les mots de passe. Le nom de chaque commande
+d&eacute;crit ce qu'elle fait. Par exemple, <span
+ style="font-style: italic;">Ajouter Mot de passe</span> ajoute
+r&eacute;ellement un nouveau mot de passe. <span
+ style="font-style: italic;">Supprimer Mot de passe</span> supprime le
+mot de passe s&eacute;lectionn&eacute;. Et <span
+ style="font-style: italic;">Editer Mot de passe</span> fait surgir un
+dialogue pour &eacute;diter le mot&nbsp; de passe
+s&eacute;lectionn&eacute;.<br>
+Les deux derni&egrave;res commandes n&eacute;cessitent peut-&ecirc;tre
+des explications. Ce sont <span style="font-style: italic;">R&eacute;cup&eacute;rer
+Utilisateur</span> et <span style="font-style: italic;">R&eacute;cup&eacute;rer
+Mot de passe</span>. Toutes les deux copient de l'information vers le
+presse-papier. L'une copie l'utilisateur, l'autre copie le mot de passe.<br>
+</p>
+<a href="file:///home/e/MyPasswordSafe/doc/manual.fr.html#top">Retour
+au d&eacute;but</a>
+<h2><a name="editpword">Dialogue d'&eacute;dition des mots de passe<br>
+</a></h2>
+<center><img style="width: 409px; height: 334px;"
+ src="sshots/editdialog.fr.jpg"
+ alt="Screenshot of the
+	edit password dialog"></center>
+<p>Et <span style="font-style: italic;">Ajouter Mot de passe </span>et
+<span style="font-style: italic;">Editer Mot de passe</span> utilisent
+le m&ecirc;me dialogue pour &eacute;diter les donn&eacute;es d'un mot
+de passe. Les mots de passe poss&egrave;dent quatre champs
+d'information: nom, utilisateur, mot de passe et notes. Tous sauf le
+champ mot de passe sont affich&eacute;s dans la fen&ecirc;tre
+principale. Le dialogue poss&egrave;de &eacute;galement trois boutons
+qui affectent le champ mot de passe:<br>
+</p>
+<ul>
+  <li>Montrer: Rend visible le mot de passe<br>
+  </li>
+  <li>R&eacute;cup&eacute;rer: Copie le mot de passe dans le
+presse-papier.<br>
+  </li>
+  <li>G&eacute;n&eacute;rer: Remplis le champ mot de passe avec un mot
+de passe al&eacute;atoire.<br>
+  </li>
+</ul>
+<a href="file:///home/e/MyPasswordSafe/doc/manual.fr.html#top">Retour
+au d&eacute;but</a><a href="#top"></a>
+<h2><a name="safes">Ouverture et sauvegarde des coffres-forts</a></h2>
+<p>Les coffres-forts peuvent &ecirc;tre cr&eacute;&eacute;s, ouverts,
+et
+sauvegard&eacute;s depuis le menu Fichier. Les commandes fonctionnent
+comme dans n'importe quelle application sauf lorsque qu'une phrase de
+passe est requise.<br>
+MyPasswordSafe supporte de multiples formats de fichier. Actuellement
+seuls deux formats sont support&eacute;s: les coffres-forts Password
+Safe et les fichiers texte.<br>
+Password Safe est similaire &agrave; MyPasswordSafe, mais ne tourne que
+sous Windows. Les fichiers cr&eacute;&eacute;s par Password Safe
+peuvent &ecirc;tre ouverts par MyPasswordSafe et vice-versa. Les
+fichiers sont chiffr&eacute;s avec l'algorithme Blowfish et sont
+pr&eacute;sum&eacute;s s&ucirc;rs. Utiliser <span
+ style="font-style: italic;">dat</span> comme extension.<br>
+</p>
+Les fichiers texte ne devraient <span
+ style="color: rgb(255, 0, 0); font-weight: bold;">JAMAIS</span><span
+ style="font-weight: bold;"> </span>&ecirc;tre utilis&eacute;s. Toute
+l'information est stock&eacute;e non chiffr&eacute;e. Mais si vous les
+trouvez utiles, allez-y et utilisez les.<br>
+<br>
+<a href="file:///home/e/MyPasswordSafe/doc/manual.fr.html#top">Retour
+au d&eacute;but</a>
+<h2><a name="prefs">Pr&eacute;f&eacute;rences</a></h2>
+<center><img style="width: 471px; height: 244px;"
+ src="sshots/prefsdialog.fr.jpg"
+ alt="Screenshot of the Preferences Dialog"></center>
+<p>MyPasswordSafe n'est pas des plus configurables mais offre quelques
+options:<br>
+</p>
+<ul>
+  <li>Coffre-fort actif: C'est le coffre-fort que MyPasswordSafe ouvre
+quand il d&eacute;marre; il peut &eacute;galement &ecirc;tre
+sp&eacute;cifi&eacute; via <span style="font-style: italic;">Activer</span>
+dans le menu Fichier.<br>
+  </li>
+  <li>Utilisateur par d&eacute;faut: C'est l'utilisateur utilis&eacute;
+pour les nouveaux mots de passe.</li>
+  <li>Vider le presse-papier en sortant?: Si coch&eacute;, le
+presse-papier est vid&eacute; quand MyPasswordSafe est ferm&eacute;.<br>
+  </li>
+  <li>Longueur des mots de passe g&eacute;n&eacute;r&eacute;s: Fixe la
+longueur des mots de passe g&eacute;n&eacute;r&eacute;s en appuyant sur
+le bouton G&eacute;n&eacute;rer dans le dialogue Editer Mot de passe.<br>
+  </li>
+  <li>Nombre d'essais: Nombre de fois que MyPasswordSafe essayera
+d'obtenir de vous la phrase de passe correcte avant d'abandonner.<br>
+  </li>
+</ul>
+<p>MyPasswordSafe stocke &eacute;galement la position et la taille de
+la fen&ecirc;tre ainsi que les largeurs des colonnes. Elles sont
+fix&eacute;es en les changeant, et ne sont pas disponibles dans le
+dialogue Pr&eacute;f&eacute;rences.<br>
+</p>
+<a href="file:///home/e/MyPasswordSafe/doc/manual.fr.html#top">Retour
+au d&eacute;but</a><a href="#top"></a>
+<h1><a name="faq">FAQ</a></h1>
+<h2>Quelle est la s&eacute;curit&eacute; de MyPasswordSafe?</h2>
+<p>Les coffres-forts devraient &ecirc;tre s&ucirc;rs sauf si
+l'algorithme Blowfish est cass&eacute;. C'est lorsque le programme
+tourne que je suis incertain de sa s&eacute;curit&eacute;. Je suis
+s&ucirc;r qu'un programme emb&ecirc;tant pourrait trouver vos mots de
+passe en m&eacute;moire.<br>
+Si vous savez quoi que ce soit pour rendre ce programme &agrave;
+l'&eacute;preuve des balles, envoyez moi un mail ou un correctif. </p>
+<h2>O&ugrave; est la version Windows?</h2>
+<p>J'aimerais r&eacute;ellement qu'il y ait une version Windows mais je
+ne peux me permettre une licence Qt. Si vous avez besoin d'un
+gestionnaire de mots de passe pour Windows, r&eacute;cup&eacute;rez <a
+ href="http://passwordsafe.sourceforge.net/">Password Safe</a>. Les
+versions &lt; 2 cr&eacute;ent des fichiers que MyPasswordSafe peut
+charger et sauvegarder. [
+Note pour les d&eacute;veloppeurs: Si vous avez Qt pour Windows,
+pourriez vous
+le compiler et le packager pour moi? ]</p>
+<a href="file:///home/e/MyPasswordSafe/doc/manual.fr.html#top">Retour
+au d&eacute;but</a><a href="#top"></a>
+<h1><a name="contact">Contact</a></h1>
+Semantic Gap Solutions peut &ecirc;tre contact&eacute; via:
+<ul>
+  <li>Web: <a href="http://www.semanticgap.com/">http://www.semanticgap.com/</a></li>
+  <li>Email: <a href="mailto:support@semanticgap.com">support@semanticgap.com</a></li>
+  <li>Courrier:<br>
+Semantic Gap Solutions<br>
+527 Park Dr.<br>
+Greenwood, IN 46143<br>
+USA</li>
+</ul>
+<h1><a name="credits">Cr&eacute;dits</a></h1>
+Programmation et conception:<br>
+Nolan Eakins<br>
+<br>
+Du code de chargement et de sauvegarde de fichiers provient de <a
+ href="http://passwordsafe.sourceforge.net/">Password Safe</a>.<br>
+<br>
+Et la plupart des ic&ocirc;nes viennent de <a
+ href="http://www.kde.org/">KDE</a><br>
+<br>
+La traduction fran&ccedil;aise a &eacute;t&eacute;
+r&eacute;alis&eacute;e par Emmanuel Adeline.
+</body>
+</html>

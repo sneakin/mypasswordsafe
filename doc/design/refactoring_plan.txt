@@ -1,0 +1,28 @@
+Requirements for classifying readcbc and writecbc into EncryptedString
+
+Encrypts and decrypts when needed
+Needs a pointer to a Blowfish object that is shared among other
+      EncryptedStrings
+A read method that reads the data from a stream
+A write method that writes the data to a stream
+A length attribute which specifies the length of the string
+A type attribute representing the types introduced in Password Safe 2
+The data is stored into an allocated buffer
+The Blowfish object is created using the password (const unsigned char *),
+    password length (int), salt (const unsigned char *salt), and
+    salt length (int)
+The Blowfish object will use some kind of shared pointer class to automatically
+    deallocate it when it's no longer used
+Encryption and decryption require, in addition to the Blowfish object, a
+	   cbc (unsigned char[8])
+All decryption output is to a SecuredString to ensure the memory gets trashed
+The data buffer gets trashed before deallocation
+
+
+Client:
+BlowfishLizer::read will use EncryptedStrings instead of calling readCBC
+BlowfishLizer::write will use EncryptedStrings as well
+
+====
+
+Move the default username preference into Safe

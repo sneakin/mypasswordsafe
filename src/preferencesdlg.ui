@@ -1,0 +1,330 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>PreferencesDlg</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>PreferencesDlg</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>465</width>
+            <height>213</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>0</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="minimumSize">
+        <size>
+            <width>465</width>
+            <height>213</height>
+        </size>
+    </property>
+    <property name="maximumSize">
+        <size>
+            <width>32767</width>
+            <height>32767</height>
+        </size>
+    </property>
+    <property name="caption">
+        <string>Preferences</string>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout8</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout3</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel6</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Default Safe:</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The active safe is the safe that MyPasswordSafe tries to open on startup.</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton" row="0" column="2">
+                            <property name="name">
+                                <cstring>browseButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>fileopen.png</pixmap>
+                            </property>
+                            <property name="autoDefault">
+                                <bool>false</bool>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Browse</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Click here to browse for the file that you want to use as the active safe.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel7</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Default username:</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The default username is the username used when a new password is created.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="2">
+                            <property name="name">
+                                <cstring>defUserBox</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enter the user name that you want MyPasswordSafe to automatically use when a new password is added.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit" row="0" column="1">
+                            <property name="name">
+                                <cstring>defaultSafeBox</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enter the pathname to the safe that you want to be opened on startup here.</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout7</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel1_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Number of guesses:</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>This is the number of tries you have at guessing your pass-phrase before MyPasswordSafe gives up.</string>
+                            </property>
+                        </widget>
+                        <widget class="QSpinBox" row="1" column="2">
+                            <property name="name">
+                                <cstring>maxTriesBox</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>10</number>
+                            </property>
+                            <property name="value">
+                                <number>3</number>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>This is the number of tries you have at guessing your pass-phrase before MyPasswordSafe gives up.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Generated password length:</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The generated password length sets the length of the passwords generated by the Generate button in the password edit dialog.</string>
+                            </property>
+                        </widget>
+                        <widget class="QSpinBox" row="0" column="2">
+                            <property name="name">
+                                <cstring>pwordLengthBox</cstring>
+                            </property>
+                            <property name="minValue">
+                                <number>4</number>
+                            </property>
+                            <property name="value">
+                                <number>8</number>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enter the number of characters you want generated passwords to use.</string>
+                            </property>
+                        </widget>
+                        <spacer row="1" column="1">
+                            <property name="name">
+                                <cstring>spacer2_2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>71</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <spacer row="0" column="1">
+                            <property name="name">
+                                <cstring>spacer2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>71</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </grid>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout4</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>okButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Ok</string>
+                    </property>
+                    <property name="accel">
+                        <string>Return</string>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>cancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>helpButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Help</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>73</height>
+                        </size>
+                    </property>
+                </spacer>
+            </vbox>
+        </widget>
+    </hbox>
+</widget>
+<connections>
+    <connection>
+        <sender>okButton</sender>
+        <signal>pressed()</signal>
+        <receiver>PreferencesDlg</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>cancelButton</sender>
+        <signal>pressed()</signal>
+        <receiver>PreferencesDlg</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>helpButton</sender>
+        <signal>pressed()</signal>
+        <receiver>PreferencesDlg</receiver>
+        <slot>onHelp()</slot>
+    </connection>
+    <connection>
+        <sender>browseButton</sender>
+        <signal>pressed()</signal>
+        <receiver>PreferencesDlg</receiver>
+        <slot>onBrowse()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>defaultSafeBox</tabstop>
+    <tabstop>browseButton</tabstop>
+    <tabstop>defUserBox</tabstop>
+    <tabstop>okButton</tabstop>
+    <tabstop>cancelButton</tabstop>
+</tabstops>
+<includes>
+    <include location="global" impldecl="in declaration">string</include>
+    <include location="local" impldecl="in implementation">qfiledialog.h</include>
+    <include location="local" impldecl="in implementation">preferencesdlg.ui.h</include>
+</includes>
+<forwards>
+    <forward>using std::string</forward>
+</forwards>
+<slots>
+    <slot>onBrowse()</slot>
+    <slot>setDefaultSafe( const QString &amp; safe )</slot>
+    <slot>setMaxTries( int tries )</slot>
+    <slot>onHelp()</slot>
+</slots>
+<functions>
+    <function returnType="QString">getDefUser()</function>
+    <function returnType="QString">getDefaultSafe()</function>
+    <function>setDefUser( const QString &amp; user )</function>
+    <function returnType="int">getGenPwordLength()</function>
+    <function>setGenPwordLength( int length )</function>
+    <function returnType="int">getMaxTries()</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

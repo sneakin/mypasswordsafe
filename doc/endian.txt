@@ -1,0 +1,4 @@
+The byte order is setup with BYTE_ORDER being defined. It can be
+set to either LITTLE_ENDIAN or BIG_ENDIAN. Unix operating systems
+define this in <endian.h>. LITTLE_ENDIAN equals 1234 and
+BIG_ENDIAN equals 4321.

@@ -1,0 +1,196 @@
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<class>AboutDlg</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>AboutDlg</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>365</width>
+            <height>465</height>
+        </rect>
+    </property>
+    <property name="minimumSize">
+        <size>
+            <width>365</width>
+            <height>465</height>
+        </size>
+    </property>
+    <property name="maximumSize">
+        <size>
+            <width>365</width>
+            <height>465</height>
+        </size>
+    </property>
+    <property name="caption">
+        <string>About MyPasswordSafe</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>pixmapLabel1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>Panel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="pixmap">
+                <pixmap>about_banner.png</pixmap>
+            </property>
+            <property name="scaledContents">
+                <bool>true</bool>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>MyPasswordSafe</string>
+            </property>
+        </widget>
+        <widget class="QTabWidget">
+            <property name="name">
+                <cstring>tabWidget2</cstring>
+            </property>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Info</string>
+                </attribute>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <widget class="QTextBrowser">
+                        <property name="name">
+                            <cstring>infoText</cstring>
+                        </property>
+                        <property name="text">
+                            <string>&lt;center&gt;
+&lt;h1&gt;MyPasswordSafe&lt;/h1&gt;
+Version: {VERSION}&lt;br/&gt;
+&lt;br/&gt;
+Copyright &amp;copy; 2004 Semantic Gap Solutions&lt;br/&gt;
+&lt;br/&gt;
+&lt;u&gt;&lt;font color="#0000ff"&gt;http://www.semanticgap.com/&lt;/font&gt;&lt;/u&gt;&lt;br/&gt;
+&lt;br/&gt;
+Compiled by&lt;br/&gt;
+{USER}@{HOST} on {DATE}&lt;br/&gt;
+&lt;/center&gt;</string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Credits</string>
+                </attribute>
+                <widget class="QTextBrowser">
+                    <property name="name">
+                        <cstring>creditText</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>0</x>
+                            <y>0</y>
+                            <width>360</width>
+                            <height>270</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;Programming and design by Nolan Eakins &amp;lt;&lt;font color="#0000ff"&gt;sneakin@semanticgap.com&lt;/font&gt;&amp;gt;&lt;/p&gt;
+
+Thanks go out to:
+&lt;ul&gt;
+&lt;li&gt;Emmanuel Adeline &amp;lt;&lt;font color="#0000ff"&gt;ead+myps@free.fr&lt;/font&gt;&amp;gt; for translating the manual and UI into French.&lt;/li&gt;
+&lt;li&gt;The Password Safe &amp;lt;&lt;font color="#0000ff"&gt;http://passwordsafe.sourceforge.net/&lt;/font&gt;&amp;gt; team for providing a program that I needed to port to Linux, and the loading and saving code that this program uses.&lt;/li&gt;
+&lt;li&gt;The KDE project &amp;lt;&lt;font color="#0000ff"&gt;http://www.kde.org/&lt;/font&gt;&amp;gt; for producing some high-quality ikons that MyPasswordSafe uses.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;br/&gt;
+&lt;br/&gt;
+&lt;hr/&gt;
+&lt;/body&gt;
+&lt;/html&gt;</string>
+                    </property>
+                </widget>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>tab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>License</string>
+                </attribute>
+                <widget class="QTextBrowser">
+                    <property name="name">
+                        <cstring>licenseText</cstring>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>0</x>
+                            <y>0</y>
+                            <width>360</width>
+                            <height>270</height>
+                        </rect>
+                    </property>
+                    <property name="text">
+                        <string>Copyright (c) 2004, Semantic Gap Solutions
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+Neither the name of Semantic Gap Solutions nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+--</string>
+                    </property>
+                </widget>
+            </widget>
+        </widget>
+        <widget class="QPushButton">
+            <property name="name">
+                <cstring>pushButton11</cstring>
+            </property>
+            <property name="text">
+                <string>Close</string>
+            </property>
+            <property name="default">
+                <bool>true</bool>
+            </property>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>pushButton11</sender>
+        <signal>pressed()</signal>
+        <receiver>AboutDlg</receiver>
+        <slot>accept()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">aboutdlg.ui.h</include>
+</includes>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+</functions>
+<pixmapinproject/>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

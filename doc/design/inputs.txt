@@ -1,0 +1,108 @@
+i = implemented
+s = scheduled
+
+i SN StartupNew
+Creatse a new safe for MyPS to start with
+
+i SA StartupActive
+Opens the active safe for MyPS to start with
+
+i SB StartupBrowse
+Opens a specified safe for MyPS to start with
+
+i FN FileNew
+Ask the user if they want to save the safe
+If yes, then save yet
+Close the safe
+Get a new pass-phrase
+Create a new safe
+Disables FS, FSA
+
+i FO FileOpen
+Ask the user to save
+If yes, save the safe
+Shows a file dialog
+Gets the pass-phrase
+Opens the specified safe
+If the safe was opened, close the old one and set the current safe to the
+   new one
+Disables FS, enables FSA
+
+s FOA FileOpenActive
+Asks the user to save
+If yes, save the safe
+Gets the pass-phrase
+Opens the default safe
+If it was opened, close the old one and set the current to the new
+Disables FS, enables FSA
+
+i FS FileSave
+Saves the safe
+Eqiv to FSA if the safe hasn't been saved
+Disables FS, enables FSA
+
+i FSA FileSaveAs
+Shows a file dialog
+Saves the safe to the specified file using the specified filter if one was selected or determining the filter based off of the extension.
+Disables FS, enables FSA
+
+i FMA FileMakeActive
+Calls FS
+Sets the default safe to the current safe
+
+s FCPP FileChangePassPhrase
+Changes the pass-phrase that the safe uses
+Enables FS, FSA
+
+i FP FilePreferences
+Shows the preferences dialog
+
+i FE FileExit
+Asks the user to save
+If yes, save the safe
+Closes the safe
+Exits
+
+i EAP EditAddPassword
+Adds a new password
+Enables FS, FSA
+
+i EDP EditDelPassword
+Ask the user if they want to delete the selected entry,
+If yes it is deleted
+Enables FS, FSA
+
+i EEP EditEditPassword
+Edits the selected etry
+Enables FS, FSA if the entry was changed
+
+i EFP EditFetchPassword
+Copies the selected password to the clipboard
+
+i EFU EditFetchUser
+Copies the username to the clipboard
+
+i HWT HelpWhatsThis
+Enters What's This? mode
+
+i HM HelpManual
+Shows the online manual
+
+i HA HelpAbout
+Shows the about dialog
+
+i WC WindowClosed
+Eqiv: FE
+
+i IDC ItemDoubleClicked
+Eqiv: EFP
+Fetches the password
+
+s WM WindowMinimized
+Eqiv: OL
+
+s OL OptionsLock
+Locks MyPS by showing a pass-phrase dialog
+
+s IS ItemSelected
+Expands a multilined note to show all of its lines
