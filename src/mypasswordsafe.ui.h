@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.2 2004/05/04 22:48:44 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.3 2004/05/05 22:29:48 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -114,7 +114,7 @@ void MyPasswordSafe::destroy()
 {
   // ask to save file if needed
   if(clearClipboardOnExit())
-    QApplication::clipboard()->setText("");
+    QApplication::clipboard()->setText("", QClipboard::Selection);
   // save config settings   
   m_config.beginGroup("/MyPasswordSafe");
   
@@ -405,6 +405,8 @@ void MyPasswordSafe::pwordAdd()
   PwordEditDlg dlg;
   dlg.setGenPwordLength(m_gen_pword_length);
   dlg.setUser(m_def_user);
+  dlg.showTimes(false);
+
   if(dlg.exec() == QDialog::Accepted) {
     SafeItem i((const char *)dlg.getItemName().utf8(),
 	       (const char *)dlg.getUser().utf8(),
@@ -462,11 +464,18 @@ void MyPasswordSafe::pwordEdit()
     // NOTE: password decrypted
     dlg.setPassword(QString::fromUtf8(item->getPassword().get().get()));
     dlg.setNotes(QString::fromUtf8(item->getNotes()));
+    dlg.setGroup(QString::fromUtf8(item->getGroup()));
+    dlg.setAccessedOn(item->getAccessTime());
+    dlg.setCreatedOn(item->getCreationTime());
+    dlg.setModifiedOn(item->getModificationTime());
+    dlg.setLifetime(item->getLifetime());
+
     if(dlg.exec() == QDialog::Accepted) {
       item->setName(dlg.getItemName());
       item->setUser(dlg.getUser());
       item->setPassword(EncryptedString((const char *)dlg.getPassword().utf8()));
       item->setNotes(dlg.getNotes());
+      item->setGroup(dlg.getGroup()); // FIXME: needs to reparent the view item
       m_safe->setChanged(true); // FIXME: send this through the view
       savingEnabled(true);
       statusBar()->message(tr("Password updated"));

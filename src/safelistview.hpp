@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.2 2004/05/04 22:48:44 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.3 2004/05/05 22:29:49 nolan Exp $
  */
 #ifndef SAFELISTVIEW_HPP
 #define SAFELISTVIEW_HPP
@@ -42,6 +42,11 @@ public:
   QString getGroup() const;
 
   inline SafeItem *item() { return m_item; }
+
+  inline time_t getCreationTime() const { return m_item->getCreationTime(); }
+  inline time_t getModificationTime() const { return m_item->getModificationTime(); }
+  inline time_t getAccessTime() const { return m_item->getAccessTime(); }
+  inline time_t getLifetime() const { return m_item->getLifetime(); }
 
 private:
   SafeItem *m_item;

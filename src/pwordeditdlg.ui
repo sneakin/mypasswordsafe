@@ -7,9 +7,9 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>2</y>
+            <y>0</y>
             <width>400</width>
-            <height>300</height>
+            <height>350</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -23,92 +23,17 @@
     <property name="minimumSize">
         <size>
             <width>400</width>
-            <height>300</height>
+            <height>350</height>
         </size>
     </property>
     <property name="caption">
         <string>Edit Password</string>
     </property>
-    <hbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout6</cstring>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout26</cstring>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLineEdit" row="1" column="1">
-                            <property name="name">
-                                <cstring>userEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>textLabel2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>User:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
-                                <cstring>textLabel3</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Password:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="0" column="1">
-                            <property name="name">
-                                <cstring>nameEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="2" column="1">
-                            <property name="name">
-                                <cstring>passwordEdit</cstring>
-                            </property>
-                            <property name="echoMode">
-                                <enum>Password</enum>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Name:</string>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel4</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Notes:</string>
-                    </property>
-                </widget>
-                <widget class="QTextEdit">
-                    <property name="name">
-                        <cstring>notesEdit</cstring>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QLayoutWidget" row="0" column="1">
             <property name="name">
                 <cstring>layout5</cstring>
             </property>
@@ -181,7 +106,161 @@
                 </spacer>
             </vbox>
         </widget>
-    </hbox>
+        <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>timeLayout</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="1" column="1">
+                    <property name="name">
+                        <cstring>lifetimeLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Lifetime: %1</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>accessedOnLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Accessed on: %1</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="1">
+                    <property name="name">
+                        <cstring>modifiedOnLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Modified on: %1</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>createdOnLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Created on: %1</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QLayoutWidget" row="0" column="0">
+            <property name="name">
+                <cstring>layout10</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout8</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Name:</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit" row="2" column="1">
+                            <property name="name">
+                                <cstring>passwordEdit</cstring>
+                            </property>
+                            <property name="echoMode">
+                                <enum>Password</enum>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="3" column="0">
+                            <property name="name">
+                                <cstring>textLabel3_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Group:</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>textLabel3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Password:</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit" row="0" column="1">
+                            <property name="name">
+                                <cstring>nameEdit</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>User:</string>
+                            </property>
+                        </widget>
+                        <widget class="QLayoutWidget" row="3" column="1">
+                            <property name="name">
+                                <cstring>layout7</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLineEdit">
+                                    <property name="name">
+                                        <cstring>groupEdit</cstring>
+                                    </property>
+                                    <property name="readOnly">
+                                        <bool>true</bool>
+                                    </property>
+                                </widget>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>groupBrowseButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string></string>
+                                    </property>
+                                    <property name="pixmap">
+                                        <pixmap>fileopen.png</pixmap>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                        <widget class="QLineEdit" row="1" column="1">
+                            <property name="name">
+                                <cstring>userEdit</cstring>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel4</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Notes:</string>
+                    </property>
+                </widget>
+                <widget class="QTextEdit">
+                    <property name="name">
+                        <cstring>notesEdit</cstring>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+    </grid>
 </widget>
 <connections>
     <connection>
@@ -214,6 +293,12 @@
         <receiver>PwordEditDlg</receiver>
         <slot>showPassword()</slot>
     </connection>
+    <connection>
+        <sender>groupBrowseButton</sender>
+        <signal>clicked()</signal>
+        <receiver>PwordEditDlg</receiver>
+        <slot>browseForGroup()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>nameEdit</tabstop>
@@ -237,6 +322,13 @@
     <slot>genPassword()</slot>
     <slot>fetchPassword()</slot>
     <slot>setItemName( const QString &amp; text )</slot>
+    <slot>setGroup( const QString &amp; text )</slot>
+    <slot returnType="bool">browseForGroup()</slot>
+    <slot>setCreatedOn( time_t time )</slot>
+    <slot>setAccessedOn( time_t time )</slot>
+    <slot>setModifiedOn( time_t time )</slot>
+    <slot>setLifetime( time_t time )</slot>
+    <slot>showTimes( bool yes )</slot>
 </slots>
 <functions>
     <function returnType="QString">getItemName()</function>
@@ -247,6 +339,8 @@
     <function>setPassword( const QString &amp; text )</function>
     <function>setNotes( const QString &amp; text )</function>
     <function>setGenPwordLength( int value )</function>
+    <function returnType="QString">getGroup() const</function>
+    <function returnType="bool">timesShown() const</function>
 </functions>
 <pixmapinproject/>
 <layoutdefaults spacing="6" margin="11"/>

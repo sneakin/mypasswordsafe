@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.2 2004/05/04 22:48:44 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.3 2004/05/05 22:29:49 nolan Exp $
  */
 #include <qpixmap.h>
 #include "myutil.hpp"
@@ -10,7 +10,7 @@ SafeListViewItem::SafeListViewItem(SafeListView *parent, SafeItem *item)
   assert(m_item != NULL);
 
   //setPixmap(0, QPixmap::fromMimeSource("password.png"));
-  setGroup("/");
+  setGroup("");
   setDragEnabled(true);
   setDropEnabled(true);
 }

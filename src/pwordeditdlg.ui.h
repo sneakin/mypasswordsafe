@@ -6,7 +6,7 @@
 ** init() function in place of a constructor, and a destroy() function in
 ** place of a destructor.
 *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.2 2004/05/04 22:48:44 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.3 2004/05/05 22:29:48 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -43,6 +43,7 @@
 
 #include <qapplication.h>
 #include <qclipboard.h>
+#include <qdatetime.h>
 #include "mypasswordsafe.h"
 #include "pwsafe/Util.h"
 
@@ -68,7 +69,7 @@ void PwordEditDlg::genPassword()
 
 void PwordEditDlg::fetchPassword()
 {
-    QApplication::clipboard()->setText(passwordEdit->text());
+	QApplication::clipboard()->setText(passwordEdit->text(), QClipboard::Selection);
 }
 
 
@@ -122,4 +123,62 @@ void PwordEditDlg::setNotes( const QString &text )
 void PwordEditDlg::setGenPwordLength( int value )
 {
     m_pword_length = value;
+}
+
+void PwordEditDlg::setGroup(const QString &text)
+{
+	groupEdit->setText(text);
+}
+
+QString PwordEditDlg::getGroup() const
+{
+	return groupEdit->text();
+}
+
+bool PwordEditDlg::browseForGroup()
+{
+	return false;
+}
+
+void PwordEditDlg::setCreatedOn(time_t time)
+{
+	QDateTime date_time;
+	date_time.setTime_t(time);
+	createdOnLabel->setText(tr("Created on: %1").arg(date_time.toString()));
+}
+
+void PwordEditDlg::setAccessedOn(time_t time)
+{
+	QDateTime date_time;
+	date_time.setTime_t(time);
+	accessedOnLabel->setText(tr("Accessed on: %1").arg(date_time.toString()));
+}
+
+void PwordEditDlg::setModifiedOn(time_t time)
+{
+	QDateTime date_time;
+	date_time.setTime_t(time);
+	modifiedOnLabel->setText(tr("Modified on: %1").arg(date_time.toString()));
+}
+
+void PwordEditDlg::setLifetime(time_t time)
+{
+	// FIXME: lifetime is not a date, but just a span of time
+	QTime qtime;
+	qtime = qtime.addSecs(time);
+	lifetimeLabel->setText(tr("Lifetime: %1").arg(qtime.toString()));
+}
+
+void PwordEditDlg::showTimes(bool yes)
+{
+	createdOnLabel->setShown(yes);
+	accessedOnLabel->setShown(yes);
+	modifiedOnLabel->setShown(yes);
+	lifetimeLabel->setShown(yes);
+}
+
+bool PwordEditDlg::timesShown() const
+{
+	return (createdOnLabel->isShown() && accessedOnLabel->isShown() &&
+			modifiedOnLabel->isShown() && lifetimeLabel->isShown());
 }
