@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.7 2004/07/28 23:17:20 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.8 2004/07/31 00:03:52 nolan Exp $
  */
 #ifndef SAFELISTVIEW_HPP
 #define SAFELISTVIEW_HPP
@@ -105,7 +105,7 @@ public:
   virtual void setResizePolicy(QListView::WidthMode mode);
 
   void setSafe(Safe *safe);
-  SafeListViewItem *getSelectedItem();
+  SafeItem *getSelectedItem();
 
   virtual void startDrag();
 

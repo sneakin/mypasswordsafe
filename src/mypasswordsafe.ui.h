@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.16 2004/07/30 10:22:14 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.17 2004/07/31 00:03:52 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -334,20 +334,16 @@ void MyPasswordSafe::pwordAdd()
   dlg.showDetails(false);
   
   if(dlg.exec() == QDialog::Accepted) {
-    SafeListViewItem *selection = pwordListView->getSelectedItem();
+    SafeItem *selection = pwordListView->getSelectedItem();
     SafeGroup *parent = m_safe;
 
     if(selection != NULL) {
-      SafeListViewGroup *group = NULL;
-      if(selection->rtti() == SafeListViewEntry::RTTI) {
-	group = (SafeListViewGroup *)selection->parent();
+      if(selection->rtti() == SafeEntry::RTTI) {
+	parent = selection->parent();
       }
-      else if(selection->rtti() == SafeListViewGroup::RTTI) {
-	group = (SafeListViewGroup *)selection;
+      else if(selection->rtti() == SafeGroup::RTTI) {
+	parent = (SafeGroup *)selection;
       }
-
-      if(group)
-	parent = group->group();
     }
 
     SafeEntry *safe_item = new SafeEntry(parent,
@@ -373,9 +369,8 @@ void MyPasswordSafe::pwordAdd()
 
 void MyPasswordSafe::pwordDelete()
 {
-  SafeListViewItem *list_item(pwordListView->getSelectedItem());
-  if(list_item) {
-    SafeItem *item = list_item->item();
+  SafeItem *item(pwordListView->getSelectedItem());
+  if(item) {
     int result = QMessageBox::warning(this, tr("Are you sure?"),
 				      tr("Are you sure you want to delete this password?"),
 				      QMessageBox::Yes, QMessageBox::No);
@@ -400,10 +395,10 @@ void MyPasswordSafe::pwordDelete()
 
 void MyPasswordSafe::pwordEdit()
 {
-  SafeListViewItem *item = pwordListView->getSelectedItem();
+  SafeItem *item = pwordListView->getSelectedItem();
   if(item != NULL) {
-    if(item->rtti() == SafeListViewEntry::RTTI) {
-      SafeEntry *entry = (SafeEntry *)item->item();
+    if(item->rtti() == SafeEntry::RTTI) {
+      SafeEntry *entry = (SafeEntry *)item;
 
       entry->updateAccessTime();
 
@@ -448,9 +443,9 @@ void MyPasswordSafe::pwordEdit()
 
 void MyPasswordSafe::pwordFetch()
 {
-  SafeListViewItem *item(pwordListView->getSelectedItem());
-  if(item && item->rtti() == SafeListViewEntry::RTTI) {
-    SafeEntry *entry = (SafeEntry *)item->item();
+  SafeItem *item = pwordListView->getSelectedItem();
+  if(item && item->rtti() == SafeEntry::RTTI) {
+    SafeEntry *entry = (SafeEntry *)item;
     // NOTE: password decrypted
     SecuredString pword(entry->password().get());
 	copyToClipboard(QString::fromUtf8(pword.get()));
@@ -466,9 +461,9 @@ void MyPasswordSafe::pwordFetch()
 
 void MyPasswordSafe::pwordFetchUser()
 {
-  SafeListViewItem *item(pwordListView->getSelectedItem());
-  if(item && item->rtti() == SafeListViewEntry::RTTI) {
-    SafeEntry *entry = (SafeEntry *)item->item();
+  SafeItem *item = pwordListView->getSelectedItem();
+  if(item && item->rtti() == SafeEntry::RTTI) {
+    SafeEntry *entry = (SafeEntry *)item;
     copyToClipboard(entry->user());
     statusBar()->message(tr("Username copied to clipboard"));
 
@@ -641,18 +636,17 @@ void MyPasswordSafe::createGroup()
   }
 
   // get the selected item
-  SafeListViewItem *item = pwordListView->getSelectedItem();
+  SafeItem *item = pwordListView->getSelectedItem();
   SafeGroup *parent = m_safe;
 
   // if there's an item selected
   if(item != NULL) {
     //    get its group
-    if(item->rtti() == SafeListViewEntry::RTTI) {
-      SafeEntry *entry = ((SafeListViewEntry *)item)->entry();
-      parent = entry->parent();
+    if(item->rtti() == SafeEntry::RTTI) {
+      parent = item->parent();
     }
-    else if(item->rtti() == SafeListViewGroup::RTTI) {
-      parent = ((SafeListViewGroup *)item)->group();
+    else if(item->rtti() == SafeGroup::RTTI) {
+      parent = (SafeGroup *)item;
     }
     else {
       DBGOUT("Selected item not a valid item type");
@@ -660,7 +654,7 @@ void MyPasswordSafe::createGroup()
       return;
     }
   }
-	
+
   //    create the group
   SafeGroup *group = new SafeGroup(parent, group_name);
   if(group == NULL) {

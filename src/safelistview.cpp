@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.10 2004/07/28 23:17:20 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.11 2004/07/31 00:03:52 nolan Exp $
  */
 #include <qpixmap.h>
 #include <assert.h>
@@ -240,10 +240,14 @@ void SafeListView::setSafe(Safe *safe)
   }
 }
 
-SafeListViewItem *SafeListView::getSelectedItem()
+SafeItem *SafeListView::getSelectedItem()
 {
   QListViewItem *item = selectedItem();
-  return (SafeListViewItem *)item;
+  if(item->rtti() == SafeListViewEntry::RTTI ||
+     item->rtti() == SafeListViewGroup::RTTI)
+    return ((SafeListViewItem *)item)->item();
+  else
+    return NULL;
 }
 
 #if 0
