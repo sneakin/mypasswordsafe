@@ -7,9 +7,11 @@ UPLOAD_TO=sg:/home/nolan/web/semanticgap.com/myps/release/devel
 
 all: src bin
 
-src: $(RELEASE).src.tgz.asc
+sign: $(RELEASE).src.tgz.asc $(RELEASE).bin.tgz.asc
 
-bin: $(RELEASE).bin.tgz.asc
+src: $(RELEASE).src.tgz
+
+bin: $(RELEASE).bin.tgz
 
 $(RELEASE):
 	#cvs co -r $(BRANCH) $@
@@ -34,11 +36,11 @@ $(RELEASE).bin.tgz.asc: $(RELEASE).bin.tgz
 $(RELEASE).src.tgz.asc: $(RELEASE).src.tgz
 	$(GPGSIGN) $<
 
-upload-src: src
+upload-src: src.sig
 	scp $(RELEASE).src.tgz $(UPLOAD_TO)
 	scp $(RELEASE).src.tgz.asc $(UPLOAD_TO)
 
-upload-bin: bin
+upload-bin: bin.sig
 	scp $(RELEASE).bin.tgz $(UPLOAD_TO)
 	scp $(RELEASE).bin.tgz.asc $(UPLOAD_TO)
 
