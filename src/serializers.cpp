@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.8 2004/06/24 06:08:16 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.9 2004/06/24 07:46:21 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -40,7 +40,7 @@
 #include <iostream>
 #include <fstream>
 #include <qstring.h>
-#include <string>
+#include <qstringlist.h>
 #include <vector>
 #include <algorithm>
 #include <qstring.h>
@@ -352,7 +352,7 @@ int BlowfishLizer::readEntry(FILE *in, SafeItem &item,
 			     const QString &def_user)
 {
   SecuredString data;
-  string tempdata;
+  QString tempdata;
   int type;
 
   int numread = 0;
@@ -361,20 +361,20 @@ int BlowfishLizer::readEntry(FILE *in, SafeItem &item,
   if(data.length() > 0) {
     tempdata = data.get();
 
-    vector<string> name_user(split(tempdata, '\xAD'));
+    QStringList name_user(QStringList::split('\xAD', tempdata));
     if(name_user.size() == 2) {
-      trimRight(name_user[0]);
-      item.setName(name_user[0]);
+      //trimRight(name_user[0]);
+      item.setName(name_user[0].stripWhiteSpace());
 
-      trimLeft(name_user[1]);
-      item.setUser(name_user[1]);
+      //trimLeft(name_user[1]);
+      item.setUser(name_user[1].stripWhiteSpace());
     }
     // check for the other special character
     else {
-      name_user = split(tempdata, '\xA0');
+      name_user = QStringList::split('\xA0', tempdata);
       if(name_user.size() == 2) {
-	trimRight(name_user[0]);
-	item.setName(name_user[0]);
+	//trimRight(name_user[0]);
+	item.setName(name_user[0].stripWhiteSpace());
 	item.setUser(def_user);
       }
       else {
@@ -712,6 +712,9 @@ QString BlowfishLizer2::parseGroup(const QString &group)
   // '.' seperates groups, '\' is the escape sequence,
   // but only '.' and '\' need to be escaped.
 {
+  if(group.isEmpty())
+    return QString();
+
   QString ret;
   QChar c;
 
@@ -742,6 +745,9 @@ QString BlowfishLizer2::parseGroup(const QString &group)
 
 QString BlowfishLizer2::readyGroup(const QString &group)
 {
+  if(group.isEmpty())
+    return QString();
+
   QString ret;
   unsigned int i = 0;
   QChar c(group[i]);

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.12 2004/06/24 06:08:16 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.13 2004/06/24 07:46:21 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -33,7 +33,6 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <time.h>
-#include <string>
 #include <vector>
 #include <algorithm>
 #include <iostream>
