@@ -60,10 +60,10 @@ FORMS	= src/mypasswordsafe.ui \
 	src/manualdlg.ui \
 	src/startupdlgbase.ui \
 	src/newpassphrasedlg.ui
-IMAGES	= images/searchfind \
+IMAGES	= \
 	images/edit_add.png \
 	images/edit_remove.png \
-	images/editcopy_1.png \
+	images/editcopy.png \
 	images/about_banner.png \
 	images/edit.png \
 	images/editcut.png \
@@ -94,7 +94,8 @@ IMAGES	= images/searchfind \
 	images/contexthelp.png \
 	images/lock.png \
 	images/fileclose.png \
-	images/button_cancel.png
+	images/button_cancel.png \
+	images/file_locked.png
 
 DEBUG = $$(DEBUG)
 
