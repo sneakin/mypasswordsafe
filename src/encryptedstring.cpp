@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/encryptedstring.cpp,v 1.6 2004/11/01 21:54:34 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/encryptedstring.cpp,v 1.7 2004/12/06 12:32:05 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,52 +18,37 @@
 #include <time.h>
 #include <iostream>
 #include "pwsafe/Util.h"
-#include "pwsafe/PW_BlowFish.h"
+#include "crypto/bfproxy.hpp"
+#include "crypto/sha1.h"
+#include "securedstring.hpp"
 #include "encryptedstring.hpp"
 
 using namespace std;
 
+BFProxy EncryptedString::algor((const unsigned char *)GetAlphaNumPassword(32).c_str(), 32);
+
 EncryptedString::EncryptedString()
   : m_length(0), m_data(NULL)
 {
-  createAlgorithm();
-}
-
-//EncryptedString::EncryptedString(boost::shared_ptr<BlowFish> algor)
-//  : m_type(PASSWORD), m_algor(algor), m_length(0), m_data(NULL)
-EncryptedString::EncryptedString(SmartPtr<BlowFish> algor)
-  : m_algor(algor), m_length(0), m_data(NULL)
-  // EncryptedString defaults to Type::PASSWORD because that's
-  // what it'll primarily be used to store
-{
-}
-
-//EncryptedString::EncryptedString(boost::shared_ptr<BlowFish> algor,
-//				 const SecuredString &str)
-EncryptedString::EncryptedString(SmartPtr<BlowFish> algor,
-				 const SecuredString &str)
-  : m_algor(algor), m_length(0), m_data(NULL)
-{
-  set(str);
+  initCBC();
 }
 
 EncryptedString::EncryptedString(const SecuredString &str)
   : m_length(0), m_data(NULL)
 {
-  createAlgorithm();
+  initCBC();
   set(str);
 }
 
 EncryptedString::EncryptedString(const char *str)
   : m_length(0), m_data(NULL)
 {
-  createAlgorithm();
+  initCBC();
   set(str);
 }
 
 EncryptedString::EncryptedString(const EncryptedString &es)
 {
-  m_algor = es.m_algor;
   m_length = es.length();
   memcpy(m_cbc, es.m_cbc, 8);
   memcpy(m_hash, es.m_hash, 20);
@@ -98,14 +83,6 @@ unsigned int EncryptedString::length() const
   return m_length;
 }
 
-//void EncryptedString::setAlgorithm(boost::shared_ptr<BlowFish> fish)
-void EncryptedString::setAlgorithm(SmartPtr<BlowFish> fish)
-{
-  SecuredString s(get()); // NOTE: decrypted data
-  m_algor = fish;
-  set(s);
-}
-
 SecuredString EncryptedString::get() const
 {
   if(m_data != NULL && m_length > 0) {
@@ -126,7 +103,7 @@ SecuredString EncryptedString::get() const
     for (int x=0;x<BlockLength;x+=8)
       {
 	memcpy(tempcbc, m_data+x, 8);
-	m_algor->Decrypt(m_data+x, buffer+x);
+	algor.decrypt(m_data+x, buffer+x);
 	xormem(buffer+x, cbcbuffer, 8);
 	memcpy(cbcbuffer, tempcbc, 8);
       }
@@ -140,12 +117,6 @@ SecuredString EncryptedString::get() const
     return SecuredString();
   }
 }
-
-/*void EncryptedString::makeLengthBlock(unsigned char len_block[],
-				      unsigned char cbc_buffer[])
-{
-
-}*/
 
 void EncryptedString::set(const SecuredString &str)
 {
@@ -181,7 +152,7 @@ void EncryptedString::set(const char *buffer)
    //putInt32( lengthblock, length );
 
    //xormem(lengthblock, m_cbc, 8); // do the CBC thing
-   //m_algor->Encrypt(lengthblock, lengthblock);
+   //m_algor->encrypt(lengthblock, lengthblock);
    //memcpy(cbcbuffer, lengthblock, 8); // update CBC for next round
    //memcpy(m_cbc, cbcbuffer, 8);
 
@@ -207,7 +178,7 @@ void EncryptedString::set(const char *buffer)
       else
          memcpy(curblock, buffer+x, 8);
       xormem(curblock, cbcbuffer, 8);
-      m_algor->Encrypt(curblock, curblock);
+      algor.encrypt(curblock, curblock);
       memcpy(cbcbuffer, curblock, 8);
       // do the final copy
       memcpy(m_data+x, curblock, 8);
@@ -243,28 +214,6 @@ void EncryptedString::trashAndDelete()
   }
 }
 
-void EncryptedString::createAlgorithm()
-{
-  string pword(GetAlphaNumPassword(8));
-  //m_algor.reset(new BlowFish((unsigned char *)pword.c_str(),
-  //			 pword.length()));
-  DBGOUT("Creating fish: " << pword);
-  BlowFish *fish = new BlowFish((unsigned char *)pword.c_str(),
-				pword.length());
-  DBGOUT("Fish created: " << fish);
-  m_algor.set(fish);
-
-
-  time_t cur_time;
-  for(int i = 0; i < 8; i++) {
-    if(time(&cur_time) != (time_t)-1) {
-    	m_cbc[i] = rand();
-	continue;
-    }
-    m_cbc[i] = (int)cur_time ^ rand();// % 255;
-  }
-}
-
 void EncryptedString::hash()
 {
   // NOTE: string gets decrypted here
@@ -276,9 +225,19 @@ void EncryptedString::hash(const unsigned char *in,
 			   unsigned int in_len,
 			   unsigned char out[20])
 {
-  SHA1_CTX hasher;
-  SHA1Init(&hasher);
-  for(int i = 0; i < 4; i++)
-    SHA1Update(&hasher, in, in_len);
-  SHA1Final(out, &hasher);
+  Sha1 hasher;
+  hasher.sha1_write(in, in_len);
+  memcpy(out, hasher.sha1_read().c_str(), 20);
+}
+
+void EncryptedString::initCBC()
+{
+  time_t cur_time;
+  for(int i = 0; i < 8; i++) {
+    if(time(&cur_time) != (time_t)-1) {
+        m_cbc[i] = rand();
+        continue;
+    }
+    m_cbc[i] = (int)cur_time ^ rand();// % 255;
+  }
 }

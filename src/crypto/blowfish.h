@@ -48,7 +48,7 @@ public:
 	static bool selfTest();
 
 	/** set key to encrypt. if return == 1, it is a weak key. */
-	int bf_setkey( byte *key, unsigned int keylen );
+	int bf_setkey(const byte *key, unsigned int keylen );
 	/** encrypt inbuf and return it in outbuf.
 	  * inbuf and outbuf have to be: buf % 8 == 0
 	  * You may check this with getPaddedLen() and pad with NULL.
@@ -105,7 +105,7 @@ protected:
 	void do_decrypt(uint32_t *ret_xl, uint32_t *ret_xr);
 	void do_encrypt_block(byte *outbuf, byte *inbuf);
 	void do_decrypt_block(byte *outbuf, byte *inbuf);
-	int do_bf_setkey(byte *key, unsigned int keylen);
+	int do_bf_setkey(const byte *key, unsigned int keylen);
 
 protected:
 	struct BLOWFISH_context bc;

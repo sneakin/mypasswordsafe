@@ -27,7 +27,10 @@ HEADERS	+= src/safe.hpp \
 	src/safedragobject.hpp \
 	src/myendian.h \
 	src/crypto/sha1.h \
-	src/crypto/blowfish.h
+	src/crypto/blowfish.h \
+        src/crypto/cryptointerface.hpp \
+        src/crypto/bfproxy.hpp
+
 SOURCES	+= src/main.cpp \
 	src/securedstring.cpp \
 	src/safe.cpp \
@@ -46,7 +49,9 @@ SOURCES	+= src/main.cpp \
 	src/plaintextlizer.cpp \
 	src/safedragobject.cpp \
 	src/crypto/sha1.cpp \
-	src/crypto/blowfish.cpp
+	src/crypto/blowfish.cpp \
+        src/crypto/bfproxy.cpp
+
 FORMS	= src/mypasswordsafe.ui \
 	src/pwordeditdlg.ui \
 	src/passphrasedlg.ui \

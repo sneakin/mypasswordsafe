@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.22 2004/11/01 21:54:34 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.23 2004/12/06 12:32:05 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -38,6 +38,8 @@
 #include "pwsafe/PW_BlowFish.h"
 #include "pwsafe/Util.h"
 #include "uuid.hpp"
+#include "crypto/sha1.h"
+#include "crypto/bfproxy.hpp"
 
 using namespace std;
 
@@ -54,7 +56,7 @@ BlowfishLizer::~BlowfishLizer()
 {
 }
 
-int BlowfishLizer::writeCBC(FILE *fp, BlowFish *fish,
+int BlowfishLizer::writeCBC(FILE *fp, CryptoInterface *fish,
 			    const char *data, int length,
 			    int type, unsigned char *ipthing)
 {
@@ -72,7 +74,7 @@ int BlowfishLizer::writeCBC(FILE *fp, BlowFish *fish,
    lengthblock[sizeof(long)] = (unsigned char)type;
 
    xormem(lengthblock, ipthing, 8); // do the CBC thing
-   fish->Encrypt(lengthblock, lengthblock);
+   fish->encrypt(lengthblock, lengthblock);
    memcpy(ipthing, lengthblock, 8); // update CBC for next round
 
    numWritten = fwrite(lengthblock, 1, 8, fp);
@@ -97,7 +99,7 @@ int BlowfishLizer::writeCBC(FILE *fp, BlowFish *fish,
       else
          memcpy(curblock, buffer+x, 8);
       xormem(curblock, ipthing, 8);
-      fish->Encrypt(curblock, curblock);
+      fish->encrypt(curblock, curblock);
       memcpy(ipthing, curblock, 8);
       numWritten += fwrite(curblock, 1, 8, fp);
    }
@@ -105,7 +107,7 @@ int BlowfishLizer::writeCBC(FILE *fp, BlowFish *fish,
    return numWritten;
 }
 
-int BlowfishLizer::writeCBC(FILE *fp, BlowFish *fish,
+int BlowfishLizer::writeCBC(FILE *fp, CryptoInterface *fish,
 			    SecuredString &data, int type,
 			    unsigned char *ipthing)
 {
@@ -114,7 +116,7 @@ int BlowfishLizer::writeCBC(FILE *fp, BlowFish *fish,
 }
 
 // Adapted from Counterpane's PasswordSafe
-int BlowfishLizer::readCBC(FILE *fp, BlowFish *fish,
+int BlowfishLizer::readCBC(FILE *fp, CryptoInterface *fish,
 			   SecuredString &data, int &type,
 			   unsigned char *ipthing)
 {
@@ -131,7 +133,7 @@ int BlowfishLizer::readCBC(FILE *fp, BlowFish *fish,
 
   //BlowFish *Algorithm = MakeBlowFish(pass, passlen, salt, saltlen);
 
-  fish->Decrypt(lengthblock, lengthblock);
+  fish->decrypt(lengthblock, lengthblock);
   xormem(lengthblock, ipthing, 8);
   memcpy(ipthing, lcpy, 8);
 
@@ -160,7 +162,7 @@ int BlowfishLizer::readCBC(FILE *fp, BlowFish *fish,
   numRead += fread(buffer, 1, BlockLength, fp);
   for (int x=0;x<BlockLength;x+=8) {
     memcpy(tempcbc, buffer+x, 8);
-    fish->Decrypt(buffer+x, buffer+x);
+    fish->decrypt(buffer+x, buffer+x);
     xormem(buffer+x, ipthing, 8);
     memcpy(ipthing, tempcbc, 8);
   }
@@ -171,6 +173,24 @@ int BlowfishLizer::readCBC(FILE *fp, BlowFish *fish,
   data.set((const char *)buffer);
 
   return numRead;
+}
+
+CryptoInterface *BlowfishLizer::makeBlowfish(const unsigned char *pass, int passlen,
+					     const unsigned char *salt, int saltlen)
+{
+   unsigned char passkey[20];
+
+   Sha1 sha;
+   sha.sha1_write(pass, passlen);
+   sha.sha1_write(salt, saltlen);
+   sha.sha1_read(passkey);
+
+   CryptoInterface *retval;
+   retval = new BFProxy(passkey, sizeof(passkey));
+
+   trashMemory(passkey, sizeof(passkey));
+   
+   return retval;
 }
 
 Safe::Error BlowfishLizer::checkPassword(const QString &path, const SecuredString &password)
@@ -213,7 +233,7 @@ int BlowfishLizer::readHeader(FILE *in, unsigned char randstuff[8], unsigned cha
 }
 
 int BlowfishLizer::readEntry(FILE *in, SafeEntry &item,
-			     BlowFish *fish,
+			     CryptoInterface *fish,
 			     unsigned char *ipthing,
 			     const QString &def_user)
 {
@@ -257,7 +277,7 @@ int BlowfishLizer::readEntry(FILE *in, SafeEntry &item,
   numread += readCBC(in, fish, data, type, ipthing);
   if(data.length()) {
     DBGOUT("Password: " << data.get());
-    item.setPassword(EncryptedString(fish, data));
+    item.setPassword(EncryptedString(data));
     data.clear();
   }
 
@@ -286,7 +306,7 @@ Safe::Error BlowfishLizer::load(Safe &safe, const QString &path, const Encrypted
   readHeader(in, randstuff, randhash, salt, ipthing);
 
   // NOTE: the passphrase is decrypted here
-  SmartPtr<BlowFish> fish(MakeBlowFish((const unsigned char *)
+  SmartPtr<CryptoInterface> fish(makeBlowfish((const unsigned char *)
 				       passphrase.get().get(),
 				       passphrase.length(),
 				       salt, SaltLength));
@@ -353,8 +373,8 @@ Safe::Error BlowfishLizer::save(Safe &safe, const QString &path, const QString &
 
     // NOTE: the passphrase is decrypted here
     //shared_ptr<BlowFish>
-    SmartPtr<BlowFish>
-      fish(MakeBlowFish((unsigned char *)
+    SmartPtr<CryptoInterface>
+      fish(makeBlowfish((unsigned char *)
 			passphrase.get().get(),
 			passphrase.length(),
 			thesalt, SaltLength));
@@ -367,7 +387,7 @@ Safe::Error BlowfishLizer::save(Safe &safe, const QString &path, const QString &
   }
 }
 
-Safe::Error BlowfishLizer::saveGroup(FILE *out, SafeGroup *group, BlowFish *fish, unsigned char *ipthing, const QString &def_user)
+Safe::Error BlowfishLizer::saveGroup(FILE *out, SafeGroup *group, CryptoInterface *fish, unsigned char *ipthing, const QString &def_user)
 {
   SafeGroup::Iterator iter(group);
   SafeItem *item = NULL;
@@ -404,7 +424,7 @@ int BlowfishLizer::writeHeader(FILE *out, unsigned char randstuff[8],
   return num_written;
 }
 
-int BlowfishLizer::writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
+int BlowfishLizer::writeEntry(FILE *out, SafeEntry &item, CryptoInterface *fish,
 			      unsigned char *ipthing, const QString &def_user,
 			      bool v2_hdr)
 {
@@ -438,8 +458,9 @@ int BlowfishLizer::writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
   return num_written;
 }
 
-BlowfishLizer2::BlowfishLizer2()
-  : BlowfishLizer("dat", "Password Safe 2.0 (*.dat)")
+BlowfishLizer2::BlowfishLizer2(const QString &ext,
+			       const QString &description)
+  : BlowfishLizer(ext, description)
 {
 }
 
@@ -463,7 +484,7 @@ Safe::Error BlowfishLizer2::load(Safe &safe, const QString &path,
   readHeader(in, randstuff, randhash, salt, ipthing);
 
   // NOTE: the passphrase is decrypted here
-  SmartPtr<BlowFish> fish(MakeBlowFish((const unsigned char *)
+  SmartPtr<CryptoInterface> fish(makeBlowfish((const unsigned char *)
 					 passphrase.get().get(),
 					 passphrase.length(),
 					 salt, SaltLength));
@@ -556,8 +577,8 @@ Safe::Error BlowfishLizer2::save(Safe &safe, const QString &path, const QString 
     }
 
     // NOTE: the passphrase is decrypted here
-    SmartPtr<BlowFish>
-      fish(MakeBlowFish((unsigned char *)
+    SmartPtr<CryptoInterface>
+      fish(makeBlowfish((unsigned char *)
 			passphrase.get().get(),
 			passphrase.length(),
 			thesalt, SaltLength));
@@ -580,7 +601,7 @@ Safe::Error BlowfishLizer2::save(Safe &safe, const QString &path, const QString 
   }
 }
 
-Safe::Error BlowfishLizer2::saveGroup(FILE *out, SafeGroup *group, BlowFish *fish,
+Safe::Error BlowfishLizer2::saveGroup(FILE *out, SafeGroup *group, CryptoInterface *fish,
 				      unsigned char *ipthing, const QString &def_user)
 {
   SafeGroup::Iterator iter(group);
@@ -687,7 +708,7 @@ QString BlowfishLizer2::readyGroup(const QString &group)
 }
 
 int BlowfishLizer2::readEntry(FILE *in, SafeEntry &item, QString &group,
-			      BlowFish *fish,
+			      CryptoInterface *fish,
 			      unsigned char *ipthing,
 			      const QString &)
 {
@@ -779,7 +800,7 @@ int BlowfishLizer2::readEntry(FILE *in, SafeEntry &item, QString &group,
 }
 
 
-int BlowfishLizer2::writeString(FILE *out, BlowFish *fish,
+int BlowfishLizer2::writeString(FILE *out, CryptoInterface *fish,
 			       const QString &str,
 			       int type, unsigned char *ipthing)
 {
@@ -793,14 +814,14 @@ int BlowfishLizer2::writeString(FILE *out, BlowFish *fish,
   }
 }
 
-int BlowfishLizer2::writeTime(FILE *out, BlowFish *fish, time_t time,
+int BlowfishLizer2::writeTime(FILE *out, CryptoInterface *fish, time_t time,
 			      int type, unsigned char *ipthing)
 {
   return writeCBC(out, fish, (const char *)&time,
 		  sizeof(time_t), type, ipthing);
 }
 
-int BlowfishLizer2::writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
+int BlowfishLizer2::writeEntry(FILE *out, SafeEntry &item, CryptoInterface *fish,
 			       unsigned char *ipthing, const QString &)
 {
   DBGOUT("BlowfishLizer2::writeEntry");
@@ -865,3 +886,37 @@ QString BlowfishLizer2::groupName(SafeEntry &entry)
 
   return ret;
 }
+
+#ifdef BYTE_ORDER == BIG_ENDIAN
+
+BorkedBlowfishLizer::BorkedBlowfishLizer()
+	: BlowfishLizer("dat", "Broken MyPS Safe (*.dat)")
+{
+}
+
+BorkedBlowfishLizer::~BorkedBlowfishLizer()
+{
+}
+
+CryptoInterface *BorkedBlowfishLizer::makeBlowfish(const unsigned char *pass, int passlen,
+							const unsigned char *salt, int saltlen)
+{
+	return MakeBlowFish(pass, passlen, salt, saltlen);
+}
+
+BorkedBlowfishLizer2::BorkedBlowfishLizer2()
+	: BlowfishLizer2("dat", "Broken MyPS Safe 2.0 (*.dat)")
+{
+}
+
+BorkedBlowfishLizer2::~BorkedBlowfishLizer2()
+{
+}
+
+CryptoInterface *BorkedBlowfishLizer2::makeBlowfish(const unsigned char *pass, int passlen,
+							 const unsigned char *salt, int saltlen)
+{
+	return MakeBlowFish(pass, passlen, salt, saltlen);
+}
+
+#endif

@@ -425,7 +425,7 @@ BlowFish::~BlowFish()
 }
 
 void
-BlowFish::Encrypt(const block in, block out)
+BlowFish::encrypt(const block in, block out)
 {
    for (int x=0; x<8; x++)
       out[x] = in[x];
@@ -436,7 +436,7 @@ BlowFish::Encrypt(const block in, block out)
 
 
 void
-BlowFish::Decrypt(const block in, block out) const
+BlowFish::decrypt(const block in, block out)
 {
    for (int x=0; x<8; x++)
       out[x] = in[x];

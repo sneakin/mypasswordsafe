@@ -23,6 +23,7 @@
 #include <qtextstream.h>
 #include "safe.hpp"
 #include "xmlserializer.hpp"
+#include "myutil.hpp"
 
 XmlSerializer::XmlSerializer()
   : SafeSerializer("xml", "UNENCRYPTED XML (*.xml)")

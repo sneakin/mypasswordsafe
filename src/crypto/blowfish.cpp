@@ -443,7 +443,7 @@ bool Blowfish::selfTest()
 	return true;
 }
 
-int Blowfish::do_bf_setkey(byte * key, unsigned int keylen)
+int Blowfish::do_bf_setkey(const byte * key, unsigned int keylen)
 {
 	int i, j;
 	uint32_t data, datal, datar;
@@ -513,7 +513,7 @@ int Blowfish::do_bf_setkey(byte * key, unsigned int keylen)
 	return 0;
 }
 
-int Blowfish::bf_setkey(byte * key, unsigned int keylen)
+int Blowfish::bf_setkey(const byte * key, unsigned int keylen)
 {
 	int rc = do_bf_setkey(key, keylen);
 	burn_stack(64);

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/myutil.hpp,v 1.7 2004/11/01 23:23:03 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/myutil.hpp,v 1.8 2004/12/06 12:32:05 nolan Exp $
  * Copyright 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -48,13 +48,13 @@ class Safe;
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 #define unlikely(x) __builtin_expect(!!(x), 0)
 
+extern const char GroupSeperator;
+
 void printBinary(std::ostream &str, unsigned char c);
 void copyToClipboard(const QString &str);
 
-SafeGroup *findOrCreateGroup(Safe *safe, const QString &group_name);
 QString thisGroup(const QString &);
 QString parentGroup(const QString &);
-SafeGroup *findGroup(SafeGroup *group, const QString &full_group);
 
 QString escapeGroup(const QString &);
 QString unescapeGroup(const QString &);

@@ -104,7 +104,7 @@ GenRandhash(const SecuredString &a_passkey,
    memcpy((char*)tempbuf, (char*)a_randstuff, StuffSize);
 
    for (int x=0; x<1000; x++)
-      Cipher.Encrypt(tempbuf, tempbuf);
+      Cipher.encrypt(tempbuf, tempbuf);
 
    /*
      hmm - seems we're not done with this context
@@ -202,7 +202,7 @@ _writecbc(FILE *fp,
    putInt32( lengthblock, length );
 
    xormem(lengthblock, cbcbuffer, 8); // do the CBC thing
-   Algorithm->Encrypt(lengthblock, lengthblock);
+   Algorithm->encrypt(lengthblock, lengthblock);
    memcpy(cbcbuffer, lengthblock, 8); // update CBC for next round
 
    numWritten = fwrite(lengthblock, 1, 8, fp);
@@ -222,7 +222,7 @@ _writecbc(FILE *fp,
       else
          memcpy(curblock, buffer+x, 8);
       xormem(curblock, cbcbuffer, 8);
-      Algorithm->Encrypt(curblock, curblock);
+      Algorithm->encrypt(curblock, curblock);
       memcpy(cbcbuffer, curblock, 8);
       numWritten += fwrite(curblock, 1, 8, fp);
    }
@@ -267,7 +267,7 @@ _readcbc(FILE *fp,
 
    BlowFish *Algorithm = MakeBlowFish(pass, passlen, salt, saltlen);
 
-   Algorithm->Decrypt(lengthblock, lengthblock);
+   Algorithm->decrypt(lengthblock, lengthblock);
    xormem(lengthblock, cbcbuffer, 8);
    memcpy(cbcbuffer, lcpy, 8);
 
@@ -301,7 +301,7 @@ _readcbc(FILE *fp,
    for (int x=0;x<BlockLength;x+=8)
    {
       memcpy(tempcbc, buffer+x, 8);
-      Algorithm->Decrypt(buffer+x, buffer+x);
+      Algorithm->decrypt(buffer+x, buffer+x);
       xormem(buffer+x, cbcbuffer, 8);
       memcpy(cbcbuffer, tempcbc, 8);
    }

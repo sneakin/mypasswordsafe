@@ -315,6 +315,11 @@ string Sha1::sha1_read()
 	return ret;
 }
 
+void Sha1::sha1_read(byte out[20])
+{
+	memcpy(out, (const unsigned char *)sha1_read().c_str(), 20);
+}
+
 bool Sha1::selfTest()
 {
 	const char test1[] = { 'a', 'b', 'c' };

@@ -43,6 +43,7 @@ public:
 
 	void sha1_write(const byte *inbuf, uint32_t inlen);
 	string sha1_read();
+	void sha1_read(byte out[20]);
 
 protected:
 	void sha1_init();

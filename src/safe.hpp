@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.16 2004/11/01 21:34:58 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.17 2004/12/06 12:32:05 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -39,6 +39,9 @@ class QDomNode;
 class SafeSerializer;
 class SafeGroup;
 class Safe;
+
+SafeGroup *findGroup(SafeGroup *group, const QString &full_group);
+SafeGroup *findOrCreateGroup(Safe *safe, const QString &group_name);
 
 class SafeItem
 {

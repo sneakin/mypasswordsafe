@@ -1,0 +1,1 @@
+g++ bfproxytest.cpp ../src/crypto/blowfish.cpp ../src/crypto/bfproxy.cpp ../src/pwsafe/PW_BlowFish.cpp ../src/pwsafe/Util.cpp -I../src -I../src/crypto -I../src/pwsafe main.cpp ../src/pwsafe/PW_sha1.cpp -o bfproxytest -lcppunit

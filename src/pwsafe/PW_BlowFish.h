@@ -1,9 +1,10 @@
 // BlowFish.h
 //-----------------------------------------------------------------------------
-#ifndef BLOWFISH_H
-#define BLOWFISH_H
+#ifndef PW_BLOWFISH_H
+#define PW_BLOWFISH_H
 
 #include <stdint.h>
+#include "crypto/cryptointerface.hpp"
 
 #define MAXKEYBYTES 56 // unused
 
@@ -23,13 +24,13 @@ union aword
    } w;
 };
 
-class BlowFish
+class BlowFish: public CryptoInterface
 {
 public:
    BlowFish(unsigned char* key, int keylen);
-  ~BlowFish();
-   void Encrypt(const block in, block out);
-   void Decrypt(const block in, block out) const;
+  virtual ~BlowFish();
+   void encrypt(const block in, block out);
+   void decrypt(const block in, block out);
   enum {bf_N = 16};
 private:
   // Following are global supposedly for performance reasons. TBV...

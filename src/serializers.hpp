@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.11 2004/11/01 21:34:58 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.12 2004/12/06 12:32:05 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -19,11 +19,14 @@
 #ifndef _SERIALIZERS_HPP_
 #define _SERIALIZERS_HPP_
 
+#include "myendian.h"
 #include "safe.hpp"
 #include "safeserializer.hpp"
 #include "pwsafe/Util.h"
 
 class QString;
+class CryptoInterface;
+class BFProxy;
 
 /* Instances of these classes are in safe.cpp after the SerializerMap.
  */
@@ -44,29 +47,29 @@ protected:
 		 unsigned char randhash[20],
 		 unsigned char salt[SaltLength],
 		 unsigned char ipthing[8]);
-  virtual int readEntry(FILE *in, SafeEntry &item, BlowFish *fish,
+  virtual int readEntry(FILE *in, SafeEntry &item, CryptoInterface *fish,
 		unsigned char *ipthing, const QString &def_user);
 
   virtual int writeHeader(FILE *out, unsigned char randstuff[8],
 			  unsigned char randhash[20],
 			  unsigned char salt[SaltLength],
 			  unsigned char ipthing[8]);
-  virtual int writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
+  virtual int writeEntry(FILE *out, SafeEntry &item, CryptoInterface *fish,
 			 unsigned char *ipthing, const QString &def_user,
 			 bool v2_hdr = false);
-  Safe::Error saveGroup(FILE *out, SafeGroup *group, BlowFish *fish,
+  Safe::Error saveGroup(FILE *out, SafeGroup *group, CryptoInterface *fish,
 			unsigned char *ipthing, const QString &def_user);
 
-  int writeCBC(FILE *fp, BlowFish *fish, const char *data,
+  int writeCBC(FILE *fp, CryptoInterface *fish, const char *data,
 	       int length, int type, unsigned char *ipthing);
-  int writeCBC(FILE *fp, BlowFish *fish,
+  int writeCBC(FILE *fp, CryptoInterface *fish,
 	       SecuredString &data, int type,
 	       unsigned char *ipthing);
   // writes the data to FP
   // cbcbuffer is the initial cbc used to xor the data,
   // and is set to the last encrypted block before returning
   // Returns the number of bytes written
-  int readCBC(FILE *fp, BlowFish *fish,
+  int readCBC(FILE *fp, CryptoInterface *fish,
 	      SecuredString &data,
 	      int &type, unsigned char *ipthing);
   // reads a string from FP
@@ -74,12 +77,16 @@ protected:
   // block and is changed to the cbc needed to decrypt the
   // next entry in the safe
   // Returns the number of bytes read
+
+  virtual CryptoInterface *makeBlowfish(const unsigned char *pass, int passlen,
+					const unsigned char *salt, int saltlen);
 };
 
 class BlowfishLizer2: public BlowfishLizer
 {
 public:
-  BlowfishLizer2();
+  BlowfishLizer2(const QString &ext = "dat",
+		 const QString &description = "Password Safe 2.0 (*.dat)");
   virtual ~BlowfishLizer2();
 
   virtual Safe::Error load(Safe &safe, const QString &path, const EncryptedString &passphrase, const QString &def_user);
@@ -101,18 +108,49 @@ protected:
   QString readyGroup(const QString &group);
 
   virtual int readEntry(FILE *in, SafeEntry &item, QString &group,
-			BlowFish *fish,
+			CryptoInterface *fish,
 			unsigned char *ipthing,
 			const QString &def_user);
-  virtual int writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
+  virtual int writeEntry(FILE *out, SafeEntry &item, CryptoInterface *fish,
 			 unsigned char *ipthing, const QString &def_user);
-  int writeString(FILE *out, BlowFish *fish, const QString &str,
+  int writeString(FILE *out, CryptoInterface *fish, const QString &str,
 		  int type, unsigned char *ipthing);
-  int writeTime(FILE *out, BlowFish *fish, time_t time, int type, unsigned char *ipthing);
-  Safe::Error saveGroup(FILE *out, SafeGroup *group, BlowFish *fish,
+  int writeTime(FILE *out, CryptoInterface *fish, time_t time, int type, unsigned char *ipthing);
+  Safe::Error saveGroup(FILE *out, SafeGroup *group, CryptoInterface *fish,
 			unsigned char *ipthing, const QString &def_user);
 
   QString groupName(SafeEntry &entry);
 };
+
+#ifdef BYTE_ORDER == BIG_ENDIAN
+
+/* These classes exist for compatibility with safes that were created
+ * while MyPS used Password Safe's blowfish and sha1 code which were
+ * not endian safe.
+ */
+
+class BorkedBlowfishLizer: public BlowfishLizer
+{
+public:
+  BorkedBlowfishLizer();
+  virtual ~BorkedBlowfishLizer();
+
+protected:
+  CryptoInterface *makeBlowfish(const unsigned char *pass, int passlen,
+				const unsigned char *salt, int saltlen);
+};
+
+class BorkedBlowfishLizer2: public BlowfishLizer2
+{
+public:
+  BorkedBlowfishLizer2();
+  virtual ~BorkedBlowfishLizer2();
+
+protected:
+  CryptoInterface *makeBlowfish(const unsigned char *pass, int passlen,
+				const unsigned char *salt, int saltlen);
+};
+
+#endif
 
 #endif
