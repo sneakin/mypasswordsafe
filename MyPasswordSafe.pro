@@ -86,10 +86,6 @@ IMAGES	= images/searchfind \
 	images/fileclose.png \
 	images/button_cancel.png
 
-
-
-
-
 DEBUG = $$(DEBUG)
 
 isEmpty(DEBUG) {

@@ -1,6 +1,9 @@
 MyPasswordSafe
-Copyright 2004 Semantic Gap (TM) Solutions
+Copyright 2004 Semantic Gap (TM)
 http://www.semanticgap.com/
+
+MyPasswordSafe is cover by the GNU General Public License. See COPYING for more
+details. Semantic Gap is a trademark of Nolan Eakins.
 
 Please read doc/manual.html for all the information you'll probably need. If
 for some reason you can't read html, you need Qt 3 <http://www.trolltech.com/>
