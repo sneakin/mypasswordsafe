@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.15 2004/07/29 00:00:30 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.16 2004/07/30 10:22:14 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -612,13 +612,15 @@ void MyPasswordSafe::fileChangePassPhrase()
 
 void MyPasswordSafe::lock()
 {
+  m_shown = false; // prevent the lock dlg from showing more than once
+
   PassPhraseDlg dlg;
   dlg.hideCancel(true);
-	
   do {
     dlg.exec(); // will only accept
   } while(m_safe->getPassPhrase() != EncryptedString(dlg.getText().utf8()));
-	
+  
+  m_shown = true; // make sure it gets shown again
   statusBar()->message(tr("MyPasswordSafe unlocked"));
 }
 
@@ -702,8 +704,9 @@ void MyPasswordSafe::showEvent(QShowEvent *)
   if(m_shown && lockOnMinimize()) {
     lock();
   }
-  
-  // prevent MyPS from asking for the pass-phrase when it first starts
+
+  // this will get set after MyPS is shown for the first time,
+  // and will remain set
   m_shown = true;
 }
 
