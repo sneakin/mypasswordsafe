@@ -1,10 +1,10 @@
 TEMPLATE	= app
 LANGUAGE	= C++
-DEFINES += DEBUG
 
 CONFIG	+= qt warn_on debug
 
 LIBS	+= uuid-1.0.0/.libs/libuuid.a
+DEFINES	+= DEBUG
 INCLUDEPATH	+= uuid-1.0.0
 
 HEADERS	+= src/safe.hpp \
@@ -80,6 +80,10 @@ IMAGES	= images/searchfind \
 	images/folder_new.png \
 	images/folder_blue.png \
 	images/folder_blue_open.png
+
+
+
+
 
 
 
