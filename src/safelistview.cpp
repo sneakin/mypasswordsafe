@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.19 2004/11/01 21:34:58 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.20 2004/11/02 21:37:28 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -405,6 +405,12 @@ void SafeListView::startDrag()
   for(; it.current(); ++it) {
     SafeListViewItem *item = (SafeListViewItem *)it.current();
     d->addItem(item->item());
+
+    // copy the user name to the clipboard
+    if(item->rtti() == SafeListViewEntry::RTTI) {
+	    SafeEntry *ent = ((SafeListViewEntry *)item)->entry();
+	    copyToClipboard(ent->user());
+    }
   }
 
   m_drop_target = NULL;
