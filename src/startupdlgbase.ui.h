@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/startupdlgbase.ui.h,v 1.4 2004/11/01 21:34:58 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/startupdlgbase.ui.h,v 1.5 2004/11/01 23:23:03 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -112,6 +112,7 @@ void StartupDlgBase::actionChanged( int action, bool browse)
       }
       else {
 	actionChanged(1); // set the action to browse
+	m_myps->setDefaultSafe(getFilename());
       }
     }
     passPhraseStack->raiseWidget(0);
