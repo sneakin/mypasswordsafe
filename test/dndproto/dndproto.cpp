@@ -23,33 +23,24 @@ Data::Data(const QString &_name, const QString &_desc)
 }
 
 
+static QString dnd_mimetype = "app/dndtest";
 
 DragObject::DragObject(QWidget *src)
   : QDragObject(src), data("list")
 {
 }
 
-void DragObject::addItem(ListItem *item)
-{
-  data.appendChild(item->toXml(data));
-}
-
-void DragObject::addGroup(ListGroup *group)
-{
-  data.appendChild(group->toXml(data));
-}
-
 const char *DragObject::format(int i) const
 {
   if(i == 0)
-    return mimetype;
+    return dnd_mimetype;
   else
     return NULL;
 }
 
 bool DragObject::provides(const char *mime_type) const
 {
-  if(QString(mimetype) == QString(mime_type))
+  if(dnd_mimetype == QString(mime_type))
     return true;
   else
     return false;
@@ -57,7 +48,7 @@ bool DragObject::provides(const char *mime_type) const
 
 QByteArray DragObject::encodedData(const char *mime_type) const
 {
-  if(QString(mimetype) == QString(mime_type)) {
+  if(dnd_mimetype == QString(mime_type)) {
     return data.toCString();
   }
   else {
@@ -67,19 +58,75 @@ QByteArray DragObject::encodedData(const char *mime_type) const
 
 bool DragObject::canDecode(const QMimeSource *src)
 {
-  return src->provides(mimetype);
+  return src->provides(dnd_mimetype);
 }
 
 bool DragObject::decode(const QMimeSource *src, QDomDocument &xml)
 {
   if(canDecode(src)) {
-    xml.setContent(src->encodedData(mimetype));
+    xml.setContent(src->encodedData(dnd_mimetype));
     return true;
   }
   return false;
 }
 
-const char *DragObject::mimetype = "app/dndtest";
+DragItem::DragItem(QWidget *src, ListItem *item)
+  : DragObject(src), item_data(item->data)
+{
+  addItem(item);
+}
+
+const char *DragItem::format(int i) const
+{
+  if(i == 0) {
+    return "text/plain";
+  }
+  else {
+    return DragObject::format(i - 1);
+  }
+}
+
+bool DragItem::provides(const char *mime_type) const
+{
+  if(QString(mime_type) == QString("text/plain"))
+    return true;
+  else
+    return DragObject::provides(mime_type);
+}
+
+QByteArray DragItem::encodedData(const char *mime_type) const
+{
+  if(QString(mime_type) == QString("text/plain")) {
+    return item_data.name.utf8();
+  }
+  else {
+    return DragObject::encodedData(mime_type);
+  }
+}
+
+bool DragItem::canDecode(const QMimeSource *src)
+{
+  return (src->provides("text/plain") ||
+	  DragObject::canDecode(src));
+}
+
+void DragItem::addItem(ListItem *item)
+{
+  data.appendChild(item->toXml(data));
+}
+
+
+
+DragGroup::DragGroup(QWidget *src, ListGroup *group)
+  : DragObject(src)
+{
+  addGroup(group);
+}
+
+void DragGroup::addGroup(ListGroup *group)
+{
+  data.appendChild(group->toXml(data));
+}
 
 
 
@@ -296,16 +343,20 @@ void ListView::startDrag()
   m_target_parent = NULL;
 
   QListViewItem *item = selectedItem();
-  DragObject *d = new DragObject(viewport());
+  DragObject *d; // = new DragObject(viewport());
 
   if(item->rtti() == ListItem::RTTI) {
     ListItem *i = (ListItem *)item;
     //d->setPixmap(*i->pixmap(0));
-    d->addItem(i);
+    d = new DragItem(viewport(), i);
   }
   else if(item->rtti() == ListGroup::RTTI) {
     ListGroup *g = (ListGroup *)item;
-    d->addGroup(g);
+    //d->addGroup(g);
+    d = new DragGroup(viewport(), g);
+  }
+  else {
+    return;
   }
 
   bool drag_ret = d->drag();

@@ -25,12 +25,7 @@ class DragObject: public QDragObject
   Q_OBJECT;
 
 public:
-  static const char *mimetype;
-
   DragObject(QWidget *src = 0);
-
-  void addItem(ListItem *item);
-  void addGroup(ListGroup *group);
 
   virtual const char *format(int i = 0) const;
   virtual bool provides(const char *mime_type) const;
@@ -39,6 +34,35 @@ public:
   static bool decode(const QMimeSource *src, QDomDocument &xml);
 
   QDomDocument data;
+};
+
+class DragItem: public DragObject
+{
+  Q_OBJECT;
+
+public:
+  DragItem(QWidget *src, ListItem *item);
+
+  virtual const char *format(int i = 0) const;
+  virtual bool provides(const char *mime_type) const;
+  virtual QByteArray encodedData(const char *mime_type) const;
+  static bool canDecode(const QMimeSource *src);
+
+  Data item_data;
+
+private:
+  void addItem(ListItem *item);
+};
+
+class DragGroup: public DragObject
+{
+  Q_OBJECT;
+
+public:
+  DragGroup(QWidget *src, ListGroup *group);
+
+private:
+  void addGroup(ListGroup *group);
 };
 
 class ListItem: public QListViewItem
