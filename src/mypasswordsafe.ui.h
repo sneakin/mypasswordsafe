@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.28 2004/11/01 23:42:28 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.29 2004/11/02 06:38:19 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -629,6 +629,7 @@ void MyPasswordSafe::lock()
 
   PassPhraseDlg dlg;
   dlg.hideCancel(true);
+
   do {
     dlg.exec(); // will only accept
   } while(m_safe->getPassPhrase() != EncryptedString(dlg.getText().utf8()));
