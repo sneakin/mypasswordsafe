@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.9 2004/07/24 03:30:12 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.10 2004/07/25 18:29:15 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -45,9 +45,6 @@
 using std::map;
 using std::vector;
 
-/** Represents an entry in the Safe.
- * The information contained in each entry is stored in a SafeItem.
- */
 class SafeItem
 {
 public:
@@ -109,26 +106,9 @@ private:
 
 class SafeSerializer;
 
-/** Represents a safe.
- * A safe is manages a collection of items, and it can load and save
- * itself to a file. Using a Safe is as easy as creating it and loading
- * something.
- * \code
- * Safe safe;
- * Safe::Error error = safe.load("somesafe.dat", "Password Safe");
- * if(error != Safe::Success) {
- *    ...do error stuff
- * }
- * \endcode
- */
 class Safe
 {
 public:
-  /** \example safe.cpp
-   * Demonstrates how to load a safe, display the entries,
-   * and saving it to another file.
-   */
-
   typedef vector<SafeItem *> ItemList; //!< Container for the items
   typedef ItemList::iterator iterator; //!< Iterator shortcut
 
@@ -144,108 +124,18 @@ public:
     UUIDError //!< UUID threw an exception
   };
 
-  /** Returns a string that lists allowable safe extensions.
-   */
   static QString getExtensions();
-  /** Returns a string that lists the types of safes.
-   */
   static QString getTypes();
 
-  /** Checks the password of a file.
-   * The serializer is choosen from the file's extension.
-   *
-   * @pre path != NULL
-   * @param path File's path.
-   * @param password Password to check.
-   * @return Safe::Success if the password is correct, Safe::Failed if not.
-   */
   static Error checkPassword(const QString &path, const EncryptedString &password);
-  /** Checks the password of a file.
-   * But allows the type of file to be specified. If type
-   * is NULL or has a length of zero, the file's
-   * extension is used to pick a serializer.
-   *
-   * @pre Path != NULL
-   * @param path File's path.
-   * @param type Name of the serializer to use.
-   * @param password Password to check.
-   * @return Safe::Success if the password is correct, Safe::Failed if not.
-   */
   static Error checkPassword(const QString &path, const QString &type, const EncryptedString &password);
 
-  /** Loads a safe from disk using the specified serializer.
-   * Empties the safe and reads the specified file into the safe using
-   * the serializer specified.
-   *
-   * @param path File's path
-   * @param type Name of the serializer to use
-   * @param passphrase Pass-phrase that'll open the safe
-   * @param def_user Default username
-   * @return Safe::Success if the file is opened, otherwise
-   *         the Safe::Error condition
-   * @post getPath() == path
-   * @post getType() == type
-   * @post getPassPhrase() == passphrase
-   * @post changed() == false
-   */
   Error load(const QString &path, const QString &type, const EncryptedString &passphrase, const QString &def_user);
-
-  /** Loads a safe from disk.
-   * Empties the safe and reads the specified file into the safe.
-   *
-   * @param path File's path
-   * @param passphrase Pass-phrase that'll open the safe
-   * @param def_user Default username
-   * @return Safe::Success if the file is opened, otherwise
-   *         the Safe::Error condition
-   * @post getPath() == path
-   * @post getType() == name of serializer used
-   * @post getPassPhrase() == passphrase
-   * @post changed() == false
-   */
   Error load(const QString &path, const EncryptedString &passphrase, const QString &def_user);
 
-  /** Saves the safe to a file.
-   * The safe is saved to the specified file with the status of the
-   * save returned.
-   *
-   * @param path File's path
-   * @param type Name of SafeSerializer to use
-   * @param passphrase Pass-phrase to the safe
-   * @param def_user Default username
-   * @return Safe::Success if the file is saved, otherwise the Safe::Error
-   *         condition.
-   * @post getPath() == path
-   * @post getType() == type
-   * @post getPassPhrase() == passphrase
-   * @post changed() == false
-   */
   Error save(const QString &path, const QString &type,
 	    const EncryptedString &passphrase, const QString &def_user);
-
-  /** Saves the safe to a file.
-   * The safe is saved to the specified file with the status of the
-   * save returned.
-   *
-   * @param path File's path
-   * @param passphrase Pass-phrase to the safe
-   * @param def_user Default username
-   * @return Safe::Success if the file is saved, otherwise the Safe::Error
-   *         condition.
-   * @post getPath() == path
-   * @post getPassPhrase() == passphrase
-   * @post changed() == false
-   */
   Error save(const QString &path, const EncryptedString &passphrase, const QString &def_user);
-  /** Saves the safe to a file.
-   * The safe is saved to it's previous location using the same
-   * pass-pharse and serializer.
-   *
-   * @param def_user Default username
-   * @return Safe::Success if the file is saved, otherwise the Safe::Error
-   *         condition.
-   * @post changed() == false
-   */
   Error save(const QString &def_user);
     
   inline const QString &getPath() const { return m_path; }
@@ -260,20 +150,7 @@ public:
 
   //SafeItem *findItem(QListViewItem *item);
 
-  /** Adds an item to the safe.
-   * Adds a new item to the safe, returning a pointer to the item that is
-   * in the safe.
-   *
-   * @param item Item to be added
-   * @return Pointer to the item that exists in the safe
-   */
   SafeItem *addItem(SafeItem &item);
-
-  /** Deletes an item from the safe.
-   *
-   * @param item Pointer to the item in the safe
-   * @return true if the item is found and deleted, otherwise false
-   */
   bool delItem(SafeItem *item);
 
   /** Returns the list of items.
@@ -290,47 +167,13 @@ public:
    */
   inline int size() { return m_items.size(); }
 
-  /** Empties the safe.
-   * Removes all the items from the safe.
-   *
-   * @post size() == 0
-   */
   void empty();
 
-  /** Returns a string that describes an error.
-   * @param error Safe::Error that needs to be translated.
-   * @return Descriptive string
-   */
   static const char *errorToString(Error e);
 
 protected:
-  /** Backs up a file appending '~' to the name.
-   * Thus "somefile.txt" becomes "somefile.txt~".
-   *
-   * @param path Path to file
-   * @return True if the backup was made, false if not
-   */
   bool makeBackup(const QString &path);
-
-  /** Sets the safe's serializer's name.
-   */
   void setType(const QString &type);
-
-  /** Creates a serializer that matches the given extension and serializer.
-   * Extensions map to serializers one to many, while
-   * the serializers' names are unique and are one to
-   * one. The rules governing what serializer comes out
-   * are pretty easy. The serializer's name always takes
-   * precedence over the extension. If the name is NULL
-   * or has a length of zero, the extension is used.
-   * The first serializer found to match the extension
-   * is returned. SafeSerializer::nextByExt returns the
-   * next possible serializer if there is any.
-   *
-   * @param extension File's extension
-   * @param serializer Name of the serializer
-   * @return SafeSerializer that matches either extension or serializer.
-   */
   static SafeSerializer *createSerializer(const QString &extension,
 					  const QString &serializer);
 

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.15 2004/07/24 20:49:54 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.16 2004/07/25 18:29:15 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -51,6 +51,11 @@ SafeSerializer::SerializerVec SafeSerializer::m_serializers;
 BlowfishLizer2 _blowfish_lizer2;
 BlowfishLizer _blowfish_lizer;
 PlainTextLizer _plain_text_lizer;
+
+/** \class SafeItem safe.hpp
+ * \brief Represents an entry in the Safe.
+ * The information contained in each entry is stored in a SafeItem.
+ */
 
 SafeItem::SafeItem()
 {
@@ -201,6 +206,26 @@ void SafeItem::init()
   m_life_time = 0;
 }
 
+/** \class Safe safe.hpp
+ * \brief Represents a safe.
+ *
+ * A safe is manages a collection of items, and it can load and save
+ * itself to a file. Using a Safe is as easy as creating it and loading
+ * something.
+ * \code
+ * Safe safe;
+ * Safe::Error error = safe.load("somesafe.dat", "Password Safe");
+ * if(error != Safe::Success) {
+ *    ...do error stuff
+ * }
+ * \endcode
+ */
+
+/* \example safe.cpp
+ * Demonstrates how to load a safe, display the entries,
+ * and saving it to another file.
+ */
+
 Safe::Safe()
   : m_passphrase(NULL), m_changed(false)
 {
@@ -221,21 +246,44 @@ Safe::~Safe()
   empty();
 }
 
+/** Returns a string that lists allowable safe extensions.
+ */
 QString Safe::getExtensions()
 {
   return SafeSerializer::getExtensions();
 }
 
+/** Returns a string that lists the types of safes.
+ */
 QString Safe::getTypes()
 {
   return SafeSerializer::getTypes();
 }
 
+/** Checks the password of a file.
+ * The serializer is choosen from the file's extension.
+ *
+ * @pre path != NULL
+ * @param path File's path.
+ * @param password Password to check.
+ * @return Safe::Success if the password is correct, Safe::Failed if not.
+ */
 Safe::Error Safe::checkPassword(const QString &path, const EncryptedString &password)
 {
   return checkPassword(path, NULL, password);
 }
 
+/** Checks the password of a file.
+ * But allows the type of file to be specified. If type
+ * is NULL or has a length of zero, the file's
+ * extension is used to pick a serializer.
+ *
+ * @pre Path != NULL
+ * @param path File's path.
+ * @param type Name of the serializer to use.
+ * @param password Password to check.
+ * @return Safe::Success if the password is correct, Safe::Failed if not.
+ */
 Safe::Error Safe::checkPassword(const QString &path, const QString &type, const EncryptedString &password)
 {
   QString ext(getExtension(path));
@@ -244,14 +292,14 @@ Safe::Error Safe::checkPassword(const QString &path, const QString &type, const 
   DBGOUT("Path: " << path);
 
   /*  if(type != NULL && strlen(type) > 0) {
-    serializer = SafeSerializer::createByName(type);
-  }
-  else {
-    if(path != NULL) {
+      serializer = SafeSerializer::createByName(type);
+      }
+      else {
+      if(path != NULL) {
       DBGOUT("Ext: \"" << ext << "\"");
       serializer = SafeSerializer::createByExt(ext.c_str());
-    }
-    }*/
+      }
+      }*/
 
   if(serializer != NULL) {
     DBGOUT("Serializer: " << serializer->name());
@@ -266,6 +314,21 @@ Safe::Error Safe::checkPassword(const QString &path, const QString &type, const 
 }
 
 
+/** Loads a safe from disk using the specified serializer.
+ * Empties the safe and reads the specified file into the safe using
+ * the serializer specified.
+ *
+ * @param path File's path
+ * @param type Name of the serializer to use
+ * @param passphrase Pass-phrase that'll open the safe
+ * @param def_user Default username
+ * @return Safe::Success if the file is opened, otherwise
+ *         the Safe::Error condition
+ * @post getPath() == path
+ * @post getType() == type
+ * @post getPassPhrase() == passphrase
+ * @post changed() == false
+ */
 Safe::Error Safe::load(const QString &path, const QString &type,
 		       const EncryptedString &passphrase, const QString &def_user)
 {
@@ -316,14 +379,42 @@ Safe::Error Safe::load(const QString &path, const QString &type,
   }
 }
 
+/** Loads a safe from disk.
+ * Empties the safe and reads the specified file into the safe.
+ *
+ * @param path File's path
+ * @param passphrase Pass-phrase that'll open the safe
+ * @param def_user Default username
+ * @return Safe::Success if the file is opened, otherwise
+ *         the Safe::Error condition
+ * @post getPath() == path
+ * @post getType() == name of serializer used
+ * @post getPassPhrase() == passphrase
+ * @post changed() == false
+ */
 Safe::Error Safe::load(const QString &path, const EncryptedString &passphrase, const QString &def_user)
 {
   assert(!path.isEmpty());
   return load(path, NULL, passphrase, def_user);
 }
 
+/** Saves the safe to a file.
+ * The safe is saved to the specified file with the status of the
+ * save returned.
+ *
+ * @param path File's path
+ * @param type Name of SafeSerializer to use
+ * @param passphrase Pass-phrase to the safe
+ * @param def_user Default username
+ * @return Safe::Success if the file is saved, otherwise the Safe::Error
+ *         condition.
+ * @post getPath() == path
+ * @post getType() == type
+ * @post getPassPhrase() == passphrase
+ * @post changed() == false
+ */
 Safe::Error Safe::save(const QString &path, const QString &type,
-		const EncryptedString &passphrase, const QString &def_user)
+		       const EncryptedString &passphrase, const QString &def_user)
 {
   assert(!path.isEmpty());
 
@@ -364,6 +455,19 @@ Safe::Error Safe::save(const QString &path, const QString &type,
   return BadFormat;
 }
 
+/** Saves the safe to a file.
+ * The safe is saved to the specified file with the status of the
+ * save returned.
+ *
+ * @param path File's path
+ * @param passphrase Pass-phrase to the safe
+ * @param def_user Default username
+ * @return Safe::Success if the file is saved, otherwise the Safe::Error
+ *         condition.
+ * @post getPath() == path
+ * @post getPassPhrase() == passphrase
+ * @post changed() == false
+ */
 Safe::Error Safe::save(const QString &path, const EncryptedString &passphrase, const QString &def_user)
 {
   if(m_type.isEmpty())
@@ -372,6 +476,15 @@ Safe::Error Safe::save(const QString &path, const EncryptedString &passphrase, c
     return save(path, m_type, passphrase, def_user);
 }
 
+/** Saves the safe to a file.
+ * The safe is saved to it's previous location using the same
+ * pass-pharse and serializer.
+ *
+ * @param def_user Default username
+ * @return Safe::Success if the file is saved, otherwise the Safe::Error
+ *         condition.
+ * @post changed() == false
+ */
 Safe::Error Safe::save(const QString &def_user)
 {
   if(!m_path.isEmpty() && m_passphrase.length() > 0) {
@@ -385,6 +498,8 @@ void Safe::setPath(const QString &path)
   m_path = path;
 }
 
+/** Sets the safe's serializer's name.
+ */
 void Safe::setType(const QString &type)
 {
   // NOTE: we don't check type because only Safe::save calls it, and
@@ -393,6 +508,21 @@ void Safe::setType(const QString &type)
 }
 
 
+/** Creates a serializer that matches the given extension and serializer.
+ * Extensions map to serializers one to many, while
+ * the serializers' names are unique and are one to
+ * one. The rules governing what serializer comes out
+ * are pretty easy. The serializer's name always takes
+ * precedence over the extension. If the name is NULL
+ * or has a length of zero, the extension is used.
+ * The first serializer found to match the extension
+ * is returned. SafeSerializer::nextByExt returns the
+ * next possible serializer if there is any.
+ *
+ * @param extension File's extension
+ * @param serializer Name of the serializer
+ * @return SafeSerializer that matches either extension or serializer.
+ */
 SafeSerializer *Safe::createSerializer(const QString &extension,
 				       const QString &serializer)
 {
@@ -419,6 +549,13 @@ void Safe::setChanged(bool value)
   m_changed = value;
 }
 
+/** Adds an item to the safe.
+ * Adds a new item to the safe, returning a pointer to the item that is
+ * in the safe.
+ *
+ * @param item Item to be added
+ * @return Pointer to the item that exists in the safe
+ */
 SafeItem *Safe::addItem(SafeItem &item)
 {
   SafeItem *new_item = new SafeItem(item);
@@ -431,6 +568,11 @@ SafeItem *Safe::addItem(SafeItem &item)
   return NULL;
 }
 
+/** Deletes an item from the safe.
+ *
+ * @param item Pointer to the item in the safe
+ * @return true if the item is found and deleted, otherwise false
+ */
 bool Safe::delItem(SafeItem *item)
 {
   for(ItemList::iterator iter = m_items.begin();
@@ -447,11 +589,16 @@ bool Safe::delItem(SafeItem *item)
   return false;
 }
 
+/** Empties the safe.
+ * Removes all the items from the safe.
+ *
+ * @post size() == 0
+ */
 void Safe::empty()
 {
   for(ItemList::iterator i = m_items.begin();
-    i != m_items.end();
-    i++) {
+      i != m_items.end();
+      i++) {
     if(*i != NULL) {
       delete(*i);
     }
@@ -459,6 +606,10 @@ void Safe::empty()
   m_items.erase(m_items.begin(), m_items.end());
 }
 
+/** Returns a string that describes an error.
+ * @param e Safe::Error that needs to be translated.
+ * @return Descriptive string
+ */
 const char *Safe::errorToString(Safe::Error e)
 {
   static const char *errors[] = { QT_TR_NOOP("Failed to open safe"),
@@ -470,6 +621,12 @@ const char *Safe::errorToString(Safe::Error e)
   return errors[e];
 }
 
+/** Backs up a file appending '~' to the name.
+ * Thus "somefile.txt" becomes "somefile.txt~".
+ *
+ * @param path Path to file
+ * @return True if the backup was made, false if not
+ */
 bool Safe::makeBackup(const QString &path)
 {
   if(path.isEmpty())
@@ -483,9 +640,9 @@ bool Safe::makeBackup(const QString &path)
     char buffer[1024];
     int num_read = 0;
     do {
-    	num_read = fread(buffer, 1, 1024, in);
-	if(num_read != 0)
-	  fwrite(buffer, 1, num_read, out);
+      num_read = fread(buffer, 1, 1024, in);
+      if(num_read != 0)
+	fwrite(buffer, 1, num_read, out);
     } while(num_read > 0);
     fclose(out);
     fclose(in);
