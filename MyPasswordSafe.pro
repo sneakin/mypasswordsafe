@@ -1,10 +1,18 @@
 TEMPLATE	= app
 LANGUAGE	= C++
 
-CONFIG	+= qt warn_on debug
+CONFIG	+= qt warn_on
+
+DEBUG = $$(DEBUG)
+
+isEmpty(DEBUG) {
+	config += release
+} else {
+	config += debug
+	DEFINES += DEBUG
+}
 
 LIBS	+= uuid-1.0.0/.libs/libuuid.a
-DEFINES	+= DEBUG
 INCLUDEPATH	+= uuid-1.0.0
 
 HEADERS	+= src/safe.hpp \
