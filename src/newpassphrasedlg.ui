@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>NewPassPhraseDlg</class>
 <widget class="QDialog">
     <property name="name">
@@ -126,7 +126,7 @@
 <connections>
     <connection>
         <sender>cancelButton</sender>
-        <signal>pressed()</signal>
+        <signal>clicked()</signal>
         <receiver>NewPassPhraseDlg</receiver>
         <slot>reject()</slot>
     </connection>
