@@ -36,39 +36,10 @@ public:
   static bool canDecode(const QMimeSource *src);
   static bool decode(const QMimeSource *src, QDomDocument &xml);
 
-  QPtrList<QListViewItem> items;
+  QPtrList<QListViewItem> items; // you probably want to store the actual data or pointers to it
   QString plain_text;
 };
-/*
-class DragItem: public DragObject
-{
-  Q_OBJECT;
 
-public:
-  DragItem(QWidget *src, ListItem *item);
-
-  virtual const char *format(int i = 0) const;
-  virtual bool provides(const char *mime_type) const;
-  virtual QByteArray encodedData(const char *mime_type) const;
-  static bool canDecode(const QMimeSource *src);
-
-  Data item_data;
-
-private:
-  void addItem(ListItem *item);
-};
-
-class DragGroup: public DragObject
-{
-  Q_OBJECT;
-
-public:
-  DragGroup(QWidget *src, ListGroup *group);
-
-private:
-  void addGroup(ListGroup *group);
-};
-*/
 class ListItem: public QListViewItem
 {
 public:
