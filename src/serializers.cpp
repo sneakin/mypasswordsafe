@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.21 2004/11/01 21:34:58 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.22 2004/11/01 21:54:34 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -35,7 +35,7 @@
 #include "exception.hpp"
 #include "myutil.hpp"
 #include "smartptr.hpp"
-#include "pwsafe/BlowFish.h"
+#include "pwsafe/PW_BlowFish.h"
 #include "pwsafe/Util.h"
 #include "uuid.hpp"
 

@@ -11,7 +11,7 @@
 
 #include <string>
 using std::string;
-#include "sha1.h"
+#include "PW_sha1.h"
 #include "PwsPlatform.h"
 #include "myutil.hpp"
 

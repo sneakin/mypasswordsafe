@@ -1,7 +1,7 @@
 // BlowFish.cpp
 //-----------------------------------------------------------------------------
 
-#include "BlowFish.h"
+#include "PW_BlowFish.h"
 
 //#include "Util.h" // for trashMemory
 extern void trashMemory(unsigned char* buffer,

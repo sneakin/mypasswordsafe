@@ -13,7 +13,7 @@ HEADERS	+= src/safe.hpp \
 	src/serializers.hpp \
 	src/pwsafe/PW_BlowFish.h \
 	src/pwsafe/Util.h \
-	src/pwsafe/sha1.h \
+	src/pwsafe/PW_sha1.h \
 	src/pwsafe/PwsPlatform.h \
 	src/myutil.hpp \
 	src/exception.hpp \
@@ -33,7 +33,7 @@ SOURCES	+= src/main.cpp \
 	src/encryptedstring.cpp \
 	src/pwsafe/PW_BlowFish.cpp \
 	src/pwsafe/Util.cpp \
-	src/pwsafe/sha1.cpp \
+	src/pwsafe/PW_sha1.cpp \
 	src/myutil.cpp \
 	src/startupdlg.cpp \
 	src/smartptr.cpp \

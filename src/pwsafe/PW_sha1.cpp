@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "PwsPlatform.h"
-#include "sha1.h"
+#include "PW_sha1.h"
 
 #define rol(value, bits) (((value) << (bits)) | ((value) >> (32 - (bits))))
 

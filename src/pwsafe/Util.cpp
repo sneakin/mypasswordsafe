@@ -1,8 +1,8 @@
 /// \file Util.cpp
 //-----------------------------------------------------------------------------
 
-#include "sha1.h"
-#include "BlowFish.h"
+#include "PW_sha1.h"
+#include "PW_BlowFish.h"
 //#include "PwsPlatform.h"
 
 #include <stdio.h>

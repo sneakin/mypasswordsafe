@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/encryptedstring.hpp,v 1.4 2004/11/01 21:34:58 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/encryptedstring.hpp,v 1.5 2004/11/01 21:54:34 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 
 //#include <boost/shared_ptr.hpp>
 #include "smartptr.hpp"
-#include "pwsafe/BlowFish.h"
+#include "pwsafe/PW_BlowFish.h"
 #include "securedstring.hpp"
 
 class EncryptedString

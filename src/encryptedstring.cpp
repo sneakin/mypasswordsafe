@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/encryptedstring.cpp,v 1.5 2004/11/01 21:34:58 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/encryptedstring.cpp,v 1.6 2004/11/01 21:54:34 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 #include <time.h>
 #include <iostream>
 #include "pwsafe/Util.h"
-#include "pwsafe/BlowFish.h"
+#include "pwsafe/PW_BlowFish.h"
 #include "encryptedstring.hpp"
 
 using namespace std;
