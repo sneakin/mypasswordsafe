@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.12 2004/07/28 23:17:20 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.13 2004/07/29 00:00:30 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -223,9 +223,8 @@ public:
   Error load(const QString &path, const QString &type, const EncryptedString &passphrase, const QString &def_user);
   Error load(const QString &path, const EncryptedString &passphrase, const QString &def_user);
 
-  Error save(const QString &path, const QString &type,
-	    const EncryptedString &passphrase, const QString &def_user);
-  Error save(const QString &path, const EncryptedString &passphrase, const QString &def_user);
+  Error save(const QString &path, const QString &type, const QString &def_user);
+  Error save(const QString &path, const QString &def_user);
   Error save(const QString &def_user);
     
   inline const QString &getPath() const { return m_path; }

@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.14 2004/07/28 23:17:20 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.15 2004/07/29 00:00:30 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -193,7 +193,6 @@ void MyPasswordSafe::fileOpen()
 	    break;
 	  else {
 	    statusBar()->message(Safe::errorToString(open_ret));
-	    return;
 	  }
 
 	  num_tries++;
@@ -300,26 +299,18 @@ bool MyPasswordSafe::saveAs()
     if(!filename.isEmpty()) {
       // NOTE: the passphrase doesn't get encrypted here
       SecuredString passkey;
-      NewPassPhraseDlg dlg;
-      if(dlg.exec() == QDialog::Accepted) {
-	passkey.set(dlg.password().utf8());
-	Safe::Error error = m_safe->save(filename,
-				   filter,
-				   passkey,
-				   m_def_user);
-	if(error == Safe::Success) {
-	  setCaption(tr("MyPasswordSafe: ") + m_safe->getPath());
-	  statusBar()->message(tr("Safe saved"));
-	  savingEnabled(false);
-	  return true;
-	}
-	else {
-	  DBGOUT("Error: " << error);
-	  statusBar()->message(tr("Error saving file"));
-	}
+      Safe::Error error = m_safe->save(filename,
+				       filter,
+				       m_def_user);
+      if(error == Safe::Success) {
+	setCaption(tr("MyPasswordSafe: ") + m_safe->getPath());
+	statusBar()->message(tr("Safe saved"));
+	savingEnabled(false);
+	return true;
       }
       else {
-	statusBar()->message(tr("No passkey entered"));
+	DBGOUT("Error: " << error);
+	statusBar()->message(tr("Error saving file"));
       }
     }
   }

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.13 2004/07/28 23:17:20 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.14 2004/07/29 00:00:30 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -243,27 +243,27 @@ int BlowfishLizer::readEntry(FILE *in, SafeEntry &item,
   if(data.length() > 0) {
     tempdata = data.get();
 
-    QStringList name_user(QStringList::split('\xAD', tempdata));
+    QStringList name_user(QStringList::split('\xAD', tempdata, true));
     if(name_user.size() == 2) {
       //trimRight(name_user[0]);
-      name_user[0].truncate(name_user[0].length() - 1);
-      item.setName(name_user[0].stripWhiteSpace());
+      tempdata = name_user[0].stripWhiteSpace();
+      tempdata.truncate(tempdata.length() - 1);
+      DBGOUT("\"" << tempdata << "\"\t\"" << name_user[0] << "\"");
+      item.setName(tempdata);
 
       //trimLeft(name_user[1]);
       item.setUser(name_user[1].stripWhiteSpace());
     }
     // check for the other special character
     else {
-      name_user = QStringList::split('\xA0', tempdata);
+      name_user = QStringList::split('\xA0', tempdata, true);
       if(name_user.size() == 2) {
+	tempdata = name_user[0].stripWhiteSpace();
+	tempdata.truncate(tempdata.length() - 1);
 	//trimRight(name_user[0]);
-	item.setName(name_user[0].stripWhiteSpace());
 	item.setUser(def_user);
       }
-      else {
-	item.setName(tempdata);
-	item.setUser("");
-      }
+      item.setName(tempdata);
     }
   }
 
@@ -733,8 +733,6 @@ int BlowfishLizer2::readEntry(FILE *in, SafeEntry &item, QString &group,
     } break;
     case GROUP: {
       QString g(data.get());
-
-      DBGOUT("Group: " << group << "\t" << parseGroup(g));
       group = parseGroup(g);
       break;
     }

@@ -10,6 +10,10 @@
 #include <qmessagebox.h>
 #include "myutil.hpp"
 
+void NewPassPhraseDlg::init()
+{
+		okButton->setEnabled(false);	
+}
 
 void NewPassPhraseDlg::okClicked()
 {

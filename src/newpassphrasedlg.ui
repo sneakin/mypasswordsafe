@@ -91,7 +91,7 @@
                         <cstring>okButton</cstring>
                     </property>
                     <property name="enabled">
-                        <bool>false</bool>
+                        <bool>true</bool>
                     </property>
                     <property name="text">
                         <string>Ok</string>
@@ -106,6 +106,9 @@
                     </property>
                     <property name="text">
                         <string>Cancel</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
                     </property>
                 </widget>
             </hbox>
@@ -160,9 +163,10 @@
 </includes>
 <slots>
     <slot>okClicked()</slot>
-    <slot>lineChanged( const QString &amp; )</slot>
+    <slot>lineChanged( const QString &amp; text )</slot>
 </slots>
 <functions>
+    <function access="private" specifier="non virtual">init()</function>
     <function returnType="QString">password()</function>
 </functions>
 <pixmapinproject/>

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.18 2004/07/28 23:17:20 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.19 2004/07/29 00:00:30 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -532,7 +532,6 @@ Safe::Error Safe::load(const QString &path, const EncryptedString &passphrase, c
  *
  * @param path File's path
  * @param type Name of SafeSerializer to use
- * @param passphrase Pass-phrase to the safe
  * @param def_user Default username
  * @return Safe::Success if the file is saved, otherwise the Safe::Error
  *         condition.
@@ -542,7 +541,7 @@ Safe::Error Safe::load(const QString &path, const EncryptedString &passphrase, c
  * @post changed() == false
  */
 Safe::Error Safe::save(const QString &path, const QString &type,
-		       const EncryptedString &passphrase, const QString &def_user)
+		       const QString &def_user)
 {
   assert(!path.isEmpty());
 
@@ -561,14 +560,7 @@ Safe::Error Safe::save(const QString &path, const QString &type,
     DBGOUT("Serializer: " << serializer->name());
 
     setPath(full_path);
-    setType(type);
-
-    // setPassPhrase can't set it back to itself because
-    // the references all go back to m_passphrase. So
-    // we do a quick check to avert the problems that
-    // that was causing.
-    if(passphrase != getPassPhrase())
-      setPassPhrase(passphrase);
+    setType(serializer->name());
 
     // FIXME: make this an option
     makeBackup(full_path);
@@ -588,7 +580,6 @@ Safe::Error Safe::save(const QString &path, const QString &type,
  * save returned.
  *
  * @param path File's path
- * @param passphrase Pass-phrase to the safe
  * @param def_user Default username
  * @return Safe::Success if the file is saved, otherwise the Safe::Error
  *         condition.
@@ -596,12 +587,9 @@ Safe::Error Safe::save(const QString &path, const QString &type,
  * @post getPassPhrase() == passphrase
  * @post changed() == false
  */
-Safe::Error Safe::save(const QString &path, const EncryptedString &passphrase, const QString &def_user)
+Safe::Error Safe::save(const QString &path, const QString &def_user)
 {
-  if(m_type.isEmpty())
-    return save(path, NULL, passphrase, def_user);
-  else
-    return save(path, m_type, passphrase, def_user);
+  return save(path, m_type, def_user);
 }
 
 /** Saves the safe to a file.
@@ -616,7 +604,7 @@ Safe::Error Safe::save(const QString &path, const EncryptedString &passphrase, c
 Safe::Error Safe::save(const QString &def_user)
 {
   if(!m_path.isEmpty() && m_passphrase.length() > 0) {
-    return save(m_path, m_type, m_passphrase, def_user);
+    return save(m_path, m_type, def_user);
   }
   return Failed;
 }
