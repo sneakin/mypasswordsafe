@@ -1,5 +1,5 @@
 # MyPasswordSafe Makefile
-# $Header: /home/cvsroot/MyPasswordSafe/Makefile,v 1.5 2004/06/10 11:46:38 nolan Exp $
+# $Header: /home/cvsroot/MyPasswordSafe/Makefile,v 1.6 2004/06/10 15:28:50 nolan Exp $
 
 # This is the only configuration setting. It specifies where the files will
 # be copied when "make install" is called, and where MyPS will search for
@@ -20,11 +20,11 @@ all: MyPasswordSafe
 MyPasswordSafe.mak: MyPasswordSafe.pro
 	$(QMAKE) -o $@ $<
 
-MyPasswordSafe: config uuid MyPasswordSafe.mak
+MyPasswordSafe: config uuid-1.0.0/.libs/libuuid.a MyPasswordSafe.mak
 	make -f MyPasswordSafe.mak
 	lrelease locale/*.ts
 
-uuid:
+uuid-1.0.0/.libs/libuuid.a:
 	cd uuid-1.0.0 && ./configure --prefix=$(PREFIX) && cd ..
 	make -C uuid-1.0.0
 
@@ -42,13 +42,13 @@ src/config.h:
 	echo "#define COMP_DATE \"$(DATE)\"" >> src/config.h
 	echo "#define COMP_USER \"$(USER)\"" >> src/config.h
 	echo "#define COMP_HOST \"$(HOST)\"" >> src/config.h
-	echo "#define ENDIAN $(shell ./config/endian)" >> src/config.h
 	echo "#endif" >> src/config.h
 
 config: src/config.h
 
 clean: MyPasswordSafe.mak
 	make -f $< clean
+	make -C uuid-1.0.0 clean
 	rm $<
 	rm -r doc/api
 
