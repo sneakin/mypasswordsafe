@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.18 2004/10/01 10:38:20 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.19 2004/10/23 00:14:08 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -749,8 +749,8 @@ int BlowfishLizer2::readEntry(FILE *in, SafeEntry &item, QString &group,
       item.setUUID(uuid);
     } break;
     case GROUP: {
-      QString g(data.get());
-      group = parseGroup(g);
+      //QString g(data.get());
+      group = parseGroup(QString::fromUtf8(data.get()));
       break;
     }
     case CTIME:
