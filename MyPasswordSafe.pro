@@ -96,6 +96,38 @@ IMAGES	= images/searchfind \
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 unix {
   UI_DIR = .ui
   MOC_DIR = .moc
