@@ -5,8 +5,7 @@ BRANCH=
 RELEASE=$(PROGRAM)-$(DATE)
 UPLOAD_TO=sg:/home/nolan/web/semanticgap.com/myps/release/devel
 
-all: upload
-#src bin
+all: src bin
 
 src: $(RELEASE).src.tgz.asc
 
@@ -24,7 +23,10 @@ $(RELEASE).bin.tgz: $(RELEASE)
 		$</doc/sshots $</locale
 
 $(RELEASE).src.tgz: $(RELEASE)
+	mv $</images/about_banner.png .
+	mv $</images/about_banner.src.png $</images/about_banner.png
 	tar cfz $@ $<
+	mv about_banner.png $</images/about_banner.png
 
 $(RELEASE).bin.tgz.asc: $(RELEASE).bin.tgz
 	$(GPGSIGN) $<
@@ -40,7 +42,7 @@ upload-bin: bin
 	scp $(RELEASE).bin.tgz $(UPLOAD_TO)
 	scp $(RELEASE).bin.tgz.asc $(UPLOAD_TO)
 
-upload: upload-src upload-bin
+release: upload-src upload-bin
 
 clean:
 	rm -r $(PROGRAM)*
