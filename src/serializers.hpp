@@ -1,5 +1,5 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.9 2004/07/28 23:17:20 nolan Exp $
- * Copyright (c) 2004, Semantic Gap Solutions
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.10 2004/11/01 17:44:45 nolan Exp $
+ * Copyright (c) 2004, Semantic Gap (TM)
  * All rights reserved.
  *   
  * Redistribution and use in source and binary forms,
@@ -12,7 +12,7 @@
  *     above copyright notice, this list of conditions and
  *     the following disclaimer in the documentation and/or
  *     other materials provided with the distribution.
- *  -  Neither the name of Semantic Gap Solutions nor the
+ *  -  Neither the name of Semantic Gap (TM) nor the
  *     names of its contributors may be used to endorse or
  *     promote products derived from this software without
  *     specific prior written permission.
