@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.3 2004/06/12 06:42:18 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.4 2004/06/12 07:30:40 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -271,8 +271,14 @@ public:
    */
   bool delItem(SafeItem *item);
 
+  /** Returns the list of items.
+   */
   ItemList &getItems() { return m_items; }
+  /** Returns an iterator for the first item.
+   */
   iterator firstItem() { return m_items.begin(); }
+  /** Returns an iterator that is one past the last item.
+   */
   iterator lastItem() { return m_items.end(); }
 
   /** Returns the number of items in the safe.
@@ -287,7 +293,7 @@ public:
   void empty();
 
 protected:
-  /** Backs up a file that has '~' prepended to the name.
+  /** Backs up a file appending '~' to the name.
    * Thus "somefile.txt" becomes "somefile.txt~".
    *
    * @param path Path to file

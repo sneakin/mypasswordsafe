@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.6 2004/06/12 06:42:18 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.7 2004/06/12 07:30:40 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -229,7 +229,7 @@ Safe::Error Safe::checkPassword(const char *path, const char *type, const Encryp
     }*/
 
   if(serializer != NULL) {
-    DBGOUT("Serializer: " << serializer->description());
+    DBGOUT("Serializer: " << serializer->name());
 
     // NOTE: password is decrypted
     string p(path);
@@ -270,7 +270,7 @@ Safe::Error Safe::load(const char *path, const char *type, const EncryptedString
     do {
       empty();
 
-      DBGOUT("Using " << serializer->description() << " to serialize");
+      DBGOUT("Using " << serializer->name() << " to serialize");
 
       err = serializer->load(*this, string(path),
 				   passphrase, def_user_str);
@@ -279,7 +279,7 @@ Safe::Error Safe::load(const char *path, const char *type, const EncryptedString
       if(err == Success) {
 	DBGOUT("Success");
 	setPath(path);
-	setType(serializer->description());
+	setType(serializer->name());
 	setPassPhrase(passphrase);
 	setChanged(false);
 	break;
@@ -333,7 +333,7 @@ Safe::Error Safe::save(const char *path, const char *type,
     }
 
     DBGOUT("Path: " << full_path);
-    DBGOUT("Serializer: " << serializer->description());
+    DBGOUT("Serializer: " << serializer->name());
 
     setPath(full_path);
     setType(type);

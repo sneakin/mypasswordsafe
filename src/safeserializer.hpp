@@ -39,53 +39,105 @@ using std::string;
 class Safe;
 
 /** ABC that handles reading and writing Safes to various formats.
+ * To create your own SafeSerializer, you need to derive a class
+ * from SafeSerializer. SafeSerializer's constructor takes two
+ * arguments, an extension and a name. You then need to define
+ * "load", "save", and "checkPassword" for your serializer.
+ * Your serializer will automatically be registered with the
+ * factory and Safe::load and Safe::save will recognize it.
  */
 class SafeSerializer
 {
 public:
   virtual ~SafeSerializer();
 
+  /** Returns the extension that the serializer uses for files.
+   */
   inline const char *extension() { return m_extension.c_str(); }
-  inline const char *description() { return m_description.c_str(); }
-  // Returns the string to be used in file open/save dialogs
+  /** Returns the name of the serializer.
+   * This is used in file open/save dialogs.
+   */
+  inline const char *name() { return m_name.c_str(); }
 
+  /** Checks the password of a safe.
+   * @param path Filename to check
+   * @param password Password that is being checked
+   * @return Safe::Success if the password is correct
+   */
   virtual Safe::Error checkPassword(const string &path, const SecuredString &password) = 0;
-  // returns true if password can open path, false if it can not
 
+  /** Loads a safe.
+   * @param safe The safe that the data will be loaded into.
+   * @param path Filename to open
+   * @param passphrase Pass-phrase of the safe
+   * @param def_user Default user name to use for certain items
+   * @return Safe::Success if the safe was loaded, otherwise a Safe::Error condition
+   *         corresponding to what happened.
+   */
   virtual Safe::Error load(Safe &safe, const string &path, const EncryptedString &passphrase, const string &def_user) = 0;
-  // loads the file specified by path into safe return true on success,
-  // false on failure
+  /** Saves a safe to a file.
+   * @param safe The safe to save.
+   * @param path The filename that the safe will be saved as.
+   * @param def_user Default user name that is specified in the preferences.
+   * @return Safe::Success if the safe was saved, otherwise a Safe::Error that
+   *         that corresponds to what happened.
+   */
   virtual Safe::Error save(Safe &safe, const string &path, const string &def_user) = 0;
-  // saves safe to the file specified by path. returns true if success,
-  // false on failure
+
 
 protected:
-  SafeSerializer(const char *ext, const char *description);
+  /** Called by subclasses to register with the factory.
+   * @param ext File extension that the serializer uses
+   * @param name Descriptive name of the serializer
+   */
+  SafeSerializer(const char *ext, const char *name);
 
 private:
-  string m_extension, m_description;
+  string m_extension, m_name;
 
   // Begin Factory methods
 public:
+  /** Creates a serializer given an extension.
+   * @param ext The extension to find a serializer with. One extension
+   *            can match many serializers.
+   * @return SafeSerializer instance whose extension() == ext
+   */
   static SafeSerializer *createByExt(const char *ext);
-  static SafeSerializer *createByName(const char *name);
-  // public interface to the SafeSerializer factory. Returns a pointer
-  // to a SafeSerializer that handles files with the specified
-  // file extension
-    
+  /** Returns the next serializer that has the same extension as
+   * the parameter.
+   * @param serializer The serializer to start searching from.
+   * @return Next SafeSerializer that has the same extension, or NULL
+   *         if there aren't anymore.
+   */
   static SafeSerializer *getNextExt(SafeSerializer *serializer);
 
+  /** Creates a serializer given a name.
+   * @param name The name of the serializer. Only one serializer will
+   *             match.
+   * @return SafeSerializer instance whose name() == name
+   */
+  static SafeSerializer *createByName(const char *name);
+
   typedef vector<SafeSerializer *> SerializerVec;
+  /** Returns the vector of all the serializers.
+   */
   static const SerializerVec &serializers() { return m_serializers; }
-  // returns the std::map of serializers. The map is a pair made of
-  // extension and the pointer to the serializer.
+
+  /** Returns a multilined string with all the serializer names.
+   */
   static string getTypes();
+  /** Returns a multilined string with all the extensions that are
+   * registered.
+   */
   static string getExtensions();
-  static const char *getExtForType(const char *type);
+  /** Returns the extension for the given name.
+   */
+  static const char *getExtForName(const char *type);
 
 protected:
+  /** Registers a SafeSerializer with the factory.
+   */
   static bool add(SafeSerializer *serializer);
-  // register a SafeSerializer to handle the ext extension with the factory
     
 private:
   static SerializerVec m_serializers;

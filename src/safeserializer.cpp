@@ -38,8 +38,8 @@
 
 using namespace std;
 
-SafeSerializer::SafeSerializer(const char *extension, const char *description)
-  : m_extension(extension), m_description(description)
+SafeSerializer::SafeSerializer(const char *extension, const char *name)
+  : m_extension(extension), m_name(name)
 {
   add(this);
 }
@@ -74,7 +74,7 @@ SafeSerializer *SafeSerializer::createByName(const char *name)
 	i != m_serializers.end();
 	i++) {
       SafeSerializer *serializer(*i);
-      if(string(serializer->description()) == name_str) {
+      if(string(serializer->name()) == name_str) {
 	return serializer;
       }
     }
@@ -99,7 +99,7 @@ public:
 
   void operator () (SafeSerializer::SerializerVec::reference r)
   {
-    setResult(getResult() + r->description() + "\n");
+    setResult(getResult() + r->name() + "\n");
   }
 };
 
@@ -134,13 +134,13 @@ string SafeSerializer::getExtensions()
 		  cater).getResult());
 }
 
-const char *SafeSerializer::getExtForType(const char *type)
+const char *SafeSerializer::getExtForName(const char *type)
 {
   for(SerializerVec::iterator i = m_serializers.begin();
       i != m_serializers.end();
       i++) {
     SafeSerializer *serializer(*i);
-    if(string(serializer->description()) == string(type)) {
+    if(string(serializer->name()) == string(type)) {
       return serializer->extension();
     }
   }
