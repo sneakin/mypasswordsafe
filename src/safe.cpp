@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.22 2004/08/01 09:11:28 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.23 2004/09/21 04:43:51 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -563,9 +563,6 @@ Safe::Error Safe::save(const QString &path, const QString &type,
   assert(!path.isEmpty());
 
   QFileInfo info(path);
-  if(!info.exists())
-    return BadFile;
-
   QString ext(info.extension(false));
   SafeSerializer *serializer(createSerializer(ext, type));
 

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.16 2004/08/02 04:03:49 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.17 2004/09/21 04:43:51 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -425,6 +425,8 @@ int BlowfishLizer::writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
 			      unsigned char *ipthing, const QString &def_user,
 			      bool v2_hdr)
 {
+  DBGOUT("BlowfishLizer::writeEntry");
+
   int num_written = 0;
   SecuredString data;
   QCString temp(item.name().ascii());
@@ -604,6 +606,7 @@ Safe::Error BlowfishLizer2::saveGroup(FILE *out, SafeGroup *group, BlowFish *fis
   while(iter.current()) {
     item = iter.current();
     if(item->rtti() == SafeEntry::RTTI) {
+      DBGOUT("Item name: " << ((SafeEntry *)item)->name());
       if(writeEntry(out, *(SafeEntry *)item, fish, ipthing, def_user) == 0) {
 	return Safe::IOError;
       }
@@ -817,6 +820,8 @@ int BlowfishLizer2::writeTime(FILE *out, BlowFish *fish, time_t time,
 int BlowfishLizer2::writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
 			       unsigned char *ipthing, const QString &)
 {
+  DBGOUT("BlowfishLizer2::writeEntry");
+
   int num_written = 0;
   SecuredString data;
 

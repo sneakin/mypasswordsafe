@@ -189,7 +189,7 @@ bool XmlSerializer::safeGroupFromXml(const QDomElement &elem, SafeGroup *group)
 	// quietly ignore unknown items
 #ifdef DEBUG
 	else {
-	  DBGOUT("Unknown element: " << item_elem.tagName());
+	  DBGOUT("Unknown element: " << item.tagName());
 	}
 #endif
       }
