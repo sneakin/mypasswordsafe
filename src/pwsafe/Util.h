@@ -9,16 +9,6 @@
 #include "securedstring.hpp"
 #include <assert.h>
 
-#ifndef WIN32
-#ifdef __NetBSD__
-#include <sys/endian.h>
-#elif __APPLE__
-#include <ppc/endian.h>
-#else
-#include <endian.h>
-#endif
-#endif
-
 #include <string>
 using std::string;
 #include "sha1.h"
