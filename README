@@ -7,9 +7,7 @@ details. Semantic Gap is a trademark of Nolan Eakins.
 
 Please read doc/manual.html for all the information you'll probably need. If
 for some reason you can't read html, you need Qt 3 <http://www.trolltech.com/>
-to use MyPasswordSafe. To compile MyPasswordSafe you will also need boost
-<http://www.boost.org/> in addition to Qt 3. The project file expects boost to
-be found at ./boost-1.30.2 where . is the directory containing this file. Boost shouldn't need to be compiled since MyPasswordSafe only uses the shared_ptr. Once
-that's setup, running "make" will compile everything and "make install" will install everything.
+to use MyPasswordSafe. Once that's setup, running "make" will compile everything
+and "make install" will install everything.
 
 For help email support@semanticgap.com
