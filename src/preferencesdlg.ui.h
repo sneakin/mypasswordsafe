@@ -6,7 +6,7 @@
 ** init() function in place of a constructor, and a destroy() function in
 ** place of a destructor.
 *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/preferencesdlg.ui.h,v 1.3 2004/06/15 05:18:15 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/preferencesdlg.ui.h,v 1.4 2004/06/27 23:03:19 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -46,7 +46,7 @@
 void PreferencesDlg::onBrowse()
 {
     QString filename = QFileDialog::getOpenFileName(
-	    QString::null, Safe::getTypes().c_str(),
+	    QString::null, Safe::getTypes(),
 	    this, "file open", "Open a password safe" );
     if(!filename.isEmpty()) {
 	defaultSafeBox->setText(filename);
