@@ -1,24 +1,27 @@
+PROGRAM=MyPasswordSafe
 DATE=$(shell date +%Y%m%d)
 BRANCH=
+RELEASE=$(PROGRAM)-$(DATE)
 
 all: src bin
 
-src: MyPasswordSafe-$(DATE).src.tgz
+src: $(RELEASE).src.tgz
 
-bin: MyPasswordSafe-$(DATE).bin.tgz
+bin: $(RELEASE).bin.tgz
 
-MyPasswordSafe:
+$(RELEASE):
 	#cvs co -r $(BRANCH) $@
-	cvs co $@
+	cvs co $(PROGRAM)
+	mv $(PROGRAM) $@
+	make -C $@ ChangeLog
 
-MyPasswordSafe-$(DATE).bin.tgz: MyPasswordSafe
+$(RELEASE).bin.tgz: $(RELEASE)
 	make -C $< all
 	tar cfz $@ $</MyPasswordSafe $</Makefile $</README $</ChangeLog $</CHANGES $</doc/manual.html $</doc/manual.fr.html \
 		$</doc/sshots $</locale
 
-MyPasswordSafe-$(DATE).src.tgz: MyPasswordSafe
-	make -C $< ChangeLog
+$(RELEASE).src.tgz: $(RELEASE)
 	tar cfz $@ $<
 
 clean:
-	rm -r MyPasswordSafe
+	rm -r $(RELEASE)
