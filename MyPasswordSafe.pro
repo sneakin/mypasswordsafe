@@ -3,15 +3,6 @@ LANGUAGE	= C++
 
 CONFIG	+= qt warn_on
 
-DEBUG = $$(DEBUG)
-
-isEmpty(DEBUG) {
-	config += release
-} else {
-	config += debug
-	DEFINES += DEBUG
-}
-
 LIBS	+= uuid-1.0.0/.libs/libuuid.a
 INCLUDEPATH	+= uuid-1.0.0
 
@@ -32,7 +23,8 @@ HEADERS	+= src/safe.hpp \
 	src/safelistview.hpp \
 	src/uuid.hpp \
 	src/xmlserializer.hpp \
-	src/plaintextlizer.hpp
+	src/plaintextlizer.hpp \
+	src/safedragobject.hpp
 SOURCES	+= src/main.cpp \
 	src/securedstring.cpp \
 	src/safe.cpp \
@@ -48,7 +40,8 @@ SOURCES	+= src/main.cpp \
 	src/safelistview.cpp \
 	src/uuid.cpp \
 	src/xmlserializer.cpp \
-	src/plaintextlizer.cpp
+	src/plaintextlizer.cpp \
+	src/safedragobject.cpp
 FORMS	= src/mypasswordsafe.ui \
 	src/pwordeditdlg.ui \
 	src/passphrasedlg.ui \
@@ -88,6 +81,19 @@ IMAGES	= images/searchfind \
 	images/folder_new.png \
 	images/folder_blue.png \
 	images/folder_blue_open.png
+
+
+
+DEBUG = $$(DEBUG)
+
+isEmpty(DEBUG) {
+	config += release
+} else {
+	config += debug
+	DEFINES += DEBUG
+}
+
+
 
 
 
