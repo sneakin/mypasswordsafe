@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.9 2004/08/02 04:03:49 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.10 2004/10/02 03:26:43 nolan Exp $
  */
 #ifndef SAFELISTVIEW_HPP
 #define SAFELISTVIEW_HPP
@@ -83,9 +83,9 @@ public:
 
   void setSafe(Safe *safe);
   SafeItem *getSelectedItem();
+  SafeItem *getCurrentItem();
 
   virtual void startDrag();
-  //void dropped(QDropEvent *, SafeListViewItem *);
 
   //signals:
   //void contextMenuRequested(QListViewItem *, const QPoint &, int);
@@ -97,14 +97,21 @@ public:
 
   void dropped(QDropEvent *, SafeListViewItem *);
 
+signals:
+  void deleteItem(SafeItem *);
+  void dragObjectDropped(QMimeSource *drag, SafeListViewItem *target);
+
 public slots:
  void dropped(QDropEvent *);
 
 private:
+  bool isTargetChild(QDropEvent *event, SafeListViewItem *target);
   SafeListViewItem *findItem(SafeItem *);
   void populate(SafeGroup *group, SafeListViewGroup *view = NULL);
 
   Safe *m_safe;
+  SafeListViewItem *m_drop_target;
+  bool m_target_is_child;
 };
 
 #endif

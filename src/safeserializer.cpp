@@ -37,6 +37,7 @@
 #include "safeserializer.hpp"
 #include "plaintextlizer.hpp"
 #include "serializers.hpp"
+#include "xmlserializer.hpp"
 
 using namespace std;
 
@@ -44,6 +45,7 @@ SafeSerializer::SerializerVec SafeSerializer::m_serializers;
 PlainTextLizer _plain_text_lizer;
 BlowfishLizer2 _blowfish_lizer2;
 BlowfishLizer _blowfish_lizer;
+XmlSerializer _xml_serializer;
 
 SafeSerializer::SafeSerializer(const QString &extension, const QString &name)
   : m_extension(extension), m_name(name)

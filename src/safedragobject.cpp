@@ -2,6 +2,7 @@
 #include <qdom.h>
 #include "safe.hpp"
 #include "safedragobject.hpp"
+#include "xmlserializer.hpp"
 
 static const QString SafeDragObject_MimeType = "application/mypasswordsafe";
 static const QString SafeDragObject_Text = "text/plain";
@@ -38,9 +39,8 @@ bool SafeDragObject::provides(const char *mime_type) const
   QString mime(mime_type);
   if(mime == SafeDragObject_MimeType)
     return true;
-  else {
-    if(oneItemAndEntry())
-      return true;
+  else if(mime == SafeDragObject_Text && oneItemAndEntry()) {
+    return true;
   }
 
   return false;
@@ -48,9 +48,32 @@ bool SafeDragObject::provides(const char *mime_type) const
 
 QByteArray SafeDragObject::encodedData(const char *mime_type) const
 {
-  QByteArray ret;
-  // FIXME: implement
-  return ret;
+  if(mime_type == SafeDragObject_MimeType) {
+    QDomDocument doc("safe");
+    QPtrListIterator<SafeItem> it(m_items);
+    for(; it.current(); ++it) {
+      SafeItem *item = it.current();
+
+      if(item->rtti() == SafeGroup::RTTI) {
+	doc.appendChild(XmlSerializer::safeGroupToXml(doc, *(SafeGroup *)item));
+      }
+      else if(item->rtti() == SafeEntry::RTTI) {
+	doc.appendChild(XmlSerializer::safeEntryToXml(doc, *(SafeEntry *)item));
+      }
+    }
+
+    DBGOUT("encodedData: " << endl << doc.toCString());
+    return doc.toCString();
+  }
+  else if(mime_type == SafeDragObject_Text && oneItemAndEntry()) {
+    SafeEntry *i = (SafeEntry *)m_items.getFirst();
+    const EncryptedString &es(i->password());
+    const SecuredString &sec(es.get());
+    DBGOUT("encodedData: " << sec.get());
+    return QCString(sec.get());
+  }
+
+  return QByteArray(0);
 }
 
 bool SafeDragObject::canDecode(const QMimeSource *src)

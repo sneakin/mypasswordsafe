@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>PreferencesDlg</class>
 <widget class="QDialog">
     <property name="name">
@@ -300,8 +300,11 @@
     <tabstop>defaultSafeBox</tabstop>
     <tabstop>browseButton</tabstop>
     <tabstop>defUserBox</tabstop>
+    <tabstop>pwordLengthBox</tabstop>
+    <tabstop>maxTriesBox</tabstop>
     <tabstop>okButton</tabstop>
     <tabstop>cancelButton</tabstop>
+    <tabstop>helpButton</tabstop>
 </tabstops>
 <includes>
     <include location="global" impldecl="in declaration">string</include>

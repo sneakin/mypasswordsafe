@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>NewPassPhraseDlg</class>
 <widget class="QDialog">
     <property name="name">
@@ -15,11 +15,22 @@
     <property name="caption">
         <string>New Pass-phrase</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget" row="1" column="0">
+        <widget class="QLabel">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>What would you like your new password to be?</string>
+            </property>
+            <property name="alignment">
+                <set>WordBreak|AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>layout18</cstring>
             </property>
@@ -61,9 +72,9 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QLayoutWidget" row="2" column="0">
+        <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout24</cstring>
+                <cstring>layout23</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -81,11 +92,22 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>92</width>
+                            <width>123</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>cancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>false</bool>
+                    </property>
+                </widget>
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>okButton</cstring>
@@ -100,31 +122,9 @@
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>cancelButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cancel</string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>false</bool>
-                    </property>
-                </widget>
             </hbox>
         </widget>
-        <widget class="QLabel" row="0" column="0">
-            <property name="name">
-                <cstring>textLabel1</cstring>
-            </property>
-            <property name="text">
-                <string>What would you like your new password to be?</string>
-            </property>
-            <property name="alignment">
-                <set>WordBreak|AlignVCenter</set>
-            </property>
-        </widget>
-    </grid>
+    </vbox>
 </widget>
 <connections>
     <connection>
@@ -155,8 +155,8 @@
 <tabstops>
     <tabstop>firstLine</tabstop>
     <tabstop>secondLine</tabstop>
-    <tabstop>okButton</tabstop>
     <tabstop>cancelButton</tabstop>
+    <tabstop>okButton</tabstop>
 </tabstops>
 <includes>
     <include location="local" impldecl="in implementation">newpassphrasedlg.ui.h</include>

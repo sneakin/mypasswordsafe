@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>PwordEditDlg</class>
 <widget class="QDialog">
     <property name="name">
@@ -242,7 +242,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout21</cstring>
+                <cstring>layout22</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -260,11 +260,22 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>204</width>
+                            <width>248</width>
                             <height>20</height>
                         </size>
                     </property>
                 </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>cancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                </widget>
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>okButton</cstring>
@@ -277,17 +288,6 @@
                     </property>
                     <property name="default">
                         <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>cancelButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cancel</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
                     </property>
                 </widget>
             </hbox>
@@ -330,12 +330,12 @@
     <tabstop>nameEdit</tabstop>
     <tabstop>userEdit</tabstop>
     <tabstop>passwordEdit</tabstop>
+    <tabstop>notesEdit</tabstop>
     <tabstop>showButton</tabstop>
     <tabstop>fetchButton</tabstop>
     <tabstop>genButton</tabstop>
-    <tabstop>notesEdit</tabstop>
-    <tabstop>okButton</tabstop>
     <tabstop>cancelButton</tabstop>
+    <tabstop>okButton</tabstop>
     <tabstop>tabWidget</tabstop>
 </tabstops>
 <includes>

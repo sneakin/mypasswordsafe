@@ -1,12 +1,10 @@
 #include <qdom.h>
 #include <qstring.h>
 #include <qstringlist.h>
+#include <qfile.h>
+#include <qtextstream.h>
 #include "safe.hpp"
 #include "xmlserializer.hpp"
-
-// register this w/ the factory
-XmlSerializer _xml_serializer;
-
 
 XmlSerializer::XmlSerializer()
   : SafeSerializer("xml", "UNENCRYPTED XML (*.xml)")
@@ -19,22 +17,67 @@ XmlSerializer::~XmlSerializer()
 
 Safe::Error XmlSerializer::checkPassword(const QString &path, const SecuredString &password)
 {
+  QFile file(path);
+  if(file.open(IO_ReadOnly)) {
+    QDomDocument doc;
+    if(!doc.setContent(&file))
+      return Safe::BadFile;
+
+    QDomElement root = doc.documentElement();
+    QString pword = root.attribute("password");
+    if(!pword.isEmpty()) {
+      if(pword == QString::fromUtf8(password.get()))
+	return Safe::Success;
+    }
+  }
+
   return Safe::Failed;
 }
 
-Safe::Error XmlSerializer::load(Safe &safe, const QString &path, const EncryptedString &passphrase, const QString &def_user)
+Safe::Error XmlSerializer::load(Safe &safe, const QString &path, const EncryptedString &passphrase, const QString &)
 {
+  QFile file(path);
+  if(file.open(IO_ReadOnly)) {
+    QDomDocument doc;
+    if(!doc.setContent(&file))
+      return Safe::BadFile;
+
+    QDomElement root = doc.documentElement();
+    QString pword = root.attribute("password");
+    if(pword != QString::fromUtf8(passphrase.get().get()))
+	return Safe::Failed;
+
+    if(safeFromXml(doc, safe))
+      return Safe::Success;
+  }
+
   return Safe::Failed;
 }
 
-Safe::Error XmlSerializer::save(Safe &safe, const QString &path, const QString &def_user)
+Safe::Error XmlSerializer::save(Safe &safe, const QString &path, const QString &)
 {
-  return Safe::Failed;
+  QFile file(path);
+  if(file.open(IO_WriteOnly)) {
+    QDomDocument doc("MyPasswordSafe");
+    doc.appendChild(safeToXml(doc, safe));
+
+    QTextStream stream(&file);
+    stream.setEncoding(QTextStream::UnicodeUTF8);
+    stream << doc.toString();
+    file.close();
+
+    return Safe::Success;
+  }
+
+  return Safe::BadFile;
 }
 
 QDomElement XmlSerializer::safeToXml(QDomDocument &doc, const Safe &safe)
 {
-  QDomElement e = doc.createElement("safe");
+  QDomElement e = safeGroupToXml(doc, safe, "safe");
+  // FIXME: add password and other data
+  const EncryptedString &es(safe.getPassPhrase());
+  e.setAttribute("password", es.get().get());
   return e;
 }
 
@@ -58,15 +101,18 @@ QDomElement XmlSerializer::safeEntryToXml(QDomDocument &doc, const SafeEntry &en
   return e;
 }
 
-QDomElement XmlSerializer::safeGroupToXml(QDomDocument &doc, const SafeGroup &group)
+QDomElement XmlSerializer::safeGroupToXml(QDomDocument &doc, const SafeGroup &group,
+					  const QString &name)
 {
-  QDomElement e = doc.createElement("group");
-  e.setAttribute("name", group.name());
+  QDomElement e = doc.createElement(name);
+
+  if(!group.name().isEmpty())
+    e.setAttribute("name", group.name());
 
   SafeGroup::Iterator it(&group);
   while(it.current()) {
     SafeItem *item = it.current();
-    if(item->rtti() < 0) {
+    if(item->rtti() != -1) {
       QDomElement child;
       if(item->rtti() == SafeGroup::RTTI) {
 	SafeGroup *g = (SafeGroup *)item;
@@ -86,6 +132,15 @@ QDomElement XmlSerializer::safeGroupToXml(QDomDocument &doc, const SafeGroup &gr
 
 bool XmlSerializer::safeFromXml(const QDomDocument &doc, Safe &safe)
 {
+  QDomElement root = doc.documentElement();
+  if(root.tagName() == "safe") {
+    QString pword = root.attribute("password");
+    EncryptedString es(pword);
+    safe.setPassPhrase(es);
+
+    return safeGroupFromXml(root, &safe, "safe");
+  }
+
   return false;
 }
 
@@ -161,9 +216,10 @@ bool XmlSerializer::safeEntryFromXml(const QDomElement &root, SafeEntry *entry)
   return false;
 }
 
-bool XmlSerializer::safeGroupFromXml(const QDomElement &elem, SafeGroup *group)
+bool XmlSerializer::safeGroupFromXml(const QDomElement &elem, SafeGroup *group,
+				     const QString &tag_name)
 {
-  if(elem.tagName() == "group") {
+  if(elem.tagName() == tag_name) {
     QString name = elem.attribute("name");
     if(!name.isEmpty())
       group->setName(name);

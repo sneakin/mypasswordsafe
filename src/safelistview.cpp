@@ -1,10 +1,43 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.13 2004/08/02 04:03:49 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.14 2004/10/02 03:26:43 nolan Exp $
+ * Copyright (c) 2004, Semantic Gap Solutions
+ * All rights reserved.
+ *   
+ * Redistribution and use in source and binary forms,
+ * with or without modification, are permitted provided
+ * that the following conditions are met:
+ *  -  Redistributions of source code must retain the
+ *     above copyright notice, this list of conditions
+ *     and the following disclaimer.
+ *  -  Redistributions in binary form must reproduce the
+ *     above copyright notice, this list of conditions and
+ *     the following disclaimer in the documentation and/or
+ *     other materials provided with the distribution.
+ *  -  Neither the name of Semantic Gap Solutions nor the
+ *     names of its contributors may be used to endorse or
+ *     promote products derived from this software without
+ *     specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+ * CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+ * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <qpixmap.h>
 #include <assert.h>
 #include <qdatetime.h>
 #include <qvaluelist.h>
 #include <qdragobject.h>
+#include <qmessagebox.h>
 #include "myutil.hpp"
 #include "safelistview.hpp"
 #include "safedragobject.hpp"
@@ -266,6 +299,16 @@ SafeItem *SafeListView::getSelectedItem()
   return NULL;
 }
 
+SafeItem *SafeListView::getCurrentItem()
+{
+  QListViewItem *item = currentItem();
+  if(item != NULL && (item->rtti() == SafeListViewEntry::RTTI ||
+		      item->rtti() == SafeListViewGroup::RTTI))
+    return ((SafeListViewItem *)item)->item();
+
+  return NULL;
+}
+
 #if 0
 SafeListViewEntry *SafeListView::addItem(SafeEntry *item)
 {
@@ -374,8 +417,40 @@ void SafeListView::startDrag()
   DBGOUT("Drag started");
 
   SafeDragObject *d = new SafeDragObject(viewport());
+
+  QListViewItemIterator it(this, QListViewItemIterator::Selected |
+			   QListViewItemIterator::DragEnabled);
+  for(; it.current(); ++it) {
+    SafeListViewItem *item = (SafeListViewItem *)it.current();
+    d->addItem(item->item());
+  }
+
+  m_target_is_child = false;
+  m_drop_target = NULL;
+
   bool drag_ret = d->drag();
   DBGOUT("drag() returned " << drag_ret);
+
+  // drag was a move
+  if(drag_ret) {
+    // prevent drops from doing anything when they occur on a child
+    // of the dragged object
+    if(m_target_is_child) {
+      QMessageBox::information(this, "Sorry", "Sorry, but items can't be dragged into their children");
+    }
+    else {
+      // remove the item from the list
+      SafeListViewItem *item = (SafeListViewItem *)currentItem();
+      emit deleteItem(item->item());
+    }
+  }
+  // drag was a copy onto a child
+  else if(!drag_ret && m_target_is_child == true) {
+    DBGOUT("\tCopy item to child");
+    emit dragObjectDropped(d, m_drop_target);
+  }
+
+  DBGOUT("\t" << name() << ": Drag ended");
 }
 
 void SafeListView::itemChanged(SafeItem *item)
@@ -401,10 +476,13 @@ void SafeListView::itemAdded(SafeItem *item, SafeGroup *group)
       (void)new SafeListViewEntry(this, (SafeEntry *)item);
   }
   else if(item->rtti() == SafeGroup::RTTI) {
+    SafeListViewGroup *lv_group;
     if(parent)
-      (void)new SafeListViewGroup(parent, (SafeGroup *)item);
+      lv_group = new SafeListViewGroup(parent, (SafeGroup *)item);
     else
-      (void)new SafeListViewGroup(this, (SafeGroup *)item);
+      lv_group = new SafeListViewGroup(this, (SafeGroup *)item);
+
+    populate((SafeGroup *)item, lv_group);
   }
   else {
     DBGOUT("Unkown item type: " << item->rtti());
@@ -421,18 +499,47 @@ void SafeListView::itemDeleted(SafeItem *item)
 void SafeListView::dropped(QDropEvent *event, SafeListViewItem *target)
 {
   DBGOUT("Item dropped");
-  if(target) {
-    if(target->rtti() == SafeListViewEntry::RTTI)
-      DBGOUT(" onto " << target->text(0));
-  }
-  else {
-    DBGOUT("onto view");
+  if(SafeDragObject::canDecode(event)) {
+    DBGOUT("\tSafeDragObject");
+
+    m_drop_target = target;
+    m_target_is_child = isTargetChild(event, target);
+
+    if(m_target_is_child) {
+      return;
+    }
+
+    emit dragObjectDropped(event, target);
   }
 }
 
 void SafeListView::dropped(QDropEvent *event)
 {
   dropped(event, NULL);
+}
+
+/** Checks if the drop occured on a child of the item
+ * that got dragged.
+ */
+bool SafeListView::isTargetChild(QDropEvent *event, SafeListViewItem *target)
+{
+  // prevent incest
+  DBGOUT("isTargetChild: " << event->action());
+  if(event->source() == viewport()) {
+    DBGOUT("\tWarning!!");
+    QListViewItem *item = currentItem();
+
+     // make sure this isn't a child of item
+     QListViewItem *p = target;
+     for(; p != NULL; p = p->parent()) {
+       if(p == item) {
+	 DBGOUT("\tThe dragged item is a parent");
+	 return true;
+       }
+     }
+  }
+
+  return false;
 }
 
 SafeListViewItem *SafeListView::findItem(SafeItem *item)

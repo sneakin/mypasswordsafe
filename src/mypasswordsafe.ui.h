@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.20 2004/10/02 00:19:40 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.21 2004/10/02 03:26:43 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -52,11 +52,14 @@
 #include <qinputdialog.h>
 #include <qsettings.h>
 #include <qlistview.h>
+#include <qdom.h>
 #include "passphrasedlg.h"
 #include "pwordeditdlg.h"
 #include "manualdlg.h"
 #include "newpassphrasedlg.h"
 #include "myutil.hpp"
+#include "safedragobject.hpp"
+#include "xmlserializer.hpp"
 
 using namespace std;
 
@@ -374,10 +377,7 @@ void MyPasswordSafe::pwordDelete()
 				      QMessageBox::Yes, QMessageBox::No);
     switch(result) {
     case QMessageBox::Yes:
-      m_safe->setChanged(true);
-      pwordListView->itemDeleted(item);
-      delete item;
-      savingEnabled(true);
+      deleteItem(item);
       statusBar()->message(tr("Password deleted"));
       break;
     default:
@@ -390,6 +390,15 @@ void MyPasswordSafe::pwordDelete()
   }
 }
 
+
+void MyPasswordSafe::deleteItem(SafeItem *item)
+{
+  DBGOUT("deleteItem");
+  m_safe->setChanged(true);
+  pwordListView->itemDeleted(item);
+  delete item;
+  savingEnabled(true);
+}
 
 void MyPasswordSafe::pwordEdit()
 {
@@ -804,4 +813,45 @@ void MyPasswordSafe::writeConfig()
   }
 
   m_config.endGroup();
+}
+
+
+void MyPasswordSafe::dragObjectDropped(QMimeSource *drag, SafeListViewItem *target)
+{
+  DBGOUT("dragObjectDropped");
+  QDomDocument doc("safe");
+  if(SafeDragObject::decode(drag, doc)) {
+    DBGOUT("Dragged data: " << endl << doc.toString());
+
+    SafeListViewGroup *lvi_parent = NULL;
+    SafeGroup *safe_parent = m_safe;
+    if(target) {
+      if(target->rtti() == SafeListViewGroup::RTTI)
+	lvi_parent = (SafeListViewGroup *)target;
+      else
+	lvi_parent = (SafeListViewGroup *)target->parent();
+
+      if(lvi_parent)
+	safe_parent = lvi_parent->group();
+    }
+
+    QDomNode n = doc.firstChild();
+    for(; !n.isNull(); n = n.nextSibling()) {
+      if(n.isElement()) {
+	QDomElement elem = n.toElement();
+	QString tag_name = elem.tagName();
+	if(tag_name == "item") {
+	  SafeEntry *entry = new SafeEntry(safe_parent);
+	  if(XmlSerializer::safeEntryFromXml(elem, entry)) {
+	    pwordListView->itemAdded(entry, safe_parent);
+	  }
+	}
+	else if(tag_name == "group") {
+	  SafeGroup *group = new SafeGroup(safe_parent);
+	  if(XmlSerializer::safeGroupFromXml(elem, group))
+	    pwordListView->itemAdded(group, safe_parent);
+	}
+      }
+    }
+  }
 }
