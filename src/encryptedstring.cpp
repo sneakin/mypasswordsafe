@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/encryptedstring.cpp,v 1.2 2004/05/04 22:48:44 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/encryptedstring.cpp,v 1.3 2004/07/26 07:11:30 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *
@@ -268,8 +268,11 @@ void EncryptedString::createAlgorithm()
   string pword(GetAlphaNumPassword(8));
   //m_algor.reset(new BlowFish((unsigned char *)pword.c_str(),
   //			 pword.length()));
-  m_algor.set(new BlowFish((unsigned char *)pword.c_str(),
-			 pword.length()));
+  DBGOUT("Creating fish: " << pword);
+  BlowFish *fish = new BlowFish((unsigned char *)pword.c_str(),
+				pword.length());
+  DBGOUT("Fish created: " << fish);
+  m_algor.set(fish);
 
 
   time_t cur_time;

@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.12 2004/07/24 20:49:54 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.13 2004/07/26 07:11:30 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -343,11 +343,11 @@ void MyPasswordSafe::pwordAdd()
   dlg.showDetails(false);
   
   if(dlg.exec() == QDialog::Accepted) {
-    SafeItem i(dlg.getItemName(),
+    SafeEntry i(dlg.getItemName(),
 	       dlg.getUser(),
 	       SecuredString((const char *)dlg.getPassword().utf8()),
 	       dlg.getNotes());
-    SafeItem *safe_item = m_safe->addItem(i);
+    SafeEntry *safe_item = m_safe->addItem(i);
     if(safe_item != NULL) {
       if(pwordListView->addItem(safe_item) != NULL) {
 	savingEnabled(true);

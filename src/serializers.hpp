@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.7 2004/06/28 04:58:03 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.8 2004/07/26 07:11:30 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -71,14 +71,14 @@ protected:
 		 unsigned char randhash[20],
 		 unsigned char salt[SaltLength],
 		 unsigned char ipthing[8]);
-  virtual int readEntry(FILE *in, SafeItem &item, BlowFish *fish,
+  virtual int readEntry(FILE *in, SafeEntry &item, BlowFish *fish,
 		unsigned char *ipthing, const QString &def_user);
 
   virtual int writeHeader(FILE *out, unsigned char randstuff[8],
 			  unsigned char randhash[20],
 			  unsigned char salt[SaltLength],
 			  unsigned char ipthing[8]);
-  virtual int writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
+  virtual int writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
 			 unsigned char *ipthing, const QString &def_user,
 			 bool v2_hdr = false);
 
@@ -125,11 +125,11 @@ protected:
   QString parseGroup(const QString &group);
   QString readyGroup(const QString &group);
 
-  virtual int readEntry(FILE *in, SafeItem &item,
+  virtual int readEntry(FILE *in, SafeEntry &item,
 			BlowFish *fish,
 			unsigned char *ipthing,
 			const QString &def_user);
-  virtual int writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
+  virtual int writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
 			 unsigned char *ipthing, const QString &def_user);
   int writeString(FILE *out, BlowFish *fish, const QString &str,
 		  int type, unsigned char *ipthing);

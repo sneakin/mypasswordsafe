@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.10 2004/07/25 18:29:15 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.11 2004/07/26 07:11:30 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -35,67 +35,131 @@
 #ifndef SAFE_HPP
 #define SAFE_HPP
 
+#include <qobject.h>
 #include <qstring.h>
+#include <qptrlist.h>
 #include <vector>
 #include <map>
 #include "securedstring.hpp"
 #include "encryptedstring.hpp"
 #include "uuid.hpp"
+#include "xmlable.hpp"
 
 using std::map;
 using std::vector;
 
-class SafeItem
+class QDomElement;
+class QDomDocument;
+class QDomNode;
+
+class SafeSerializer;
+class SafeGroup;
+class Safe;
+
+class SafeItem: public Xmlable
+{
+public:
+  SafeItem(SafeGroup *parent);
+  virtual ~SafeItem();
+
+  inline SafeGroup *parent() { return m_parent; }
+  inline const SafeGroup *parent() const { return m_parent; }
+
+  inline virtual Safe *safe() { return m_safe; }
+  inline virtual const Safe *safe() const { return m_safe; }
+
+private:
+  SafeGroup *m_parent;
+  Safe *m_safe;
+};
+
+class SafeGroup: public SafeItem
+{
+public:
+  typedef QPtrList<SafeItem> ItemList;
+  typedef QPtrListIterator<SafeItem> ItemListIterator;
+
+  SafeGroup(SafeGroup *parent, const QString &name = QString::null);
+  virtual ~SafeGroup();
+
+  const QString &name() const { return m_name; }
+  void setName(const QString &name);
+
+  void addItem(SafeItem *item);
+  bool takeItem(SafeItem *item);
+
+  int count() const;
+  void empty();
+
+  virtual bool fromXml(const QDomNode &node);
+  virtual QDomNode toXml(QDomDocument &doc) const;
+
+private:
+  QString m_name;
+  ItemList m_items;
+};
+
+class SafeEntry: public SafeItem
 {
 public:
   static const char GroupSeperator = '/'; //!< group delimeter
 
-  SafeItem();
-  SafeItem(const QString &name, const QString &user,
-	   const EncryptedString &password, const QString &notes);
-  SafeItem(const QString &name, const QString &user,
-	   const EncryptedString &password, const QString &notes,
-	   const QString &group);
-  SafeItem(const SafeItem &item);
+  SafeEntry(SafeGroup *parent);
+  SafeEntry(SafeGroup *parent,
+	    const QString &n, const QString &u,
+	    const EncryptedString &p, const QString &n);
+  SafeEntry(SafeGroup *parent,
+	    const QString &n, const QString &u,
+	    const EncryptedString &p, const QString &n,
+	    const QString &g);
+  SafeEntry(const SafeEntry &item);
 
-  void copy(const SafeItem &item);
+  void copy(const SafeEntry &item);
   void clear();
 
-  inline const UUID &getUUID() const { return m_uuid; }
-  inline const unsigned char *getPolicy() const { return m_policy; }
+  inline const UUID &uuid() const { return m_uuid; }
+  inline const unsigned char *policy() const { return m_policy; }
 
-  inline time_t getCreationTime() const { return m_creation_time; }
-  inline time_t getModificationTime() const { return m_mod_time; }
-  inline time_t getAccessTime() const { return m_access_time; }
-  inline time_t getLifetime() const { return m_life_time; }
+  inline time_t creationTime() const { return m_creation_time; }
+  inline time_t modificationTime() const { return m_mod_time; }
+  inline time_t accessTime() const { return m_access_time; }
+  inline time_t lifetime() const { return m_life_time; }
 
-  inline const QString &getName() const { return m_name; }
-  inline const QString &getUser() const { return m_user; }
-  inline const EncryptedString &getPassword() const { return m_password; }
-  inline const QString &getNotes() const { return m_notes; }
-  inline const QString &getGroup() const { return m_group; }
+  inline const QString &name() const { return m_name; }
+  inline const QString &user() const { return m_user; }
+  inline const EncryptedString &password() const { return m_password; }
+  inline const QString &notes() const { return m_notes; }
+  inline const QString &group() const { return m_group; }
 
-  void setUUID(const unsigned char uuid[16]);
-  void setUUID(const UUID &uuid);
-  void setPolicy(const unsigned char policy[4]);
+  void setUUID(const unsigned char u[16]);
+  void setUUID(const UUID &u);
+  void setPolicy(const unsigned char p[4]);
 
   void setCreationTime(time_t t);
   void setModificationTime(time_t t);
   void setAccessTime(time_t t);
   void setLifetime(time_t t);
 
-  void setName(const QString &name);
-  void setUser(const QString &user);
-  void setPassword(const EncryptedString &password);
-  void setPassword(const char *password);
-  void setNotes(const QString &notes);
-  void setGroup(const QString &group);
+  void setName(const QString &n);
+  void setUser(const QString &u);
+  void setPassword(const EncryptedString &p);
+  void setPassword(const char *p);
+  void setNotes(const QString &n);
+  void setGroup(const QString &g);
 
   void updateModTime();
   void updateAccessTime();
 
+  virtual bool fromXml(const QDomNode &node);
+  virtual QDomNode toXml(QDomDocument &doc) const;
+
 private:
   void init();
+  QDomElement fieldToXml(QDomDocument &doc, const QString &field,
+			 const QString &value,
+			 bool multiline = false) const;
+  QDomElement fieldToXml(QDomDocument &doc, const QString &field,
+			time_t time) const;
 
   UUID m_uuid;
   unsigned char m_policy[4];
@@ -104,16 +168,16 @@ private:
   EncryptedString m_password;
 };
 
-class SafeSerializer;
-
-class Safe
+class Safe: public QObject, public SafeGroup
 {
+  Q_OBJECT;
+
 public:
-  typedef vector<SafeItem *> ItemList; //!< Container for the items
+  typedef vector<SafeEntry *> ItemList; //!< Container for the items
   typedef ItemList::iterator iterator; //!< Iterator shortcut
 
   Safe();
-  ~Safe();
+  virtual ~Safe();
 
   enum Error {
     Failed, //!< General error condition
@@ -123,6 +187,8 @@ public:
     IOError, //!< Trouble reading the file
     UUIDError //!< UUID threw an exception
   };
+
+  static const char *errorToString(Error e);
 
   static QString getExtensions();
   static QString getTypes();
@@ -148,28 +214,8 @@ public:
   inline bool changed() { return m_changed; }
   void setChanged(bool value);
 
-  //SafeItem *findItem(QListViewItem *item);
-
-  SafeItem *addItem(SafeItem &item);
-  bool delItem(SafeItem *item);
-
-  /** Returns the list of items.
-   */
-  ItemList &getItems() { return m_items; }
-  /** Returns an iterator for the first item.
-   */
-  iterator firstItem() { return m_items.begin(); }
-  /** Returns an iterator that is one past the last item.
-   */
-  iterator lastItem() { return m_items.end(); }
-
-  /** Returns the number of items in the safe.
-   */
-  inline int size() { return m_items.size(); }
-
-  void empty();
-
-  static const char *errorToString(Error e);
+  inline virtual Safe *safe() { return this; }
+  inline virtual const Safe *safe() const { return this; }
 
 protected:
   bool makeBackup(const QString &path);

@@ -119,3 +119,13 @@ int EncryptedString::write(FILE *fp, unsigned char *cbcbuffer)
 }
 #endif
 
+struct SafeCleaner
+{
+  void operator () (Safe::ItemList::reference r)
+  {
+    if(r != NULL) {
+      delete r;
+    }
+  }
+};
+

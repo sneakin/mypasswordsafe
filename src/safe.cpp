@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.16 2004/07/25 18:29:15 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.17 2004/07/26 07:11:30 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -38,6 +38,8 @@
 #include <iostream>
 #include <fstream>
 #include <qobject.h>
+#include <qdom.h>
+#include <qstringlist.h>
 #include "securedstring.hpp"
 #include "safe.hpp"
 #include "safeserializer.hpp"
@@ -47,63 +49,149 @@
 
 using namespace std;
 
-SafeSerializer::SerializerVec SafeSerializer::m_serializers;
-BlowfishLizer2 _blowfish_lizer2;
-BlowfishLizer _blowfish_lizer;
-PlainTextLizer _plain_text_lizer;
+SafeItem::SafeItem(SafeGroup *parent)
+  : m_parent(parent)
+{
+  DBGOUT("SafeItem");
 
-/** \class SafeItem safe.hpp
+  if(m_parent != NULL) {
+    m_parent->addItem(this);
+    m_safe = m_parent->safe();
+  }
+  else {
+    m_safe = (Safe *)this;
+  }
+}
+
+SafeItem::~SafeItem()
+{
+  DBGOUT("~SafeItem");
+
+  if(m_parent != NULL)
+    m_parent->takeItem(this);
+}
+
+
+
+SafeGroup::SafeGroup(SafeGroup *safe, const QString &name)
+  : SafeItem(safe), m_name(name)
+{
+}
+
+SafeGroup::~SafeGroup()
+{
+  // this can be done because SafeItem will
+  // call SafeGroup::delItem which will remove
+  // the item from m_items
+  while(m_items.first()) {
+    delete m_items.first();
+  }
+}
+
+void SafeGroup::setName(const QString &name)
+{
+  m_name = name;
+}
+
+void SafeGroup::addItem(SafeItem *item)
+{
+  m_items.append(item);
+}
+
+bool SafeGroup::takeItem(SafeItem *item)
+{
+  return m_items.remove(item);
+}
+
+int SafeGroup::count() const
+{
+  return m_items.count();
+}
+
+void SafeGroup::empty()
+{
+  m_items.clear();
+}
+
+bool SafeGroup::fromXml(const QDomNode &node)
+{
+  return false;
+}
+
+QDomNode SafeGroup::toXml(QDomDocument &doc) const
+{
+  QDomElement e = doc.createElement("group");
+  e.setAttribute("name", name());
+
+  ItemListIterator it(m_items);
+  while(it.current()) {
+    SafeItem *item = it.current();
+    e.appendChild(item->toXml(doc));
+    ++it;
+  }
+
+  return e;
+}
+
+
+
+/** \class SafeEntry safe.hpp
  * \brief Represents an entry in the Safe.
- * The information contained in each entry is stored in a SafeItem.
+ * The information contained in each entry is stored in a SafeEntry.
  */
 
-SafeItem::SafeItem()
+SafeEntry::SafeEntry(SafeGroup *parent)
+  : SafeItem(parent)
 {
   init();
 }
 
-SafeItem::SafeItem(const QString &name, const QString &user,
-		   const EncryptedString &password, const QString &notes)
-  : m_name(name), m_user(user), m_notes(notes), m_group(""),
-    m_password(password)
+SafeEntry::SafeEntry(SafeGroup *parent,
+		     const QString &n, const QString &u,
+		     const EncryptedString &p,
+		     const QString &note)
+  : SafeItem(parent), m_name(n), m_user(u),
+    m_notes(note), m_group(""), m_password(p)
 {
   init();
 }
 
-SafeItem::SafeItem(const QString &name, const QString &user,
-		   const EncryptedString &password, const QString &notes,
-		   const QString &group)
-  : m_name(name), m_user(user), m_notes(notes), 
-    m_group(group), m_password(password)
+SafeEntry::SafeEntry(SafeGroup *parent, const QString &n,
+		     const QString &u,
+		     const EncryptedString &p,
+		     const QString &note, const QString &g)
+  : SafeItem(parent), m_name(n), m_user(u), m_notes(note), 
+    m_group(g), m_password(p)
 {
   init();
 }
 
-SafeItem::SafeItem(const SafeItem &item)
+SafeEntry::SafeEntry(const SafeEntry &item)
+  : SafeItem((SafeGroup *)item.parent())
 {
   copy(item);
 }
 
-void SafeItem::copy(const SafeItem &item)
+void SafeEntry::copy(const SafeEntry &item)
 {
-  setName(item.getName());
-  setUser(item.getUser());
-  setPassword(item.getPassword());
-  setNotes(item.getNotes());
-  setGroup(item.getGroup());
-  setUUID(item.getUUID());
+  setName(item.name());
+  setUser(item.user());
+  setPassword(item.password());
+  setNotes(item.notes());
+  setGroup(item.group());
+  setUUID(item.uuid());
 
-  setCreationTime(item.getCreationTime());
-  setModificationTime(item.getModificationTime());
-  setAccessTime(item.getAccessTime());
-  setLifetime(item.getLifetime());
+  setCreationTime(item.creationTime());
+  setModificationTime(item.modificationTime());
+  setAccessTime(item.accessTime());
+  setLifetime(item.lifetime());
 
   for(int i = 0; i < 4; i++) {
     m_policy[i] = item.m_policy[i];
   }
 }
 
-void SafeItem::clear()
+void SafeEntry::clear()
 {
   m_name.truncate(0);
   m_user.truncate(0);
@@ -117,93 +205,143 @@ void SafeItem::clear()
 }
 
 
-void SafeItem::setUUID(const unsigned char uuid[16])
+void SafeEntry::setUUID(const unsigned char u[16])
 {
-  m_uuid.fromArray(uuid);
+  m_uuid.fromArray(u);
 }
 
-void SafeItem::setUUID(const UUID &uuid)
+void SafeEntry::setUUID(const UUID &u)
 {
-  m_uuid.copy(uuid);
+  m_uuid.copy(u);
 }
 
-void SafeItem::setPolicy(const unsigned char policy[4])
+void SafeEntry::setPolicy(const unsigned char p[4])
 {
-  memcpy(m_policy, policy, 4);
+  memcpy(m_policy, p, 4);
 }
 
-void SafeItem::setCreationTime(time_t t)
+void SafeEntry::setCreationTime(time_t t)
 {
   m_creation_time = t;
 }
 
-void SafeItem::setModificationTime(time_t t)
+void SafeEntry::setModificationTime(time_t t)
 {
   m_mod_time = t;
 }
 
-void SafeItem::setAccessTime(time_t t)
+void SafeEntry::setAccessTime(time_t t)
 {
   m_access_time = t;
 }
 
-void SafeItem::setLifetime(time_t t)
+void SafeEntry::setLifetime(time_t t)
 {
   m_life_time = t;
 }
 
-void SafeItem::setName(const QString &name)
+void SafeEntry::setName(const QString &n)
 {
-  m_name = name;
+  m_name = n;
   updateModTime();
 }
 
-void SafeItem::setUser(const QString &user)
+void SafeEntry::setUser(const QString &u)
 {
-  m_user = user;
+  m_user = u;
   updateModTime();
 }
 
-void SafeItem::setPassword(const EncryptedString &password)
+void SafeEntry::setPassword(const EncryptedString &p)
 {
-  m_password.set(password);
+  m_password.set(p);
   updateModTime();
 }
 
-void SafeItem::setPassword(const char *password)
+void SafeEntry::setPassword(const char *p)
 {
-  m_password.set(password);
+  m_password.set(p);
   updateModTime();
 }
 
-void SafeItem::setNotes(const QString &notes)
+void SafeEntry::setNotes(const QString &n)
 {
-  m_notes = notes;
+  m_notes = n;
   updateModTime();
 }
 
-void SafeItem::setGroup(const QString &group)
+void SafeEntry::setGroup(const QString &g)
 {
-  m_group = group;
+  m_group = g;
   updateModTime();
 }
 
-void SafeItem::updateModTime()
+void SafeEntry::updateModTime()
 {
   m_mod_time = time(NULL);
 }
 
-void SafeItem::updateAccessTime()
+void SafeEntry::updateAccessTime()
 {
   m_access_time = time(NULL);
 }
 
-void SafeItem::init()
+bool SafeEntry::fromXml(const QDomNode &node)
+{
+  return false;
+}
+
+QDomNode SafeEntry::toXml(QDomDocument &doc) const
+{
+  QDomElement e = doc.createElement("item");
+  e.appendChild(fieldToXml(doc, "name", name()));
+  e.appendChild(fieldToXml(doc, "user", user()));
+  e.appendChild(fieldToXml(doc, "password",
+			   password().get().get())); // NOTE: password decrypted
+  e.appendChild(fieldToXml(doc, "notes", notes(), true));
+
+  return e;
+}
+
+void SafeEntry::init()
 {
   m_uuid.make();
   memset(m_policy, 0, 4);
   m_creation_time = m_mod_time = m_access_time = time(NULL);
   m_life_time = 0;
+}
+
+QDomElement SafeEntry::fieldToXml(QDomDocument &doc,
+				  const QString &field,
+				  const QString &value,
+				  bool multiline) const
+{
+  QDomElement xml = doc.createElement(field);
+
+  if(!multiline) {
+    xml.appendChild(doc.createTextNode(value));
+  }
+  else {
+    QStringList lines = QStringList::split("\n", value);
+    QStringList::Iterator it = lines.begin();
+    QStringList::Iterator end = lines.end();
+
+    while(it != end) {
+      xml.appendChild(fieldToXml(doc, "line", *it));
+      it++;
+    }
+  }
+
+  return xml;
+}
+
+QDomElement SafeEntry::fieldToXml(QDomDocument &doc,
+				  const QString &field,
+				  time_t time) const
+{
+  QDomElement xml = doc.createElement(field);
+  xml.appendChild(doc.createTextNode("FIXME"));
+  return xml;
 }
 
 /** \class Safe safe.hpp
@@ -227,23 +365,12 @@ void SafeItem::init()
  */
 
 Safe::Safe()
-  : m_passphrase(NULL), m_changed(false)
+  : SafeGroup(NULL), m_passphrase(NULL), m_changed(false)
 {
 }
 
-struct SafeCleaner
-{
-  void operator () (Safe::ItemList::reference r)
-  {
-    if(r != NULL) {
-      delete r;
-    }
-  }
-};
-
 Safe::~Safe()
 {
-  empty();
 }
 
 /** Returns a string that lists allowable safe extensions.
@@ -549,63 +676,6 @@ void Safe::setChanged(bool value)
   m_changed = value;
 }
 
-/** Adds an item to the safe.
- * Adds a new item to the safe, returning a pointer to the item that is
- * in the safe.
- *
- * @param item Item to be added
- * @return Pointer to the item that exists in the safe
- */
-SafeItem *Safe::addItem(SafeItem &item)
-{
-  SafeItem *new_item = new SafeItem(item);
-  if(new_item != NULL) {
-    m_items.push_back(new_item);
-    setChanged(true);
-    return new_item;
-  }
-
-  return NULL;
-}
-
-/** Deletes an item from the safe.
- *
- * @param item Pointer to the item in the safe
- * @return true if the item is found and deleted, otherwise false
- */
-bool Safe::delItem(SafeItem *item)
-{
-  for(ItemList::iterator iter = m_items.begin();
-      iter != m_items.end();
-      iter++) {
-    if(*iter == item) {
-      delete (*iter);
-      m_items.erase(iter);
-      setChanged(true);
-      return true;
-    }
-  }
-
-  return false;
-}
-
-/** Empties the safe.
- * Removes all the items from the safe.
- *
- * @post size() == 0
- */
-void Safe::empty()
-{
-  for(ItemList::iterator i = m_items.begin();
-      i != m_items.end();
-      i++) {
-    if(*i != NULL) {
-      delete(*i);
-    }
-  }
-  m_items.erase(m_items.begin(), m_items.end());
-}
-
 /** Returns a string that describes an error.
  * @param e Safe::Error that needs to be translated.
  * @return Descriptive string
@@ -654,7 +724,7 @@ bool Safe::makeBackup(const QString &path)
 #ifdef SAFE_TEST
 int main(int argc, char *argv[])
 {
-  SafeItem item;
+  SafeEntry item;
   cout << item.getUUID().toString() << endl;
   item.clear();
   cout << item.getUUID().toString() << endl;

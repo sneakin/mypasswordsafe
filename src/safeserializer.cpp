@@ -38,6 +38,8 @@
 
 using namespace std;
 
+SafeSerializer::SerializerVec SafeSerializer::m_serializers;
+
 SafeSerializer::SafeSerializer(const QString &extension, const QString &name)
   : m_extension(extension), m_name(name)
 {

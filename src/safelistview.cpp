@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.8 2004/07/24 03:30:12 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.9 2004/07/26 07:11:30 nolan Exp $
  */
 #include <qpixmap.h>
 #include <assert.h>
@@ -8,7 +8,7 @@
 #include "myutil.hpp"
 #include "safelistview.hpp"
 
-SafeListViewItem::SafeListViewItem(SafeListView *parent, SafeItem *item)
+SafeListViewItem::SafeListViewItem(SafeListView *parent, SafeEntry *item)
   : QListViewItem(parent), m_item(item)
 {
   assert(m_item != NULL);
@@ -20,7 +20,7 @@ SafeListViewItem::SafeListViewItem(SafeListView *parent, SafeItem *item)
 }
 
 SafeListViewItem::SafeListViewItem(SafeListViewGroup *parent,
-				   SafeItem *item)
+				   SafeEntry *item)
   : QListViewItem(parent), m_item(item)
 {
   assert(m_item != NULL);
@@ -184,7 +184,7 @@ void SafeListViewGroup::setName(const QString &name)
 QString SafeListViewGroup::text(int col) const
 {
   if(col == 0)
-    //return m_fullname.section(SafeItem::GroupSeperator, -1);
+    //return m_fullname.section(SafeEntry::GroupSeperator, -1);
     return m_name;
 #ifdef DEBUG
   else if(col == 7)
@@ -207,7 +207,7 @@ const QString SafeListViewGroup::fullname() const
       static_cast<SafeListViewGroup *>(p);
 
     fullname = parent_group->text(0) +
-      SafeItem::GroupSeperator + fullname;
+      SafeEntry::GroupSeperator + fullname;
     p = p->parent();
   }
 
@@ -296,10 +296,10 @@ SafeListViewItem *SafeListView::getSelectedItem()
     return NULL;
 }
 
-SafeListViewItem *SafeListView::addItem(SafeItem *item)
+SafeListViewItem *SafeListView::addItem(SafeEntry *item)
 {
   if(m_safe) {
-    //SafeItem *item_ptr = m_safe->addItem(item);
+    //SafeEntry *item_ptr = m_safe->addItem(item);
     QListViewItem *parent = selectedItem();
     if(parent == NULL) {
       return new SafeListViewItem(this, item);
@@ -406,7 +406,7 @@ void SafeListView::startDrag()
   assert(item != NULL); // can a drag be started w/o a selection?
 
   // create a list for the item(s)
-  QValueList<SafeItem> items;
+  QValueList<SafeEntry> items;
 
   // if the item is not a group, add it to the list
   if(item->rtti() == SafeListViewItem::RTTI) {
@@ -440,7 +440,7 @@ void SafeListView::populate()
     for(Safe::iterator iter = m_safe->firstItem();
 	iter != m_safe->lastItem();
 	iter++) {
-      SafeItem *item = *iter;
+      SafeEntry *item = *iter;
       QString group_name(item->getGroup());
       if(!group_name.isEmpty()) {
 	SafeListViewGroup *group(addGroup(group_name));
@@ -461,7 +461,7 @@ QString SafeListView::thisGroup(const QString &group)
   DBGOUT("length: " << group.length());
 
   for(i = (group.length() - 1); i != 0; i--) {
-    if(group[i] == SafeItem::GroupSeperator) {
+    if(group[i] == SafeEntry::GroupSeperator) {
       if(i != 0 && group[i-1] == '\\') {
 	continue;
       }
@@ -471,7 +471,7 @@ QString SafeListView::thisGroup(const QString &group)
     }
   }
 
-  if(group[i] == SafeItem::GroupSeperator)
+  if(group[i] == SafeEntry::GroupSeperator)
     i++;
 
   QString ret;
@@ -498,7 +498,7 @@ QString SafeListView::parentGroup(const QString &group)
   unsigned int i;
 
   for(i = group.length() - 1; i != 0; i--) {
-    if(group[i] == SafeItem::GroupSeperator) {
+    if(group[i] == SafeEntry::GroupSeperator) {
       if(i != 0 && group[i-1] == '\\') {
 	continue;
       }

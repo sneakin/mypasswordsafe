@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.11 2004/06/28 04:58:02 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.12 2004/07/26 07:11:30 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -56,7 +56,11 @@
 #include "uuid.hpp"
 
 using namespace std;
-//using boost::shared_ptr;
+
+// These get added to SafeSerializer::m_serializers
+BlowfishLizer2 _blowfish_lizer2;
+BlowfishLizer _blowfish_lizer;
+PlainTextLizer _plain_text_lizer;
 
 const char *BlowfishLizer2::FormatName = " !!!Version 2 File Format!!! Please upgrade to PasswordSafe 2.0 or later";
 const char *BlowfishLizer2::FormatVersion = "2.0";
@@ -102,7 +106,7 @@ Safe::Error PlainTextLizer::load(Safe &safe, const QString &path, const Encrypte
       QString note(line.c_str());
       note.replace("\\n", "\n");
 
-      SafeItem safe_item(items[0], items[1],
+      SafeEntry safe_item(items[0], items[1],
 			 SecuredString(items[2].c_str()), note);
       if(items.size() == 4)
 	safe_item.setGroup(items[3]);
@@ -128,7 +132,7 @@ public:
 
   void operator() (Safe::ItemList::reference r)
   {
-    SafeItem *i(r);
+    SafeEntry *i(r);
     // NOTE: password is decrypted
     m_str << i->getName() << '\t' << i->getUser() << '\t'
 	  << i->getPassword().get().get() << '\t' << i->getGroup() << endl;
@@ -346,7 +350,7 @@ int BlowfishLizer::readHeader(FILE *in, unsigned char randstuff[8], unsigned cha
   return numRead;
 }
 
-int BlowfishLizer::readEntry(FILE *in, SafeItem &item,
+int BlowfishLizer::readEntry(FILE *in, SafeEntry &item,
 			     BlowFish *fish,
 			     unsigned char *ipthing,
 			     const QString &def_user)
@@ -416,7 +420,7 @@ Safe::Error BlowfishLizer::load(Safe &safe, const QString &path, const Encrypted
   unsigned char ipthing[8];
   readHeader(in, randstuff, randhash, salt, ipthing);
 
-  SafeItem temp;
+  SafeEntry temp;
 
   // NOTE: the passphrase is decrypted here
   SmartPtr<BlowFish> fish(MakeBlowFish((const unsigned char *)
@@ -495,7 +499,7 @@ Safe::Error BlowfishLizer::save(Safe &safe, const QString &path, const QString &
     for(Safe::ItemList::iterator iter = safe.getItems().begin();
 	iter != safe.getItems().end();
 	iter++) {
-      SafeItem *item(*iter);
+      SafeEntry *item(*iter);
       if(writeEntry(out, *item, fish.get(), ipthing, def_user) == 0) {
 	fclose(out);
 	return Safe::IOError;
@@ -522,7 +526,7 @@ int BlowfishLizer::writeHeader(FILE *out, unsigned char randstuff[8],
   return num_written;
 }
 
-int BlowfishLizer::writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
+int BlowfishLizer::writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
 			      unsigned char *ipthing, const QString &def_user,
 			      bool v2_hdr)
 {
@@ -581,7 +585,7 @@ Safe::Error BlowfishLizer2::load(Safe &safe, const QString &path,
   unsigned char ipthing[8];
   readHeader(in, randstuff, randhash, salt, ipthing);
 
-  SafeItem item;
+  SafeEntry item;
 
   // NOTE: the passphrase is decrypted here
   SmartPtr<BlowFish> fish(MakeBlowFish((const unsigned char *)
@@ -671,7 +675,7 @@ Safe::Error BlowfishLizer2::save(Safe &safe, const QString &path, const QString 
 			thesalt, SaltLength));
 
     // write format header
-    SafeItem format_hdr(FormatName, "", FormatVersion, "");
+    SafeEntry format_hdr(FormatName, "", FormatVersion, "");
     if(BlowfishLizer::writeEntry(out, format_hdr,
 				 fish.get(), ipthing,
 				 def_user, true) == 0) {
@@ -682,7 +686,7 @@ Safe::Error BlowfishLizer2::save(Safe &safe, const QString &path, const QString 
     for(Safe::ItemList::iterator iter = safe.getItems().begin();
 	iter != safe.getItems().end();
 	iter++) {
-      SafeItem *item(*iter);
+      SafeEntry *item(*iter);
       if(writeEntry(out, *item, fish.get(), ipthing, def_user) == 0) {
 	fclose(out);
 	return Safe::IOError;
@@ -719,8 +723,8 @@ QString BlowfishLizer2::parseGroup(const QString &group)
 	ret += "\\\\";
     }
     else if(c == '.')
-      ret += SafeItem::GroupSeperator;
-    else if(c == SafeItem::GroupSeperator)
+      ret += SafeEntry::GroupSeperator;
+    else if(c == SafeEntry::GroupSeperator)
       ret += "\\/";
     else {
       ret += c;
@@ -740,10 +744,10 @@ QString BlowfishLizer2::readyGroup(const QString &group)
   QChar c(group[i]);
 
   // skip the first seperator, and find the next one
-  if(c == SafeItem::GroupSeperator) {
+  if(c == SafeEntry::GroupSeperator) {
     for(; i < group.length(); i++) {
       c = group[i];
-      if(c != SafeItem::GroupSeperator)
+      if(c != SafeEntry::GroupSeperator)
 	break;
     }
   }
@@ -757,12 +761,12 @@ QString BlowfishLizer2::readyGroup(const QString &group)
 	break;
 
       c = group[i];
-      if(c == SafeItem::GroupSeperator)
+      if(c == SafeEntry::GroupSeperator)
 	ret += c;
       else
 	ret += "\\\\";
     }
-    else if(c == SafeItem::GroupSeperator)
+    else if(c == SafeEntry::GroupSeperator)
       ret += '.';
     else if(c == '.')
       ret += "\\.";
@@ -775,7 +779,7 @@ QString BlowfishLizer2::readyGroup(const QString &group)
   return ret;
 }
 
-int BlowfishLizer2::readEntry(FILE *in, SafeItem &item,
+int BlowfishLizer2::readEntry(FILE *in, SafeEntry &item,
 			      BlowFish *fish,
 			      unsigned char *ipthing,
 			      const QString &)
@@ -881,7 +885,7 @@ int BlowfishLizer2::writeTime(FILE *out, BlowFish *fish, time_t time,
 		  sizeof(time_t), type, ipthing);
 }
 
-int BlowfishLizer2::writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
+int BlowfishLizer2::writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
 			       unsigned char *ipthing, const QString &)
 {
   int num_written = 0;

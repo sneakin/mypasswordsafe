@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.5 2004/06/22 00:00:11 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.6 2004/07/26 07:11:30 nolan Exp $
  */
 #ifndef SAFELISTVIEW_HPP
 #define SAFELISTVIEW_HPP
@@ -17,8 +17,8 @@ class SafeListViewItem: public QListViewItem
 public:
   static const int RTTI = 1001;
 
-  SafeListViewItem(SafeListView *parent, SafeItem *item);
-  SafeListViewItem(SafeListViewGroup *parent, SafeItem *item);
+  SafeListViewItem(SafeListView *parent, SafeEntry *item);
+  SafeListViewItem(SafeListViewGroup *parent, SafeEntry *item);
   virtual ~SafeListViewItem();
 
   int rtti() const { return RTTI; }
@@ -41,7 +41,7 @@ public:
   void setGroup(const QString &group);
   QString getGroup() const;
 
-  inline SafeItem *item() { return m_item; }
+  inline SafeEntry *item() { return m_item; }
 
   inline time_t getCreationTime() const { return m_item->getCreationTime(); }
   inline time_t getModificationTime() const { return m_item->getModificationTime(); }
@@ -54,7 +54,7 @@ public:
   inline void updateAccessTime() { m_item->updateAccessTime(); }
 
 private:
-  SafeItem *m_item;
+  SafeEntry *m_item;
 };
 
 class SafeListViewGroup: public QListViewItem
@@ -101,7 +101,7 @@ public:
   void setSafe(Safe *safe);
   SafeListViewItem *getSelectedItem();
 
-  SafeListViewItem *addItem(SafeItem *item);
+  SafeListViewItem *addItem(SafeEntry *item);
   // adds an item to the view, and updates its group
   void delItem(SafeListViewItem *item);
 
