@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.7 2004/06/19 21:48:50 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.8 2004/06/22 00:00:11 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -406,8 +406,8 @@ void MyPasswordSafe::pwordAdd()
   PwordEditDlg dlg;
   dlg.setGenPwordLength(m_gen_pword_length);
   dlg.setUser(m_def_user);
-  dlg.showTimes(false);
-
+  dlg.showDetails(false);
+  
   if(dlg.exec() == QDialog::Accepted) {
     SafeItem i((const char *)dlg.getItemName().utf8(),
 	       (const char *)dlg.getUser().utf8(),
@@ -468,18 +468,17 @@ void MyPasswordSafe::pwordEdit()
     // NOTE: password decrypted
     dlg.setPassword(QString::fromUtf8(item->getPassword().get().get()));
     dlg.setNotes(QString::fromUtf8(item->getNotes()));
-    dlg.setGroup(QString::fromUtf8(item->getGroup()));
     dlg.setAccessedOn(item->getAccessTime());
     dlg.setCreatedOn(item->getCreationTime());
     dlg.setModifiedOn(item->getModificationTime());
     dlg.setLifetime(item->getLifetime());
+    dlg.setUUID(item->getUUID()); // FIXME: decouple
 
     if(dlg.exec() == QDialog::Accepted) {
       item->setName(dlg.getItemName());
       item->setUser(dlg.getUser());
       item->setPassword(EncryptedString((const char *)dlg.getPassword().utf8()));
       item->setNotes(dlg.getNotes());
-      item->setGroup(dlg.getGroup()); // FIXME: needs to reparent the view item
       item->updateModTime();
 
       statusBar()->message(tr("Password updated"));

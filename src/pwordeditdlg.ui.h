@@ -6,7 +6,7 @@
 ** init() function in place of a constructor, and a destroy() function in
 ** place of a destructor.
 *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.4 2004/05/13 23:20:25 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.5 2004/06/22 00:00:11 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -49,95 +49,80 @@
 
 void PwordEditDlg::showPassword()
 {
-    if(passwordEdit->echoMode() == QLineEdit::Normal) {
-	showButton->setText(tr("Show"));
-	passwordEdit->setEchoMode(QLineEdit::Password);
-    }
-    else {
-	showButton->setText(tr("Hide"));
-	passwordEdit->setEchoMode(QLineEdit::Normal);
-    }
+	if(passwordEdit->echoMode() == QLineEdit::Normal) {
+		showButton->setText(tr("Show"));
+		passwordEdit->setEchoMode(QLineEdit::Password);
+	}
+	else {
+		showButton->setText(tr("Hide"));
+		passwordEdit->setEchoMode(QLineEdit::Normal);
+	}
 }
 
 
 void PwordEditDlg::genPassword()
 {    
-    string s(GetAlphaNumPassword(m_pword_length));
-    passwordEdit->setText(s.c_str());
+	string s(GetAlphaNumPassword(m_pword_length));
+	passwordEdit->setText(s.c_str());
 }
 
 
 void PwordEditDlg::fetchPassword()
 {
-  copyToClipboard(passwordEdit->text());
+	copyToClipboard(passwordEdit->text());
 }
 
 
-QString PwordEditDlg::getItemName()
+QString PwordEditDlg::getItemName() const
 {
-    return nameEdit->text();
+	return nameEdit->text();
 }
 
 
-QString PwordEditDlg::getUser()
+QString PwordEditDlg::getUser() const
 {
-    return userEdit->text();
+	return userEdit->text();
 }
 
 
-QString PwordEditDlg::getPassword()
+QString PwordEditDlg::getPassword() const
 {
-    return passwordEdit->text();
+	return passwordEdit->text();
 }
 
-QString PwordEditDlg::getNotes()
+QString PwordEditDlg::getNotes() const
 {
-    return notesEdit->text();
+	return notesEdit->text();
 }
 
 
 void PwordEditDlg::setItemName( const QString &text )
 {
-  nameEdit->setText(text);
+	nameEdit->setText(text);
 }
 
 
 void PwordEditDlg::setUser( const QString &text )
 {
-    userEdit->setText(text);
+	userEdit->setText(text);
 }
 
 
 void PwordEditDlg::setPassword( const QString &text )
 {
-    passwordEdit->setText(text);
+	passwordEdit->setText(text);
 }
 
 
 void PwordEditDlg::setNotes( const QString &text )
 {
-    notesEdit->setText(text);
+	notesEdit->setText(text);
 }
 
 
 void PwordEditDlg::setGenPwordLength( int value )
 {
-    m_pword_length = value;
-}
-
-void PwordEditDlg::setGroup(const QString &text)
-{
-	groupEdit->setText(text);
-}
-
-QString PwordEditDlg::getGroup() const
-{
-	return groupEdit->text();
-}
-
-bool PwordEditDlg::browseForGroup()
-{
-	return false;
+	m_pword_length = value;
 }
 
 void PwordEditDlg::setCreatedOn(time_t time)
@@ -169,16 +154,19 @@ void PwordEditDlg::setLifetime(time_t time)
 	lifetimeLabel->setText(tr("Lifetime: %1").arg(qtime.toString()));
 }
 
-void PwordEditDlg::showTimes(bool yes)
+void PwordEditDlg::setUUID(const QString &uuid)
 {
-	createdOnLabel->setShown(yes);
-	accessedOnLabel->setShown(yes);
-	modifiedOnLabel->setShown(yes);
-	lifetimeLabel->setShown(yes);
+	uuidLabel->setText(tr("UUID: %1").arg(uuid));
 }
 
-bool PwordEditDlg::timesShown() const
+void PwordEditDlg::showDetails(bool yes)
 {
-	return (createdOnLabel->isShown() && accessedOnLabel->isShown() &&
-			modifiedOnLabel->isShown() && lifetimeLabel->isShown());
+	QWidget *tab(tabWidget->page(1));
+	tabWidget->setTabEnabled(tab, yes);
+}
+
+bool PwordEditDlg::detailsShown() const
+{
+	QWidget *tab(tabWidget->page(1));
+	return tabWidget->isTabEnabled(tab);
 }

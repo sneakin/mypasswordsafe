@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.4 2004/05/13 23:20:25 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.5 2004/06/22 00:00:11 nolan Exp $
  */
 #ifndef SAFELISTVIEW_HPP
 #define SAFELISTVIEW_HPP
@@ -47,6 +47,8 @@ public:
   inline time_t getModificationTime() const { return m_item->getModificationTime(); }
   inline time_t getAccessTime() const { return m_item->getAccessTime(); }
   inline time_t getLifetime() const { return m_item->getLifetime(); }
+
+  inline QString getUUID() const { return QString(m_item->getUUID().toString().c_str()); } // FIXME: decouple!!
 
   inline void updateModTime() { m_item->updateModTime(); }
   inline void updateAccessTime() { m_item->updateAccessTime(); }
