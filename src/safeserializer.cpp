@@ -41,9 +41,9 @@
 using namespace std;
 
 SafeSerializer::SerializerVec SafeSerializer::m_serializers;
+PlainTextLizer _plain_text_lizer;
 BlowfishLizer2 _blowfish_lizer2;
 BlowfishLizer _blowfish_lizer;
-PlainTextLizer _plain_text_lizer;
 
 SafeSerializer::SafeSerializer(const QString &extension, const QString &name)
   : m_extension(extension), m_name(name)

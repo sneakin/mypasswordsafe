@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.14 2004/07/29 00:00:30 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.15 2004/08/01 09:11:28 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -44,6 +44,7 @@
 #include <vector>
 #include <algorithm>
 #include <qstring.h>
+#include <qcstring.h>
 #include "safe.hpp"
 #include "securedstring.hpp"
 #include "encryptedstring.hpp"
@@ -234,7 +235,7 @@ int BlowfishLizer::readEntry(FILE *in, SafeEntry &item,
 			     const QString &def_user)
 {
   SecuredString data;
-  QString tempdata;
+  QCString tempdata;
   int type;
 
   int numread = 0;
@@ -243,36 +244,44 @@ int BlowfishLizer::readEntry(FILE *in, SafeEntry &item,
   if(data.length() > 0) {
     tempdata = data.get();
 
+    DBGOUT("tempdata: \"" << tempdata << "\"");
+
     QStringList name_user(QStringList::split('\xAD', tempdata, true));
     if(name_user.size() == 2) {
       //trimRight(name_user[0]);
-      tempdata = name_user[0].stripWhiteSpace();
-      tempdata.truncate(tempdata.length() - 1);
+      tempdata = name_user[0];
+      //tempdata.truncate(tempdata.length() - 1);
       DBGOUT("\"" << tempdata << "\"\t\"" << name_user[0] << "\"");
       item.setName(tempdata);
 
       //trimLeft(name_user[1]);
-      item.setUser(name_user[1].stripWhiteSpace());
+      item.setUser(name_user[1]);
     }
     // check for the other special character
     else {
       name_user = QStringList::split('\xA0', tempdata, true);
       if(name_user.size() == 2) {
-	tempdata = name_user[0].stripWhiteSpace();
-	tempdata.truncate(tempdata.length() - 1);
+	//tempdata = name_user[0].stripWhiteSpace();
+	//tempdata.truncate(tempdata.length() - 1);
 	//trimRight(name_user[0]);
 	item.setUser(def_user);
       }
       item.setName(tempdata);
     }
+    data.clear();
   }
 
   numread += readCBC(in, fish, data, type, ipthing);
-  item.setPassword(EncryptedString(fish, data));
+  if(data.length()) {
+    DBGOUT("Password: " << data.get());
+    item.setPassword(EncryptedString(fish, data));
+    data.clear();
+  }
 
   numread += readCBC(in, fish, data, type, ipthing);
   if(data.length() > 0) {
     tempdata = data.get();
+    DBGOUT("Notes: " << tempdata);
     item.setNotes(tempdata);
   }
 
@@ -418,7 +427,7 @@ int BlowfishLizer::writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
 {
   int num_written = 0;
   SecuredString data;
-  QString temp(item.name());
+  QCString temp(item.name().ascii());
 
   if(v2_hdr == false) {
     if(def_user == item.user()) {
@@ -426,19 +435,19 @@ int BlowfishLizer::writeEntry(FILE *out, SafeEntry &item, BlowFish *fish,
     }
     else {
       temp += '\xAD';
-      temp += item.user();
+      temp += item.user().ascii();
     }
   }
 
   DBGOUT("Writing name: \"" << temp << "\"");
   
-  data.set(temp.utf8());
+  data.set(temp);
   num_written += writeCBC(out, fish, data, 0, ipthing);
   
   data.set(item.password().get()); // NOTE: decrypted password
   num_written += writeCBC(out, fish, data, 0, ipthing);
   
-  data.set(item.notes().utf8());
+  data.set(item.notes().ascii());
   num_written += writeCBC(out, fish, data, 0, ipthing);
 
   return num_written;
@@ -494,6 +503,7 @@ Safe::Error BlowfishLizer2::load(Safe &safe, const QString &path,
 
   do {
     item = new SafeEntry(&safe);
+    group = "";
     numread = readEntry(in, *item, group, fish, ipthing, def_user);
     if(numread > 0) {
       if(!group.isEmpty()) {

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/securedstring.cpp,v 1.2 2004/05/04 22:48:44 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/securedstring.cpp,v 1.3 2004/08/01 09:11:28 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -38,37 +38,37 @@
 using namespace std;
 
 SecuredString::SecuredString(const char *str)
-	: m_str(NULL), m_len(0)
+  : m_str(NULL), m_len(0)
 {
-    set(str);
+  set(str);
 }
 
 SecuredString::SecuredString(const char *str, int len)
-	: m_str(NULL), m_len(0)
+  : m_str(NULL), m_len(0)
 {
-    set(str, len);
+  set(str, len);
 }
 
 SecuredString::SecuredString(const SecuredString &str)
-	: m_str(NULL), m_len(0)
+  : m_str(NULL), m_len(0)
 {
-    set(str);
+  set(str);
 }
 
 SecuredString::SecuredString(const string &str)
-	: m_str(NULL), m_len(0)
+  : m_str(NULL), m_len(0)
 {
-    set(str.c_str());
+  set(str.c_str());
 }
 
 SecuredString::SecuredString()
-	: m_str(NULL), m_len(0)
+  : m_str(NULL), m_len(0)
 {
 }
 
 SecuredString::~SecuredString()
 {
-    trash();
+  trash();
 }
 
 void SecuredString::clear()
@@ -78,32 +78,33 @@ void SecuredString::clear()
 
 void SecuredString::set(const char *str)
 {
-  if(str != NULL) {
-    set(str, strlen(str));
-  }
+  int length = 0;
+  if(str != NULL)
+    length = strlen(str);
+  set(str, length);
 }
 
 void SecuredString::set(const char *str, int  len)
 {
-    trash();
-    if(str != NULL) {
-	m_len = len;
-	m_str = new char[m_len + 1];
-	memset(m_str, 0, m_len + 1);
-	strncpy(m_str, str, m_len);
-    }
+  trash();
+  if(str != NULL) {
+    m_len = len;
+    m_str = new char[m_len + 1];
+    memset(m_str, 0, m_len + 1);
+    strncpy(m_str, str, m_len);
+  }
 }
 
 void SecuredString::set(const SecuredString &str)
 {
-    set(str.get());
+  set(str.get());
 }
 
 void SecuredString::trash()
 {
   if(m_str != NULL) {
-	memset(m_str, 0, m_len + 1);
-	delete[] m_str;
+    memset(m_str, 0, m_len + 1);
+    delete[] m_str;
   }
   m_str = NULL;
   m_len = 0;
@@ -133,14 +134,14 @@ bool SecuredString::operator==(const SecuredString &s) const
 
 int main(int argc, char *argv[])
 {
-    SecuredString s;
-    s.set("Hello");
-    cout << "s = " << s.get() << endl;
-    SecuredString t(s);
-    cout << "t = " << t.get() << endl;
-    t.set("World");
-    s.set(t);
-    cout << "s = " << s.get() << endl;
-    return 0;
+  SecuredString s;
+  s.set("Hello");
+  cout << "s = " << s.get() << endl;
+  SecuredString t(s);
+  cout << "t = " << t.get() << endl;
+  t.set("World");
+  s.set(t);
+  cout << "s = " << s.get() << endl;
+  return 0;
 }
 #endif

@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.17 2004/07/31 00:03:52 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.18 2004/08/01 09:11:28 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -297,8 +297,6 @@ bool MyPasswordSafe::saveAs()
   if(browseForSafe(filename, filter, true)) {
     //QString filter = file_dlg.selectedFilter();
     if(!filename.isEmpty()) {
-      // NOTE: the passphrase doesn't get encrypted here
-      SecuredString passkey;
       Safe::Error error = m_safe->save(filename,
 				       filter,
 				       m_def_user);
@@ -547,16 +545,34 @@ bool MyPasswordSafe::browseForSafe( QString &filename, QString &filter, bool sav
   if(saving)
     file_dlg.setMode(QFileDialog::AnyFile);
 
-  if(file_dlg.exec() == QDialog::Accepted) {
-    filename = file_dlg.selectedFile();
+  bool ret = false;
+  do {
+    if(file_dlg.exec() == QDialog::Accepted) {
+      QString f = file_dlg.selectedFile();
+      if(saving) {
+	QFileInfo info(f);
+	if(info.exists()) {
+	  if(QMessageBox::warning(this, tr("File exists"),
+				  tr("Are you sure you want to overwrite \"%1\"?").arg(f),
+				  QMessageBox::Yes, QMessageBox::No) == QMessageBox::No) {
+	    continue;
+	  }
+	}
+      }
 
-    QString temp(file_dlg.selectedFilter());
-    if(temp != all_safes && temp != all_files)
-      filter = file_dlg.selectedFilter();
-    return true;
-  }
+      filename = f;
+      QString temp(file_dlg.selectedFilter());
+      if(temp != all_safes && temp != all_files)
+	filter = file_dlg.selectedFilter();
 
-  return false;
+      ret = true;
+    }
+    else {
+      break;
+    }
+  } while(ret == false);
+
+  return ret;
 }
 
 

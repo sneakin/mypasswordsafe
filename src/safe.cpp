@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.21 2004/07/30 00:04:34 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.22 2004/08/01 09:11:28 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -421,19 +421,33 @@ Safe::Error Safe::checkPassword(const QString &path, const QString &type, const 
   if(!info.exists())
     return BadFile;
 
-  QString ext(info.extension());
+  QString ext(info.extension(false));
   SafeSerializer *serializer(createSerializer(ext, type));
 
   DBGOUT("Path: " << path);
 
   if(serializer != NULL) {
-    DBGOUT("Serializer: " << serializer->name());
+    Safe::Error ret = Failed;
+    do {
+      DBGOUT("Serializer: " << serializer->name());
 
-    // NOTE: password is decrypted
-    QString p(path);
-    return serializer->checkPassword(p, password.get());
+      // NOTE: password is decrypted
+      QString p(path);
+      ret = serializer->checkPassword(p, password.get());
+      if(ret == BadFormat) {
+	DBGOUT("Bad format, getting next");
+	serializer = SafeSerializer::getNextExt(serializer);
+	if(serializer == NULL) {
+	  DBGOUT("No more serializers");
+	  return BadFormat;
+	}
+      }
+    } while(ret == BadFormat);
+
+    return ret;
   }
   else {
+    DBGOUT("No serializer found for: " << ext);
     return BadFormat;
   }
 }
@@ -463,7 +477,7 @@ Safe::Error Safe::load(const QString &path, const QString &type,
   if(!info.exists())
     return BadFile;
 
-  QString ext(info.extension());
+  QString ext(info.extension(false));
   SafeSerializer *serializer(createSerializer(ext, type));
 
   if(serializer) {
@@ -495,8 +509,10 @@ Safe::Error Safe::load(const QString &path, const QString &type,
       else if(err == BadFormat) {
 	DBGOUT("BadFormat");
 	serializer = SafeSerializer::getNextExt(serializer);
-	if(serializer == NULL)
+	if(serializer == NULL) {
+	  DBGOUT("No more serializers");
 	  return BadFormat;
+	}
       }
     } while(err == BadFormat);// && by_ext == true);
 
@@ -550,7 +566,7 @@ Safe::Error Safe::save(const QString &path, const QString &type,
   if(!info.exists())
     return BadFile;
 
-  QString ext(info.extension());
+  QString ext(info.extension(false));
   SafeSerializer *serializer(createSerializer(ext, type));
 
   if(serializer) {
@@ -647,14 +663,14 @@ void Safe::setType(const QString &type)
 SafeSerializer *Safe::createSerializer(const QString &extension,
 				       const QString &serializer)
 {
-  if(!serializer.isEmpty()) {
-    return SafeSerializer::createByName(serializer);
+  if(serializer.isEmpty()) {
+    if(extension.isEmpty())
+      return NULL;
+
+    return SafeSerializer::createByExt(extension);
   }
   else {
-    if(!extension.isEmpty())
-      return SafeSerializer::createByExt(extension);
-    else
-      return NULL;
+    return SafeSerializer::createByName(serializer);
   }
 }
 
