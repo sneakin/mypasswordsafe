@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.15 2004/10/04 03:04:12 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.16 2004/10/31 12:32:10 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -255,13 +255,13 @@ SafeListView::SafeListView(QWidget *parent, const char *name, Safe *safe)
   viewport()->setAcceptDrops(true);
   setRootIsDecorated(true);
 
-  addColumn(tr("Name"), 30);
-  addColumn(tr("User"), 30);
-  addColumn(tr("Notes"), 30);
-  addColumn(tr("Last Modified"), 30);
-  addColumn(tr("Accessed on"), 30);
-  addColumn(tr("Created on"), 30);
-  addColumn(tr("Lifetime"), 30);
+  addColumn(tr("Name"), 150);
+  addColumn(tr("User"), 100);
+  addColumn(tr("Notes"), 150);
+  addColumn(tr("Last Modified"), 100);
+  addColumn(tr("Accessed on"), 100);
+  addColumn(tr("Created on"), 100);
+  addColumn(tr("Lifetime"), 100);
 #ifdef DEBUG
   addColumn(tr("Group"));
 #endif

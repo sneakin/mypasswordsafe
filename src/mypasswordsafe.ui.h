@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.22 2004/10/04 03:04:12 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.23 2004/10/31 12:32:10 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -529,6 +529,7 @@ void MyPasswordSafe::savingEnabled( bool value)
 {
   if(value) {
     fileSaveAction->setEnabled(true);
+    fileSaveAsAction->setEnabled(true);
   }
   else {
     fileSaveAction->setEnabled(false);
@@ -778,8 +779,8 @@ void MyPasswordSafe::readConfig()
 
 void MyPasswordSafe::readColumnWidth(int col, const char *name)
 {
-  int w = m_config.readNumEntry(name, 30);
-  if(w)
+  int w = m_config.readNumEntry(name, -1);
+  if(w > -1)
     pwordListView->setColumnWidth(col, w);
 }
 
