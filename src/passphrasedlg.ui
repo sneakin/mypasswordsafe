@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI stdsetdef="1">
 <class>PassPhraseDlg</class>
 <comment>Prompts the user for their pass-phrase.</comment>
 <author>Nolan Eakins</author>
