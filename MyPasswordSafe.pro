@@ -9,7 +9,8 @@ SOURCES	+= src/main.cpp \
 	src/myutil.cpp \
 	src/startupdlg.cpp \
 	src/smartptr.cpp \
-	src/safelistview.cpp
+	src/safelistview.cpp \
+        src/uuid.cpp
 HEADERS	+= src/safe.hpp \
 	src/securedstring.hpp \
 	src/encryptedstring.hpp \
@@ -23,7 +24,8 @@ HEADERS	+= src/safe.hpp \
 	src/startupdlg.hpp \
 	src/config.h \
 	src/smartptr.hpp \
-	src/safelistview.hpp
+	src/safelistview.hpp \
+        src/uuid.hpp
 unix {
   UI_DIR = .ui
   MOC_DIR = .moc
