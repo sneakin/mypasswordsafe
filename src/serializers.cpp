@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.6 2004/06/20 21:25:22 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.7 2004/06/21 03:02:47 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -371,11 +371,9 @@ int BlowfishLizer::readEntry(FILE *in, SafeItem &item,
   int type;
 
   int numread = 0;
-  //numread += es.read(in, ipthing);
   numread += readCBC(in, fish, data, type, ipthing);
 
   if(data.length() > 0) {
-    //data.set(es.get());
     tempdata = data.get();
 
     vector<string> name_user(split(tempdata, '\xAD'));
@@ -405,16 +403,12 @@ int BlowfishLizer::readEntry(FILE *in, SafeItem &item,
     item.setUser("");
   }
 
-  //numread += es.read(in, ipthing);
   numread += readCBC(in, fish, data, type, ipthing);
   item.setPassword(EncryptedString(fish, data));
 
-  //numread += es.read(in, ipthing);
   numread += readCBC(in, fish, data, type, ipthing);
   if(data.length() > 0) {
-    //data.set(es.get());
     tempdata = data.get();
-
     item.setNotes(tempdata);
   }
   else {
@@ -435,31 +429,22 @@ Safe::Error BlowfishLizer::load(Safe &safe, const string &path, const EncryptedS
     if (in == NULL)
       return Safe::Failed;
 
-    //ClearData(); //Before overwriting old data, but after opening the file...
     unsigned char randstuff[8];
     unsigned char randhash[20];
     unsigned char* salt = new unsigned char[SaltLength];
     unsigned char ipthing[8];
     readHeader(in, randstuff, randhash, salt, ipthing);
 
-    //safe.setRandStuff(randstuff);
-    //safe.setRandHash(randhash);
-
     SafeItem temp;
-    //string tempdata;
 
     // NOTE: the passphrase is decrypted here
-    /*shared_ptr<BlowFish> fish(MakeBlowFish((const unsigned char *)
-      passphrase.get().get(),
-      passphrase.length(),
-      salt, SaltLength));
-    */
     SmartPtr<BlowFish> fish(MakeBlowFish((const unsigned char *)
 					 passphrase.get().get(),
 					 passphrase.length(),
 					 salt, SaltLength));
     int numread = 0;
     do {
+      temp.clear();
       numread = readEntry(in, temp, fish, ipthing, def_user);
       if(numread > 0)
 	safe.addItem(temp);
@@ -575,11 +560,9 @@ int BlowfishLizer::writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
 
   if(v2_hdr == false) {
     if(def_user == item.getUser()) {
-      //temp = item.getName();
       temp += '\xA0';
     }
     else {
-      //temp = item.getName();
       temp += '\xAD';
       temp += item.getUser();
     }
@@ -710,7 +693,6 @@ Safe::Error BlowfishLizer2::save(Safe &safe, const string &path, const string &d
     }
 
     // NOTE: the passphrase is decrypted here
-    //shared_ptr<BlowFish>
     SmartPtr<BlowFish>
       fish(MakeBlowFish((unsigned char *)
 			passphrase.get().get(),

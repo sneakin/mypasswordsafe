@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.8 2004/06/20 21:25:22 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.9 2004/06/21 03:02:47 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -485,3 +485,13 @@ bool Safe::makeBackup(const char *path)
   }
   return false;
 }
+
+#ifdef SAFE_TEST
+int main(int argc, char *argv[])
+{
+  SafeItem item;
+  cout << item.getUUID().toString() << endl;
+  item.clear();
+  cout << item.getUUID().toString() << endl;
+}
+#endif
