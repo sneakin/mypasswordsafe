@@ -16,7 +16,7 @@ uname -r = 2.4.25-gentoo-r2
 uname -s = Linux
 uname -v = #1 Fri Jun 4 16:32:39 EST 2004
 
-/usr/bin/uname -p = unknown
+/usr/bin/uname -p = Pentium II (Deschutes)
 /bin/uname -X     = unknown
 
 /bin/arch              = i686

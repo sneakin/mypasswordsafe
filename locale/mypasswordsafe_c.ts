@@ -10,34 +10,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Credits</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>License</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copyright (c) 2004, Semantic Gap Solutions
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-Neither the name of Semantic Gap Solutions nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-
---</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -53,6 +25,10 @@ Copyright &amp;copy; 2004 Semantic Gap Solutions&lt;br/&gt;
 Compiled by&lt;br/&gt;
 {USER}@{HOST} on {DATE}&lt;br/&gt;
 &lt;/center&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Credits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -73,15 +49,35 @@ Thanks go out to:
 &lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>License</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copyright (c) 2004, Semantic Gap Solutions
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+Neither the name of Semantic Gap Solutions nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+--</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManualDlg</name>
     <message>
         <source>MyPasswordSafe Manual</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -346,6 +342,10 @@ make&lt;/pre&gt;
 </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MyPasswordSafe</name>
@@ -354,19 +354,28 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>User</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Notes</source>
+        <source>This is the password list. A few operations can be performed with the mouse and keyboard. These are:
+- Double clicking an item or pressing the space bar when one is active copies the password to the clipboard
+- Right clicking an item pops up the password menu
+- Pressing return copies the selected item to the clipboard.
+
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -386,6 +395,10 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Creates a new safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Ctrl+N</source>
         <translation type="unfinished"></translation>
     </message>
@@ -395,6 +408,10 @@ make&lt;/pre&gt;
     </message>
     <message>
         <source>&amp;Open...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Opens a safe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -410,6 +427,10 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Save the safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
@@ -419,6 +440,10 @@ make&lt;/pre&gt;
     </message>
     <message>
         <source>Save &amp;As...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save the safe to a different file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -434,6 +459,10 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Causes MyPasswordSafe to quit.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>
@@ -446,23 +475,51 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>About MyPasswordSafe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Add Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ctrl+A</source>
+        <source>&amp;Add Password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Delete Password</source>
+        <source>Creates a new password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ctrl+D</source>
+        <source>Ins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit Password</source>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deletes the selected item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Del</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edits the selected item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -474,11 +531,23 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>&amp;Fetch Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy the selected password to the clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Space</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Make Active</source>
+        <source>&amp;Make default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets the safe that gets opened when MyPasswordSafe starts.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -486,7 +555,51 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>&amp;Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit your preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>What&apos;s This?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shift+F1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fetch User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fetch &amp;User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copies the username to the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+U</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manual</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Manual</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Opens the manual</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -494,15 +607,163 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Active safe opened</source>
+        <source>Open Default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>MyPasswordSafe: &lt;untitled&gt;</source>
+        <source>Open &amp;Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open the default safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change pass-phrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change &amp;pass-phrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change the safe&apos;s pass-phrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo the last thing you did</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Redo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Redo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Redo what was undone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lock MyPasswordSafe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Lock MyPasswordSafe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+L</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lock on minimize?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Lock on minimize?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create &amp;Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a new group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+G</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear clipboard on exit?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Clear clipboard on exit?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Notes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last Modified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last Accessed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created On</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lifetime</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Install clear timer?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save safe?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to save the safe before it is closed?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No pass-phrase entered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The safe must be saved before it can be made the default.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Safe opened</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No filename specified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -511,6 +772,18 @@ make&lt;/pre&gt;
     </message>
     <message>
         <source>MyPasswordSafe: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error opening file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong pass phrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong filter choosen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -530,100 +803,15 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>No item selected</source>
+        <source>Item added</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Password updated</source>
+        <source>Error adding item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit password cancelled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Password copied to clipboard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The safe must be saved before it can be made active.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error opening file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong pass phrase or unsupported file format</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save safe?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Do you want to save the safe before it is closed?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This is the password list. A few operations can be performed with the mouse and keyboard. These are:
-- Double clicking an item or pressing the space bar when one is active copies the password to the clipboard
-- Right clicking an item pops up the password menu
-- Pressing return copies the selected item to the clipboard.
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Causes MyPasswordSafe to quit.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sets the currently opened safe as the safe that gets opened when MyPasswordSafe starts.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Shift+F1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fetch User</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copies the username to the clipboard.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+U</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Manual</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Opens the manual</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid item selected??</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Username copied to clipboard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to open safe</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unknown file type, save aborted</source>
+        <source>Add canceled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -640,6 +828,109 @@ make&lt;/pre&gt;
     </message>
     <message>
         <source>Delete cancelled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No item selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password updated</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit password cancelled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password copied to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Username copied to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All Safes (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All Files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MyPasswordSafe: &lt;untitled&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created new safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default safe opened</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to open the default safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pass-phrase changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Canceled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MyPasswordSafe unlocked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>What would you like to name the group?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create group canceled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The selected item is invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to create the group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created the group &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>NewPassPhraseDlg</name>
+    <message>
+        <source>New Pass-phrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Re-type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>What would you like your new password to be?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -673,7 +964,19 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Active Safe:</source>
+        <source>Default Safe:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The active safe is the safe that MyPasswordSafe tries to open on startup.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click here to browse for the file that you want to use as the active safe.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -681,23 +984,11 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Clear clipboard on exit?</source>
+        <source>The default username is the username used when a new password is created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Generated password length:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Return</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cancel</source>
+        <source>Enter the user name that you want MyPasswordSafe to automatically use when a new password is added.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -705,7 +996,15 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The active safe is the safe that MyPasswordSafe tries to open on startup.</source>
+        <source>Number of guesses:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the number of tries you have at guessing your pass-phrase before MyPasswordSafe gives up.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generated password length:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -717,35 +1016,19 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Enter the user name that you want MyPasswordSafe to automatically use when a new password is added.</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Check this if you want the clipboard to be emptied when MyPasswordSafe exits.</source>
+        <source>Return</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The default username is the username used when a new password is created.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Click here to browse for the file that you want to use as the active safe.</source>
+        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of guesses:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This is the number of tries you have at guessing your pass-phrase before MyPasswordSafe gives up.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -753,6 +1036,14 @@ make&lt;/pre&gt;
     <name>PwordEditDlg</name>
     <message>
         <source>Edit Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -764,23 +1055,7 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Notes:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Return</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -796,7 +1071,180 @@ make&lt;/pre&gt;
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created on: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Accessed on: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modified on: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lifetime: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UUID: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Return</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Hide</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Safe</name>
+    <message>
+        <source>Failed to open safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Safe successfully opened</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong or unsupported filter used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trouble reading the file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to generate a UUID</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SafeListView</name>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Notes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last Modified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Accessed on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lifetime</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StartupDlgBase</name>
+    <message>
+        <source>Welcome to MyPasswordSafe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>What would you like to do?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>What&apos;s the pass-phrase for %1?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pass-phrase:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Verify:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Return</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Esc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MyPasswordSafe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to open %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new safe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please double check your pass-phrase.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An unknown action was selected.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
