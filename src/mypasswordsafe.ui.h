@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.23 2004/10/31 12:32:10 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.24 2004/11/01 17:10:40 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -592,6 +592,7 @@ void MyPasswordSafe::createNewSafe(const EncryptedString &passphrase)
     m_safe = new Safe();
     m_safe->setPassPhrase(passphrase);
     pwordListView->setSafe(m_safe);
+    m_safe->setChanged(false);
     setCaption(tr("MyPasswordSafe: <untitled>"));
     savingEnabled(false);
     fileSaveAsAction->setEnabled(false);

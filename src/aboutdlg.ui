@@ -204,7 +204,7 @@ Thanks go out to:
                         <bool>true</bool>
                     </property>
                     <property name="iconSet">
-                        <iconset>exit.png</iconset>
+                        <iconset>fileclose.png</iconset>
                     </property>
                 </widget>
             </hbox>
