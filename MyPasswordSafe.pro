@@ -10,7 +10,7 @@ SOURCES	+= src/main.cpp \
 	src/startupdlg.cpp \
 	src/smartptr.cpp \
 	src/safelistview.cpp \
-        src/uuid.cpp
+	src/uuid.cpp
 HEADERS	+= src/safe.hpp \
 	src/securedstring.hpp \
 	src/encryptedstring.hpp \
@@ -25,7 +25,7 @@ HEADERS	+= src/safe.hpp \
 	src/config.h \
 	src/smartptr.hpp \
 	src/safelistview.hpp \
-        src/uuid.hpp
+	src/uuid.hpp
 unix {
   UI_DIR = .ui
   MOC_DIR = .moc
@@ -75,4 +75,6 @@ IMAGES	= images/searchfind \
 	images/folder_blue_open.png
 TEMPLATE	=app
 CONFIG	+= qt warn_on release
+INCLUDEPATH	+= src/uuid-1.0.0
+LIBS	+= src/uuid-1.0.0/.libs/libuuid.a
 LANGUAGE	= C++
