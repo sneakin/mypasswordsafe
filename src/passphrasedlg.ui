@@ -74,7 +74,7 @@
                         </size>
                     </property>
                     <property name="pixmap">
-                        <pixmap>Padlock.xpm</pixmap>
+                        <pixmap>keys.png</pixmap>
                     </property>
                     <property name="scaledContents">
                         <bool>true</bool>
@@ -170,7 +170,7 @@
         <sender>cancelButton</sender>
         <signal>clicked()</signal>
         <receiver>PassPhraseDlg</receiver>
-        <slot>accept()</slot>
+        <slot>reject()</slot>
     </connection>
     <connection>
         <sender>pwordBox</sender>

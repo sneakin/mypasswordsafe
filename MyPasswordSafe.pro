@@ -80,7 +80,8 @@ IMAGES	= images/searchfind \
 	images/redo.png \
 	images/folder_new.png \
 	images/folder_blue.png \
-	images/folder_blue_open.png
+	images/folder_blue_open.png \
+	images/keys.png
 
 DEBUG = $$(DEBUG)
 

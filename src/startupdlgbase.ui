@@ -118,7 +118,7 @@
                                     </sizepolicy>
                                 </property>
                                 <property name="pixmap">
-                                    <pixmap>Padlock.xpm</pixmap>
+                                    <pixmap>keys.png</pixmap>
                                 </property>
                                 <property name="scaledContents">
                                     <bool>true</bool>
