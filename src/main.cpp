@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/main.cpp,v 1.5 2004/11/01 21:34:58 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/main.cpp,v 1.6 2004/11/02 20:57:48 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -81,6 +81,7 @@ int main( int argc, char ** argv )
   }
 
   myps.show();
-  a.connect( &a, SIGNAL( lastWindowClosed() ), &a, SLOT( quit() ) );
+  //a.connect( &a, SIGNAL( lastWindowClosed() ), &a, SLOT( quit() ) );
+  a.connect(&myps, SIGNAL(quit()), &a, SLOT(quit()));
   return a.exec();
 }

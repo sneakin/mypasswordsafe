@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.29 2004/11/02 06:38:19 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.30 2004/11/02 20:57:48 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -41,7 +41,7 @@ using namespace std;
 
 void MyPasswordSafe::init()
 {
-  m_shown = false;
+  m_shown = true;
   savingEnabled(false);
 
   readConfig();
@@ -66,6 +66,7 @@ void MyPasswordSafe::closeEvent( QCloseEvent *e )
 {
   if(closeSafe()) {
     e->accept();
+    emit quit();
   }
 }
 
@@ -625,16 +626,16 @@ void MyPasswordSafe::fileChangePassPhrase()
 
 void MyPasswordSafe::lock()
 {
-  m_shown = false; // prevent the lock dlg from showing more than once
-
   PassPhraseDlg dlg;
   dlg.hideCancel(true);
+  hide();
 
   do {
     dlg.exec(); // will only accept
   } while(m_safe->getPassPhrase() != EncryptedString(dlg.getText().utf8()));
   
   m_shown = true; // make sure it gets shown again
+  show();
   statusBar()->message(tr("MyPasswordSafe unlocked"));
 }
 
@@ -712,9 +713,15 @@ void MyPasswordSafe::setLockOnMinimize(bool yes)
 }
 
 
+void MyPasswordSafe::hideEvent(QHideEvent *)
+{
+  if(isMinimized())
+    m_shown = false;
+}
+
 void MyPasswordSafe::showEvent(QShowEvent *)
 {
-  if(m_shown && lockOnMinimize()) {
+  if(!m_shown && lockOnMinimize()) {
     lock();
   }
 
