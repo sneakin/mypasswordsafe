@@ -19,7 +19,7 @@ extern void trashMemory(char *buffer, long length, int numiter = 30 );
 //unsigned long BlowFish::bf_S[4][256];
 //unsigned long BlowFish::bf_P[BlowFish::bf_N + 2];
 
-const unsigned long BlowFish::tempbf_P[BlowFish::bf_N + 2] =
+const uint32_t BlowFish::tempbf_P[BlowFish::bf_N + 2] =
 {
    0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344,
    0xa4093822, 0x299f31d0, 0x082efa98, 0xec4e6c89,
@@ -28,7 +28,7 @@ const unsigned long BlowFish::tempbf_P[BlowFish::bf_N + 2] =
    0x9216d5d9, 0x8979fb1b,
 };
 
-const unsigned long BlowFish::tempbf_S[4][256] =
+const uint32_t BlowFish::tempbf_S[4][256] =
 {
    0xd1310ba6, 0x98dfb5ac, 0x2ffd72db, 0xd01adfb7,
    0xb8e1afed, 0x6a267e96, 0xba7c9045, 0xf12c7f99,
@@ -290,8 +290,8 @@ const unsigned long BlowFish::tempbf_S[4][256] =
 
 
 void
-BlowFish::Blowfish_encipher(unsigned long *xl,
-                            unsigned long *xr)
+BlowFish::Blowfish_encipher(uint32_t *xl,
+                            uint32_t *xr)
 {
    union aword Xl;
    union aword Xr;
@@ -316,8 +316,8 @@ BlowFish::Blowfish_encipher(unsigned long *xl,
 
 
 void
-BlowFish::Blowfish_decipher(unsigned long *xl,
-                            unsigned long *xr) const
+BlowFish::Blowfish_decipher(uint32_t *xl,
+                            uint32_t *xr) const
 {
    union aword Xl;
    union aword Xr;
@@ -347,9 +347,9 @@ BlowFish::InitializeBlowfish(unsigned char key[],
 {
    short          i;
    short          j;
-   unsigned long  data;
-   unsigned long  datal;
-   unsigned long  datar;
+   uint32_t  data;
+   uint32_t  datal;
+   uint32_t  datar;
    union aword temp;
 
    j = 0;
@@ -430,8 +430,8 @@ BlowFish::Encrypt(const block in, block out)
    for (int x=0; x<8; x++)
       out[x] = in[x];
 
-   Blowfish_encipher((unsigned long*)out,
-                     (unsigned long*)(out+sizeof(unsigned long)));
+   Blowfish_encipher((uint32_t*)out,
+                     (uint32_t*)(out+sizeof(uint32_t)));
 }
 
 
@@ -440,8 +440,8 @@ BlowFish::Decrypt(const block in, block out) const
 {
    for (int x=0; x<8; x++)
       out[x] = in[x];
-   Blowfish_decipher((unsigned long*)out,
-                     (unsigned long*)(out+sizeof(unsigned long)));
+   Blowfish_decipher((uint32_t*)out,
+                     (uint32_t*)(out+sizeof(uint32_t)));
 }
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

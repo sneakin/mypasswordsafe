@@ -3,6 +3,8 @@
 #ifndef BLOWFISH_H
 #define BLOWFISH_H
 
+#include <stdint.h>
+
 #define MAXKEYBYTES 56 // unused
 
 typedef unsigned char block[8];
@@ -10,7 +12,7 @@ typedef unsigned char block[8];
 
 union aword
 {
-   unsigned long word;
+   uint32_t word;
    unsigned char byte [4];
    struct
    {
@@ -31,12 +33,12 @@ public:
   enum {bf_N = 16};
 private:
   // Following are global supposedly for performance reasons. TBV...
-  /*static*/ unsigned long bf_S[4][256];
-  /*static*/ unsigned long bf_P[bf_N + 2];
-  static const unsigned long tempbf_S[4][256];
-  static const unsigned long tempbf_P[bf_N + 2];
-  void Blowfish_encipher(unsigned long* xl, unsigned long* xr);
-  void Blowfish_decipher(unsigned long* xl, unsigned long* xr) const;
+  /*static*/ uint32_t bf_S[4][256];
+  /*static*/ uint32_t bf_P[bf_N + 2];
+  static const uint32_t tempbf_S[4][256];
+  static const uint32_t tempbf_P[bf_N + 2];
+  void Blowfish_encipher(uint32_t* xl, uint32_t* xr);
+  void Blowfish_decipher(uint32_t* xl, uint32_t* xr) const;
   void InitializeBlowfish(unsigned char key[], short keybytes);
 };
 
