@@ -6,7 +6,7 @@
  ** init() function in place of a constructor, and a destroy() function in
  ** place of a destructor.
  *****************************************************************************/
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.21 2004/10/02 03:26:43 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.22 2004/10/04 03:04:12 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -823,6 +823,7 @@ void MyPasswordSafe::dragObjectDropped(QMimeSource *drag, SafeListViewItem *targ
   if(SafeDragObject::decode(drag, doc)) {
     DBGOUT("Dragged data: " << endl << doc.toString());
 
+    // find the group to add the dragged data to
     SafeListViewGroup *lvi_parent = NULL;
     SafeGroup *safe_parent = m_safe;
     if(target) {
@@ -835,6 +836,7 @@ void MyPasswordSafe::dragObjectDropped(QMimeSource *drag, SafeListViewItem *targ
 	safe_parent = lvi_parent->group();
     }
 
+    // add the items contained in the data
     QDomNode n = doc.firstChild();
     for(; !n.isNull(); n = n.nextSibling()) {
       if(n.isElement()) {

@@ -8,7 +8,7 @@ static const QString SafeDragObject_MimeType = "application/mypasswordsafe";
 static const QString SafeDragObject_Text = "text/plain";
 
 SafeDragObject::SafeDragObject(QWidget *src)
-  : QDragObject(src)
+  : QDragObject(src), m_xml("MyPasswordSafe"), m_state(Nothing)
 {
 }
 
@@ -19,7 +19,23 @@ SafeDragObject::~SafeDragObject()
 void SafeDragObject::addItem(SafeItem *item)
 {
   if(item != NULL) {
-    m_items.append(item);
+    if(m_state == Nothing && item->rtti() == SafeEntry::RTTI) {
+      SafeEntry *ent = (SafeEntry *)item;
+      m_text = ent->password().get().get();
+      m_state = Single;
+    }
+    else if(m_state == Single) {
+      m_state = Multiple;
+    }
+
+    if(item->rtti() == SafeGroup::RTTI) {
+      m_xml.appendChild(XmlSerializer::safeGroupToXml(m_xml,
+						      *(SafeGroup *)item));
+    }
+    else if(item->rtti() == SafeEntry::RTTI) {
+      m_xml.appendChild(XmlSerializer::safeEntryToXml(m_xml,
+						      *(SafeEntry *)item));
+    }
   }
 }
 
@@ -27,7 +43,7 @@ const char *SafeDragObject::format(int i) const
 {
   if(i == 0)
     return SafeDragObject_MimeType;
-  else if(i == 1 && oneItemAndEntry()) {
+  else if(i == 1 && m_state == Single) {
     return SafeDragObject_Text;
   }
   else
@@ -39,7 +55,7 @@ bool SafeDragObject::provides(const char *mime_type) const
   QString mime(mime_type);
   if(mime == SafeDragObject_MimeType)
     return true;
-  else if(mime == SafeDragObject_Text && oneItemAndEntry()) {
+  else if(mime == SafeDragObject_Text && m_state == Single) {
     return true;
   }
 
@@ -49,28 +65,10 @@ bool SafeDragObject::provides(const char *mime_type) const
 QByteArray SafeDragObject::encodedData(const char *mime_type) const
 {
   if(mime_type == SafeDragObject_MimeType) {
-    QDomDocument doc("safe");
-    QPtrListIterator<SafeItem> it(m_items);
-    for(; it.current(); ++it) {
-      SafeItem *item = it.current();
-
-      if(item->rtti() == SafeGroup::RTTI) {
-	doc.appendChild(XmlSerializer::safeGroupToXml(doc, *(SafeGroup *)item));
-      }
-      else if(item->rtti() == SafeEntry::RTTI) {
-	doc.appendChild(XmlSerializer::safeEntryToXml(doc, *(SafeEntry *)item));
-      }
-    }
-
-    DBGOUT("encodedData: " << endl << doc.toCString());
-    return doc.toCString();
+    return m_xml.toCString();
   }
-  else if(mime_type == SafeDragObject_Text && oneItemAndEntry()) {
-    SafeEntry *i = (SafeEntry *)m_items.getFirst();
-    const EncryptedString &es(i->password());
-    const SecuredString &sec(es.get());
-    DBGOUT("encodedData: " << sec.get());
-    return QCString(sec.get());
+  else if(mime_type == SafeDragObject_Text && m_state == Single) {
+    return m_text.utf8();
   }
 
   return QByteArray(0);
@@ -86,17 +84,6 @@ bool SafeDragObject::decode(const QMimeSource *src, QDomDocument &xml)
   if(canDecode(src)) {
     xml.setContent(src->encodedData(SafeDragObject_MimeType));
     return true;
-  }
-
-  return false;
-}
-
-bool SafeDragObject::oneItemAndEntry() const
-{
-  if(m_items.count() == 1) {
-    const SafeItem *item = m_items.getFirst();
-    if(item->rtti() == SafeEntry::RTTI)
-      return true;
   }
 
   return false;

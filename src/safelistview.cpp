@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.14 2004/10/02 03:26:43 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.15 2004/10/04 03:04:12 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -247,7 +247,7 @@ void SafeListViewGroup::updateItems()
 
 
 SafeListView::SafeListView(QWidget *parent, const char *name, Safe *safe)
-  : QListView(parent, name)
+  : QListView(parent, name), m_target_is_child(false)
 {
   setShowSortIndicator(true);
   setAllColumnsShowFocus(true);
@@ -414,7 +414,7 @@ SafeListViewGroup *SafeListView::addGroup(const QString &group_name)
 
 void SafeListView::startDrag()
 {
-  DBGOUT("Drag started");
+  DBGOUT("Drag started (is targe child: " << m_target_is_child << ")");
 
   SafeDragObject *d = new SafeDragObject(viewport());
 
@@ -425,29 +425,33 @@ void SafeListView::startDrag()
     d->addItem(item->item());
   }
 
-  m_target_is_child = false;
   m_drop_target = NULL;
+  m_target_is_child = false;
 
   bool drag_ret = d->drag();
-  DBGOUT("drag() returned " << drag_ret);
+  DBGOUT("\tdrag() returned " << drag_ret);
+  DBGOUT("\tsrc: " << d->source() << "\ttarget: " << d->target());
 
   // drag was a move
   if(drag_ret) {
+    DBGOUT("\tMove");
     // prevent drops from doing anything when they occur on a child
     // of the dragged object
     if(m_target_is_child) {
       QMessageBox::information(this, "Sorry", "Sorry, but items can't be dragged into their children");
     }
-    else {
+    // delete the item if it's dropped onto this
+    else if(d->source() == d->target()) {
       // remove the item from the list
-      SafeListViewItem *item = (SafeListViewItem *)currentItem();
+      SafeListViewItem *item = (SafeListViewItem *)selectedItem();
       emit deleteItem(item->item());
     }
   }
   // drag was a copy onto a child
-  else if(!drag_ret && m_target_is_child == true) {
-    DBGOUT("\tCopy item to child");
-    emit dragObjectDropped(d, m_drop_target);
+  else {
+    DBGOUT("\tCopy");
+    if(m_target_is_child)
+      emit dragObjectDropped(d, m_drop_target);
   }
 
   DBGOUT("\t" << name() << ": Drag ended");
@@ -498,16 +502,24 @@ void SafeListView::itemDeleted(SafeItem *item)
 
 void SafeListView::dropped(QDropEvent *event, SafeListViewItem *target)
 {
-  DBGOUT("Item dropped");
+  DBGOUT("Item dropped (is target child: " << m_target_is_child << ")");
+  DBGOUT("\tAction: " << event->action());
+  DBGOUT("\tsrc: " << event->source() << "\ttarget: " << target);
+  DBGOUT("\tAccepted: " << event->isAccepted()
+	 << "\t" << event->isActionAccepted());
   if(SafeDragObject::canDecode(event)) {
     DBGOUT("\tSafeDragObject");
 
     m_drop_target = target;
     m_target_is_child = isTargetChild(event, target);
+    DBGOUT("\tTarget is child? " << m_target_is_child);
 
     if(m_target_is_child) {
       return;
     }
+
+    if(event->action() == QDropEvent::Move)
+      event->acceptAction();
 
     emit dragObjectDropped(event, target);
   }
@@ -518,13 +530,36 @@ void SafeListView::dropped(QDropEvent *event)
   dropped(event, NULL);
 }
 
+#if 0
+void SafeListView::contentsDragEnterEvent(QDragEnterEvent *e)
+{
+  DBGOUT("Enter event:");
+  DBGOUT("\tAction: " << e->action());
+
+  QListView::contentsDragEnterEvent(e);
+
+  if(e->action() == QDropEvent::Move)
+    e->acceptAction();
+}
+
+void SafeListView::contentsDragMoveEvent(QDragMoveEvent *e)
+{
+  DBGOUT("Move event:");
+  DBGOUT("\tAction: " << e->action());
+
+  QListView::contentsDragMoveEvent(e);
+
+  if(e->action() == QDropEvent::Move)
+    e->acceptAction();
+}
+#endif
+
 /** Checks if the drop occured on a child of the item
  * that got dragged.
  */
 bool SafeListView::isTargetChild(QDropEvent *event, SafeListViewItem *target)
 {
   // prevent incest
-  DBGOUT("isTargetChild: " << event->action());
   if(event->source() == viewport()) {
     DBGOUT("\tWarning!!");
     QListViewItem *item = currentItem();

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.10 2004/10/02 03:26:43 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.11 2004/10/04 03:04:12 nolan Exp $
  */
 #ifndef SAFELISTVIEW_HPP
 #define SAFELISTVIEW_HPP
@@ -102,7 +102,13 @@ signals:
   void dragObjectDropped(QMimeSource *drag, SafeListViewItem *target);
 
 public slots:
- void dropped(QDropEvent *);
+  void dropped(QDropEvent *);
+
+protected:
+#if 0
+  virtual void contentsDragEnterEvent(QDragEnterEvent *);
+  virtual void contentsDragMoveEvent(QDragMoveEvent *);
+#endif
 
 private:
   bool isTargetChild(QDropEvent *event, SafeListViewItem *target);

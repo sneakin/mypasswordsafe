@@ -3,9 +3,10 @@
 
 #include <qdragobject.h>
 #include <qptrlist.h>
+#include <qdom.h>
+#include <qstring.h>
 
 class SafeItem;
-class QDomDocument;
 
 class SafeDragObject: public QDragObject
 {
@@ -13,7 +14,7 @@ class SafeDragObject: public QDragObject
 
 public:
   SafeDragObject(QWidget *src = NULL);
-  ~SafeDragObject();
+  virtual ~SafeDragObject();
 
   void addItem(SafeItem *);
 
@@ -24,9 +25,11 @@ public:
   static bool decode(const QMimeSource *src, QDomDocument &xml);
 
 private:
-  bool oneItemAndEntry() const;
+  QDomDocument m_xml;
+  QString m_text;
 
-  QPtrList<SafeItem> m_items;
+  enum State { Nothing, Single, Multiple };
+  State m_state;
 };
 
 #endif
