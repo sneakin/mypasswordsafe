@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.20 2004/11/02 21:37:28 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.21 2004/12/06 13:38:23 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -67,14 +67,14 @@ void SafeListViewItem::dropped(QDropEvent *event)
 SafeListViewEntry::SafeListViewEntry(SafeListView *parent, SafeEntry *item)
   : SafeListViewItem(parent, item)
 {
-  //setPixmap(0, QPixmap::fromMimeSource("password.png"));
+  setPixmap(0, QPixmap::fromMimeSource("file_locked.png"));
 }
 
 SafeListViewEntry::SafeListViewEntry(SafeListViewGroup *parent,
 				   SafeEntry *item)
   : SafeListViewItem(parent, item)
 {
-  //setPixmap(0, QPixmap::fromMimeSource("password.png"));
+  setPixmap(0, QPixmap::fromMimeSource("file_locked.png"));
 }
 
 SafeListViewEntry::~SafeListViewEntry()
