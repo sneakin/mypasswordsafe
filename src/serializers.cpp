@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.23 2004/12/06 12:32:05 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.24 2004/12/06 12:34:28 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -887,7 +887,7 @@ QString BlowfishLizer2::groupName(SafeEntry &entry)
   return ret;
 }
 
-#ifdef BYTE_ORDER == BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
 
 BorkedBlowfishLizer::BorkedBlowfishLizer()
 	: BlowfishLizer("dat", "Broken MyPS Safe (*.dat)")

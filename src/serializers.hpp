@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.12 2004/12/06 12:32:05 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.hpp,v 1.13 2004/12/06 12:34:28 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -122,7 +122,7 @@ protected:
   QString groupName(SafeEntry &entry);
 };
 
-#ifdef BYTE_ORDER == BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
 
 /* These classes exist for compatibility with safes that were created
  * while MyPS used Password Safe's blowfish and sha1 code which were

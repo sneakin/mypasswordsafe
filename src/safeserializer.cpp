@@ -31,7 +31,7 @@ BlowfishLizer2 _blowfish_lizer2;
 BlowfishLizer _blowfish_lizer;
 XmlSerializer _xml_serializer;
 
-#ifdef BYTE_ORDER == BIG_ENDIAN
+#if BYTE_ORDER == BIG_ENDIAN
 BorkedBlowfishLizer2 _borked_blowfish_lizer2;
 BorkedBlowfishLizer _borked_blowfish_lizer;
 #endif
