@@ -75,6 +75,22 @@ IMAGES	= images/searchfind \
 	images/folder_new.png \
 	images/folder_blue.png \
 	images/folder_blue_open.png
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 unix {
   UI_DIR = .ui
   MOC_DIR = .moc
