@@ -1,5 +1,5 @@
 # MyPasswordSafe Makefile
-# $Header: /home/cvsroot/MyPasswordSafe/Makefile,v 1.12 2004/09/27 20:44:21 nolan Exp $
+# $Header: /home/cvsroot/MyPasswordSafe/Makefile,v 1.13 2004/10/02 03:40:30 nolan Exp $
 
 # This is the only configuration setting. It specifies where the files will
 # be copied when "make install" is called, and where MyPS will search for
@@ -10,12 +10,14 @@ endif
 
 QMAKE=qmake
 DATE=$(shell date +%Y%m%d)
-VERSION=0.6.4
+VERSION=0.6.5
 ifndef USER
 	# get the user's name from the environment
 	USER=$(USER)
 endif
-HOST=$(shell hostname).$(shell domainname)
+ifndef HOST
+	HOST=$(shell hostname).$(shell domainname)
+endif
 
 all: MyPasswordSafe
 
