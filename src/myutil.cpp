@@ -11,50 +11,6 @@ using namespace std;
 static const char GroupSeperator = '/';
 
 
-vector<string> split(string &s, int c)
-{
-  vector<string> ret;
-  string::iterator start = s.begin();
-  string::iterator i = s.begin();
-  for(;
-      i != s.end();
-      i++) {
-    if(*i == c) {
-      if(*start == c)
-	start++;
-      string item(start, i);
-      ret.push_back(item);
-      start = i;
-    }
-  }
-
-  if(start != s.end() && start != i) {
-    if(*start == c)
-      start++;
-    string item(start, i);
-    ret.push_back(item);
-  }
-
-  return ret;
-}
-
-string getExtension(const string &path)
-{
-  string type(path);
-  string::iterator i = type.end();
-  for(; i != type.begin(); i--) {
-    if(*i == '.')
-      break;
-  }
-
-  if(i != type.begin()) {
-    type.erase(type.begin(), (i+1));
-    return type;
-  }
-  else
-    return string("");
-}
-
 void printBinary(std::ostream &str, unsigned char c)
 {
   for(unsigned int i = 0; i < sizeof(unsigned char) * 8; i++) {
@@ -63,7 +19,6 @@ void printBinary(std::ostream &str, unsigned char c)
   str << " ";
 }
 
-
 void copyToClipboard(const QString &text)
 {
   QClipboard *cb = QApplication::clipboard();
@@ -71,26 +26,6 @@ void copyToClipboard(const QString &text)
   if(cb->supportsSelection()) {
     cb->setText(text, QClipboard::Selection);
   }
-}
-
-void trimRight(string &str)
-{
-  string::iterator i = str.end();
-  for(; i != str.begin(); i--) {
-    if(!isspace(*i) && *i != '\0')
-      break;
-  }
-  str.erase(i+1, str.end());
-}
-
-void trimLeft(string &str)
-{
-  string::iterator i = str.begin();
-  for(; i != str.end(); i++) {
-    if(!isspace(*i))
-      break;
-  }
-  str.erase(str.begin(), i);
 }
 
 /** Searches for a group given by its fullname, and creates it if it

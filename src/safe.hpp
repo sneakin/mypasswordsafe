@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.13 2004/07/29 00:00:30 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.14 2004/07/30 00:04:34 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -119,7 +119,7 @@ public:
 
   int count() const;
   void empty();
-  SafeItem *at(unsigned int i);
+  SafeItem *at(int i);
 
   Iterator first();
   Iterator last();

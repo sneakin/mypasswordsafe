@@ -26,12 +26,8 @@ class Safe;
 #define DBGOUT(str)
 #endif
 
-string getExtension(const string &path);
-vector<string> split(string &s, int c);
 void printBinary(std::ostream &str, unsigned char c);
 void copyToClipboard(const QString &str);
-void trimRight(string &str);
-void trimLeft(string &str);
 
 SafeGroup *findOrCreateGroup(Safe *safe, const QString &group_name);
 QString thisGroup(const QString &);

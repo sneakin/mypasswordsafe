@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.20 2004/07/29 08:01:14 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.21 2004/07/30 00:04:34 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -40,6 +40,7 @@
 #include <qobject.h>
 #include <qdom.h>
 #include <qstringlist.h>
+#include <qfileinfo.h>
 #include "securedstring.hpp"
 #include "safe.hpp"
 #include "safeserializer.hpp"
@@ -171,7 +172,7 @@ void SafeGroup::empty()
   }
 }
 
-SafeItem *SafeGroup::at(unsigned int i)
+SafeItem *SafeGroup::at(int i)
 {
   if(i < count())
     return m_items.at(i);
@@ -416,20 +417,14 @@ Safe::Error Safe::checkPassword(const QString &path, const EncryptedString &pass
  */
 Safe::Error Safe::checkPassword(const QString &path, const QString &type, const EncryptedString &password)
 {
-  QString ext(getExtension(path));
+  QFileInfo info(path);
+  if(!info.exists())
+    return BadFile;
+
+  QString ext(info.extension());
   SafeSerializer *serializer(createSerializer(ext, type));
 
   DBGOUT("Path: " << path);
-
-  /*  if(type != NULL && strlen(type) > 0) {
-      serializer = SafeSerializer::createByName(type);
-      }
-      else {
-      if(path != NULL) {
-      DBGOUT("Ext: \"" << ext << "\"");
-      serializer = SafeSerializer::createByExt(ext.c_str());
-      }
-      }*/
 
   if(serializer != NULL) {
     DBGOUT("Serializer: " << serializer->name());
@@ -464,7 +459,11 @@ Safe::Error Safe::load(const QString &path, const QString &type,
 {
   assert(!path.isEmpty());
 
-  QString ext(getExtension(path));
+  QFileInfo info(path);
+  if(!info.exists())
+    return BadFile;
+
+  QString ext(info.extension());
   SafeSerializer *serializer(createSerializer(ext, type));
 
   if(serializer) {
@@ -547,7 +546,11 @@ Safe::Error Safe::save(const QString &path, const QString &type,
 {
   assert(!path.isEmpty());
 
-  QString ext(getExtension(path));
+  QFileInfo info(path);
+  if(!info.exists())
+    return BadFile;
+
+  QString ext(info.extension());
   SafeSerializer *serializer(createSerializer(ext, type));
 
   if(serializer) {
