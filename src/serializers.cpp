@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.3 2004/05/13 23:20:25 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.4 2004/06/12 10:54:32 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -80,7 +80,7 @@ Safe::Error PlainTextLizer::checkPassword(const string &path, const SecuredStrin
     return Safe::Failed;
 }
 
-Safe::Error PlainTextLizer::load(Safe &safe, const string &path, const EncryptedString &passphrase, const string &def_user)
+Safe::Error PlainTextLizer::load(Safe &safe, const string &path, const EncryptedString &passphrase, const string &)
 {
   ifstream file(path.c_str());
   if(file.is_open()) {
@@ -140,7 +140,7 @@ public:
   }
 };
 
-Safe::Error PlainTextLizer::save(Safe &safe, const string &path, const string &def_user)
+Safe::Error PlainTextLizer::save(Safe &safe, const string &path, const string &)
 {
   Safe::ItemList &items(safe.getItems());
   ofstream file(path.c_str());
@@ -845,7 +845,7 @@ string BlowfishLizer2::readyGroup(const string &group)
 int BlowfishLizer2::readEntry(FILE *in, SafeItem &item,
 			      BlowFish *fish,
 			      unsigned char *ipthing,
-			      const string &def_user)
+			      const string &)
 {
   SecuredString data;
   int type;
@@ -903,12 +903,11 @@ int BlowfishLizer2::readEntry(FILE *in, SafeItem &item,
 }
 
 int BlowfishLizer2::writeEntry(FILE *out, SafeItem &item, BlowFish *fish,
-			       unsigned char *ipthing, const string &def_user)
+			       unsigned char *ipthing, const string &)
 {
   int num_written = 0;
   SecuredString data;
   string temp;
-  int type;
 
   data.set((const char *)item.getUUID(), 16);
   num_written += writeCBC(out, fish, data, UUID, ipthing);
