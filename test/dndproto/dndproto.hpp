@@ -2,6 +2,7 @@
 #include <qlistview.h>
 #include <qvaluelist.h>
 #include <qdom.h>
+#include <qptrlist.h>
 
 class QDomElement;
 
@@ -27,15 +28,18 @@ class DragObject: public QDragObject
 public:
   DragObject(QWidget *src = 0);
 
+  void add(QListViewItem *item);
+
   virtual const char *format(int i = 0) const;
   virtual bool provides(const char *mime_type) const;
   virtual QByteArray encodedData(const char *mime_type) const;
   static bool canDecode(const QMimeSource *src);
   static bool decode(const QMimeSource *src, QDomDocument &xml);
 
-  QDomDocument data;
+  QPtrList<QListViewItem> items;
+  QString plain_text;
 };
-
+/*
 class DragItem: public DragObject
 {
   Q_OBJECT;
@@ -64,7 +68,7 @@ public:
 private:
   void addGroup(ListGroup *group);
 };
-
+*/
 class ListItem: public QListViewItem
 {
 public:
@@ -82,7 +86,7 @@ public:
   QString text(int col = 0) const;
 
   void fromXml(QDomElement &);
-  QDomElement toXml(QDomDocument &doc);
+  QDomElement toXml(QDomDocument &doc) const;
 
   Data data;
 };
@@ -102,7 +106,7 @@ public:
   virtual void dropped(QDropEvent *event);
 
   void fromXml(QDomElement &);
-  QDomElement toXml(QDomDocument &doc);
+  QDomElement toXml(QDomDocument &doc) const;
 };
 
 class ListView: public QListView
@@ -122,6 +126,9 @@ protected:
   void addDraggedData(const QMimeSource *drag, QListViewItem *parent);
 
 private:
+  DragObject *createDragObject();
+  void deleteSelectedItems();
+
   bool m_target_is_child;
   QListViewItem *m_target_parent;
 

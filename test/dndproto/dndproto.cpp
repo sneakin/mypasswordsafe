@@ -26,21 +26,36 @@ Data::Data(const QString &_name, const QString &_desc)
 static QString dnd_mimetype = "app/dndtest";
 
 DragObject::DragObject(QWidget *src)
-  : QDragObject(src), data("list")
+  : QDragObject(src)
 {
+}
+
+void DragObject::add(QListViewItem *item)
+{
+  items.append(item);
+
+  if(item->rtti() == ListItem::RTTI) {
+    plain_text = ((ListItem *)item)->data.name;
+  }
 }
 
 const char *DragObject::format(int i) const
 {
   if(i == 0)
     return dnd_mimetype;
+  else if(i == 1)
+    return "text/plain";
   else
     return NULL;
 }
 
 bool DragObject::provides(const char *mime_type) const
 {
-  if(dnd_mimetype == QString(mime_type))
+  QString mime(mime_type);
+
+  if(dnd_mimetype == mime)
+    return true;
+  else if(QString("text/plain") == mime && !plain_text.isEmpty())
     return true;
   else
     return false;
@@ -48,8 +63,30 @@ bool DragObject::provides(const char *mime_type) const
 
 QByteArray DragObject::encodedData(const char *mime_type) const
 {
-  if(dnd_mimetype == QString(mime_type)) {
+  QString mime(mime_type);
+
+  if(dnd_mimetype == mime) {
+    QDomDocument data("list");
+    QDomElement root = data.createElement("drag");
+    data.appendChild(root);
+
+    QPtrListIterator<QListViewItem> it(items);
+    for(; it.current(); ++it) {
+      QListViewItem *item = it.current();
+
+      if(item->rtti() == ListItem::RTTI) {
+	root.appendChild(((ListItem *)item)->toXml(data));
+      }
+      else if(item->rtti() == ListGroup::RTTI) {
+	root.appendChild(((ListGroup *)item)->toXml(data));
+      }
+    }
+
+    cout << "encodedData:" << endl << data.toString() << endl;
     return data.toCString();
+  }
+  else if(QString("text/plain") == mime && !plain_text.isEmpty()) {
+    return plain_text.utf8();
   }
   else {
     return QByteArray(0);
@@ -69,7 +106,7 @@ bool DragObject::decode(const QMimeSource *src, QDomDocument &xml)
   }
   return false;
 }
-
+/*
 DragItem::DragItem(QWidget *src, ListItem *item)
   : DragObject(src), item_data(item->data)
 {
@@ -127,7 +164,7 @@ void DragGroup::addGroup(ListGroup *group)
 {
   data.appendChild(group->toXml(data));
 }
-
+*/
 
 
 const int ListItem::RTTI = 2000;
@@ -205,7 +242,7 @@ void ListItem::fromXml(QDomElement &elem)
   }
 }
 
-QDomElement ListItem::toXml(QDomDocument &doc)
+QDomElement ListItem::toXml(QDomDocument &doc) const
 {
   QDomElement ret = doc.createElement("item");
   QDomElement tag = doc.createElement("name");
@@ -283,7 +320,7 @@ void ListGroup::fromXml(QDomElement &elem)
   }
 }
 
-QDomElement ListGroup::toXml(QDomDocument &doc)
+QDomElement ListGroup::toXml(QDomDocument &doc) const
 {
   QDomElement group = doc.createElement("group");
   group.setAttribute("name", text(0));
@@ -311,7 +348,8 @@ ListView::ListView(QWidget *parent, const char *name)
   setAcceptDrops(true);
   viewport()->setAcceptDrops(true);
   setRootIsDecorated(true);
-  
+  //setSelectionMode(Extended);
+
   addColumn("Name");
   addColumn("Description");
 
@@ -336,14 +374,48 @@ ListItem *ListView::findItem(unsigned int id)
   return NULL;
 }
 
+DragObject *ListView::createDragObject()
+{
+  DragObject *d = new DragObject(viewport());
+  QListViewItemIterator it(this, QListViewItemIterator::Selected
+		            | QListViewItemIterator::DragEnabled
+			    | QListViewItemIterator::Visible);
+  while(it.current()) {
+    d->add(it.current());
+    it++;
+  }
+
+  return d;
+}
+
+void ListView::deleteSelectedItems()
+{
+  //  QPtrList<QListViewItem> items;
+  QListViewItemIterator it(this, QListViewItemIterator::Selected
+		            | QListViewItemIterator::DragEnabled
+			    | QListViewItemIterator::Visible);
+  while(it.current()) {
+    delete it.current();
+    it++;
+    //items.append(it.current());
+  }
+  /*
+  QPtrListIterator<QListViewItem> ptr_it(items);
+  while(ptr_it.current()) {
+    delete ptr_it.current();
+    ++ptr_it;
+    }*/
+}
+
 void ListView::startDrag()
 {
   cout << name() << ": Drag started" << endl;
   m_target_is_child = false;
   m_target_parent = NULL;
 
-  QListViewItem *item = selectedItem();
-  DragObject *d; // = new DragObject(viewport());
+  QListViewItem *item = currentItem();
+  DragObject *d = createDragObject();
+  /*DragObject *d; // = new DragObject(viewport());
 
   if(item->rtti() == ListItem::RTTI) {
     ListItem *i = (ListItem *)item;
@@ -352,12 +424,11 @@ void ListView::startDrag()
   }
   else if(item->rtti() == ListGroup::RTTI) {
     ListGroup *g = (ListGroup *)item;
-    //d->addGroup(g);
     d = new DragGroup(viewport(), g);
   }
   else {
     return;
-  }
+    }*/
 
   bool drag_ret = d->drag();
   cout << "Drag ret = " << drag_ret << endl;
@@ -368,6 +439,7 @@ void ListView::startDrag()
     }
     else {
       delete item;
+      //deleteSelectedItems();
     }
   }
   else if(!drag_ret && m_target_is_child == true) {
@@ -422,7 +494,10 @@ void ListView::addDraggedData(const QMimeSource *drag, QListViewItem *parent)
 {
   QDomDocument xml("list");
   if(DragObject::decode(drag, xml)) {
-    QDomNode n = xml.firstChild();
+    cout << "Dragged data:" << endl << xml.toString() << endl;
+    QDomElement root = xml.documentElement();
+
+    QDomNode n = root.firstChild();
     for(; !n.isNull(); n = n.nextSibling()) {
       if(n.isElement()) {
 	QDomElement elem = n.toElement();
