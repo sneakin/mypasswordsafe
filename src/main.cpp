@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/main.cpp,v 1.2 2004/05/04 22:48:44 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/main.cpp,v 1.3 2004/11/01 17:35:51 nolan Exp $
  * Copyright (c) 2004, Semantic Gap Solutions
  * All rights reserved.
  *   
@@ -83,8 +83,10 @@ int main( int argc, char ** argv )
   QTranslator myapp(0);
   if(!myapp.load(QString("mypasswordsafe_") + QTextCodec::locale(),
 		 locale_dir)) {
+#ifdef DEBUG
     cout << "No locale file for " << QTextCodec::locale()
 	 << " found in " << locale_dir << endl;
+#endif
   }
   else {
     a.installTranslator(&myapp);
