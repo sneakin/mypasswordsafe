@@ -2,3 +2,4 @@ g++ cbc.cpp ../src/encryptedstring.cpp ../src/securedstring.cpp ../src/pwsafe/*.
 g++ cbc.cpp ../src/encryptedstring.cpp ../src/securedstring.cpp ../src/pwsafe/*.cpp -o cbc -I../src -g
 g++ bigsafemaker.cpp -o bigsafemaker -I../src ../src/safe.cpp ../src/pwsafe/BlowFish.cpp ../src/pwsafe/Util.cpp ../src/pwsafe/sha1.cpp ../src/encryptedstring.cpp ../src/securedstring.cpp ../src/smartptr.cpp ../src/serializers.cpp ../src/myutil.cpp
 g++ bigsafemaker.cpp -o bigsafemaker -I../src ../src/safe.cpp ../src/pwsafe/BlowFish.cpp ../src/pwsafe/Util.cpp ../src/pwsafe/sha1.cpp ../src/encryptedstring.cpp ../src/securedstring.cpp ../src/smartptr.cpp ../src/serializers.cpp ../src/myutil.cpp
+g++ -o uuid_test -DTEST ../src/uuid.cpp -I../src -I../src/uuid-1.0.0 ../src/uuid-1.0.0/.libs/libuuid.a
