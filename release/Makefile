@@ -1,13 +1,14 @@
 PROGRAM=MyPasswordSafe
 DATE=$(shell date +%Y%m%d)
+GPGSIGN=gpg --detach-sign -a
 BRANCH=
 RELEASE=$(PROGRAM)-$(DATE)
 
 all: src bin
 
-src: $(RELEASE).src.tgz
+src: $(RELEASE).src.tgz.asc
 
-bin: $(RELEASE).bin.tgz
+bin: $(RELEASE).bin.tgz.asc
 
 $(RELEASE):
 	#cvs co -r $(BRANCH) $@
@@ -22,6 +23,12 @@ $(RELEASE).bin.tgz: $(RELEASE)
 
 $(RELEASE).src.tgz: $(RELEASE)
 	tar cfz $@ $<
+
+$(RELEASE).bin.tgz.asc: $(RELEASE).bin.tgz
+	$(GPGSIGN) $<
+
+$(RELEASE).src.tgz.asc: $(RELEASE).src.tgz
+	$(GPGSIGN) $<
 
 clean:
 	rm -r $(RELEASE)
