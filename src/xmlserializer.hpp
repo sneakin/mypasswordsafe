@@ -27,8 +27,8 @@ public:
   static QDomElement safeGroupToXml(QDomDocument &doc, const SafeGroup &group);
 
   static bool safeFromXml(const QDomDocument &doc, Safe &safe);
-  static bool safeEntryFromXml(const QDomElement &root, SafeEntry &entry);
-  static bool safeGroupFromXml(const QDomElement &elem, SafeGroup &group);
+  static bool safeEntryFromXml(const QDomElement &root, SafeEntry *entry);
+  static bool safeGroupFromXml(const QDomElement &elem, SafeGroup *group);
 
 protected:
   static QDomElement fieldToXml(QDomDocument &doc, const QString &field,

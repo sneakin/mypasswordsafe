@@ -31,8 +31,8 @@
 
 void StartupDlgBase::init()
 {
-	QString version = versionLabel->text();
-	versionLabel->setText(version.arg(COMP_DATE).arg(COMP_HOST));
+  QString version = versionLabel->text();
+  versionLabel->setText(version.arg(COMP_DATE).arg(COMP_HOST));
 }
 
 void StartupDlgBase::okClicked()
@@ -74,100 +74,100 @@ void StartupDlgBase::okClicked()
 
 void StartupDlgBase::actionChanged( int action, bool browse)
 {
-	DBGOUT("action" << action);
-	if(action == 2) { // create new selected
-		passPhraseStack->raiseWidget(1);
+  DBGOUT("action" << action);
+  if(action == 2) { // create new selected
+    passPhraseStack->raiseWidget(1);
+  }
+  else {
+    assert(m_myps != NULL);
+    if(action == 1) { // browse selected
+      if(browse) {
+	// display open safe dialog
+	QString filename, filter;
+	if(m_myps->browseForSafe(filename, filter, false) == false) { // canceled
+	  return;
 	}
-	else {
-		assert(m_myps != NULL);
-		if(action == 1) { // browse selected
-		  if(browse) {
-		    // display open safe dialog
-		    QString filename, filter;
-		    if(m_myps->browseForSafe(filename, filter, false) == false) { // canceled
-		      return;
-		    }
-		    // update the file name
-		    setFilename(filename);
-		    setFilter(filter);
-		  }
-		  else {
-		    setFilename(getFilename());
-		  }
-		}
-		else {
-			if(m_myps->getDefaultSafe().isEmpty() != true) {
-				setFilename(m_myps->getDefaultSafe());
-				setFilter(QString::null);
-			}
-			else {
-				actionChanged(1); // set the action to browse
-			}
-		}
-		passPhraseStack->raiseWidget(0);
-	}
+	// update the file name
+	setFilename(filename);
+	setFilter(filter);
+      }
+      else {
+	setFilename(getFilename());
+      }
+    }
+    else {
+      if(m_myps->getDefaultSafe().isEmpty() != true) {
+	setFilename(m_myps->getDefaultSafe());
+	setFilter(QString::null);
+      }
+      else {
+	actionChanged(1); // set the action to browse
+      }
+    }
+    passPhraseStack->raiseWidget(0);
+  }
 }
 
 
 void StartupDlgBase::setFilename( const QString &filename )
 {
-	m_filename = filename;
-	openLabel->setText(tr("What's the pass-phrase for %1?").arg(m_filename));
+  m_filename = filename;
+  openLabel->setText(tr("What's the pass-phrase for %1?").arg(m_filename));
 }
 
 
 const QString &StartupDlgBase::getFilter()
 {
-	return m_filter;
+  return m_filter;
 }
 
 
 void StartupDlgBase::setFilter(const QString &filter)
 {
-	m_filter = filter;
+  m_filter = filter;
 }
 
 const QString &StartupDlgBase::getFilename()
 {
-	return m_filename;
+  return m_filename;
 }
 
 
 QString StartupDlgBase::getPassPhrase()
 {
-	if(getActionBoxItem() == 2) { // create new selected
-		if(newPassPhraseBox->text() == verifyBox->text())
-			return newPassPhraseBox->text();
-		else
-			return QString::null;
-	}
-	else {
-		return passPhraseBox->text();
-	}
+  if(getActionBoxItem() == 2) { // create new selected
+    if(newPassPhraseBox->text() == verifyBox->text())
+      return newPassPhraseBox->text();
+    else
+      return QString::null;
+  }
+  else {
+    return passPhraseBox->text();
+  }
 }
 
 
 int StartupDlgBase::getActionBoxItem()
 {
-	return actionBox->currentItem();
+  return actionBox->currentItem();
 }
 
 
 void StartupDlgBase::setActionBoxItem(int item)
 {
-	actionBox->setCurrentItem(item);
+  actionBox->setCurrentItem(item);
 }
 
 void StartupDlgBase::setMyPasswordSafe(MyPasswordSafe *myps)
 {
-	m_myps = myps;
-	if(getActionBoxItem() == 0) {
-		setFilename(m_myps->getDefaultSafe());
-	}
+  m_myps = myps;
+  if(getActionBoxItem() == 0) {
+    setFilename(m_myps->getDefaultSafe());
+  }
 }
 
 
 void StartupDlgBase::actionChanged( int action )
 {
-	actionChanged(action, true);
+  actionChanged(action, true);
 }

@@ -89,10 +89,10 @@ bool XmlSerializer::safeFromXml(const QDomDocument &doc, Safe &safe)
   return false;
 }
 
-bool XmlSerializer::safeEntryFromXml(const QDomElement &root, SafeEntry &entry)
+bool XmlSerializer::safeEntryFromXml(const QDomElement &root, SafeEntry *entry)
 {
   if(root.tagName() == "item") {
-    entry.clear();
+    entry->clear();
 
     QDomNode n = root.firstChild();
     while(!n.isNull()) {
@@ -104,16 +104,16 @@ bool XmlSerializer::safeEntryFromXml(const QDomElement &root, SafeEntry &entry)
 	if(tagname == "uuid") {
 	  UUID uuid;
 	  uuid.fromString(value.toText().data());
-	  entry.setUUID(uuid);
+	  entry->setUUID(uuid);
 	}
 	else if(tagname == "name") {
-	  entry.setName(value.toText().data());
+	  entry->setName(value.toText().data());
 	}
 	else if(tagname == "user") {
-	  entry.setUser(value.toText().data());
+	  entry->setUser(value.toText().data());
 	}
 	else if(tagname == "password") {
-	  entry.setPassword(value.toText().data());
+	  entry->setPassword(value.toText().data());
 	}
 	else if(tagname == "notes") {
 	  QString notes;
@@ -131,20 +131,26 @@ bool XmlSerializer::safeEntryFromXml(const QDomElement &root, SafeEntry &entry)
 	    value = value.nextSibling();
 	  }
 
-	  entry.setNotes(notes);
+	  entry->setNotes(notes);
 	}
 	else if(tagname == "created") {
-	  entry.setCreationTime(QDateTime::fromString(value.toText().data(), Qt::ISODate));
+	  entry->setCreationTime(QDateTime::fromString(value.toText().data(), Qt::ISODate));
 	}
 	else if(tagname == "modified") {
-	  entry.setModifiedTime(QDateTime::fromString(value.toText().data(), Qt::ISODate));
+	  entry->setModifiedTime(QDateTime::fromString(value.toText().data(), Qt::ISODate));
 	}
 	else if(tagname == "accessed") {
-	  entry.setAccessTime(QDateTime::fromString(value.toText().data(), Qt::ISODate));
+	  entry->setAccessTime(QDateTime::fromString(value.toText().data(), Qt::ISODate));
 	}
 	else if(tagname == "lifetime") {
-	  entry.setLifetime(QTime::fromString(value.toText().data(), Qt::ISODate));
+	  entry->setLifetime(QTime::fromString(value.toText().data(), Qt::ISODate));
 	}
+	// quietly ignore unknown elements
+#ifdef DEBUG
+	else {
+	  DBGOUT("Unknown element in item: " << tagname);
+	}
+#endif
       }
       n = n.nextSibling();
     }
@@ -155,8 +161,45 @@ bool XmlSerializer::safeEntryFromXml(const QDomElement &root, SafeEntry &entry)
   return false;
 }
 
-bool XmlSerializer::safeGroupFromXml(const QDomElement &elem, SafeGroup &group)
+bool XmlSerializer::safeGroupFromXml(const QDomElement &elem, SafeGroup *group)
 {
+  if(elem.tagName() == "group") {
+    QString name = elem.attribute("name");
+    if(!name.isEmpty())
+      group->setName(name);
+
+    QDomNode n = elem.firstChild();
+    while(!n.isNull()) {
+      if(n.isElement()) {
+	QDomElement item = n.toElement();
+	if(item.tagName() == "item") {
+	  SafeEntry *entry = new SafeEntry(group);
+	  if(!safeEntryFromXml(item, entry)) {
+	    delete entry;
+	    return false;
+	  }
+	}
+	else if(item.tagName() == "group") {
+	  SafeGroup *new_group = new SafeGroup(group);
+	  if(!safeGroupFromXml(item, new_group)) {
+	    delete group;
+	    return false;
+	  }
+	}
+	// quietly ignore unknown items
+#ifdef DEBUG
+	else {
+	  DBGOUT("Unknown element: " << item_elem.tagName());
+	}
+#endif
+      }
+
+      n = n.nextSibling();
+    }
+
+    return true;
+  }
+
   return false;
 }
 
