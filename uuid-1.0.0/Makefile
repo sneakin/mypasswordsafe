@@ -37,7 +37,7 @@ libdir      = ${exec_prefix}/lib
 includedir  = ${prefix}/include
 mandir      = ${prefix}/man
 
-CC          = gcc
+CC          = distcc
 CPPFLAGS    = 
 CFLAGS      = -DHAVE_CONFIG_H -O2 -pipe
 LDFLAGS     = 
