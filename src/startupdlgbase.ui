@@ -39,7 +39,10 @@
                 <cstring>pixmapLabel2</cstring>
             </property>
             <property name="frameShape">
-                <enum>LineEditPanel</enum>
+                <enum>Panel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
             </property>
             <property name="pixmap">
                 <pixmap>about_banner.png</pixmap>
