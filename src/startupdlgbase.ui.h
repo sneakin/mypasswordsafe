@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/startupdlgbase.ui.h,v 1.5 2004/11/01 23:23:03 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/startupdlgbase.ui.h,v 1.6 2004/11/01 23:42:28 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -87,6 +87,7 @@ void StartupDlgBase::actionChanged( int action, bool browse)
   DBGOUT("action" << action);
   if(action == 2) { // create new selected
     passPhraseStack->raiseWidget(1);
+    newPassPhraseBox->setFocus();
   }
   else {
     assert(m_myps != NULL);
@@ -105,7 +106,7 @@ void StartupDlgBase::actionChanged( int action, bool browse)
 	setFilename(getFilename());
       }
     }
-    else {
+    else { // open default selected
       if(m_myps->getDefaultSafe().isEmpty() != true) {
 	setFilename(m_myps->getDefaultSafe());
 	setFilter(QString::null);
@@ -116,6 +117,7 @@ void StartupDlgBase::actionChanged( int action, bool browse)
       }
     }
     passPhraseStack->raiseWidget(0);
+    passPhraseBox->setFocus();
   }
 }
 

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.27 2004/11/01 21:34:58 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.28 2004/11/01 23:42:28 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -123,7 +123,7 @@ void MyPasswordSafe::fileMakeDefault()
       return;
     }
   }
-  m_default_safe = m_safe->getPath();
+  setDefaultSafe(m_safe->getPath());
   fileOpenDefaultAction->setEnabled(true);
 }
 
@@ -137,7 +137,7 @@ void MyPasswordSafe::filePreferences()
   dlg.setMaxTries(m_max_tries);
   if(dlg.exec() == QDialog::Accepted) {
     m_def_user = dlg.getDefUser();
-    m_default_safe = dlg.getDefaultSafe();
+    setDefaultSafe(dlg.getDefaultSafe());
     m_gen_pword_length = dlg.getGenPwordLength();
     m_max_tries = dlg.getMaxTries();
 	
@@ -512,6 +512,10 @@ void MyPasswordSafe::savingEnabled( bool value)
   }
 }
 
+void MyPasswordSafe::setDefaultSafe(const QString &path)
+{
+  m_default_safe = path;
+}
 
 const QString & MyPasswordSafe::getDefaultSafe()
 {
@@ -592,7 +596,7 @@ void MyPasswordSafe::fileOpenDefault()
 {
   PassPhraseDlg dlg;
   if(dlg.exec() == PassPhraseDlg::Accepted) {
-    if(open((const char *)m_default_safe, (const char *)dlg.getText()))
+    if(open((const char *)getDefaultSafe(), (const char *)dlg.getText()))
       statusBar()->message(tr("Default safe opened"));
     else
       statusBar()->message(tr("Unable to open the default safe"));

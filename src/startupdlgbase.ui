@@ -7,7 +7,7 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>17</y>
+            <y>0</y>
             <width>385</width>
             <height>285</height>
         </rect>
@@ -26,6 +26,9 @@
     </property>
     <property name="caption">
         <string>Welcome to MyPasswordSafe</string>
+    </property>
+    <property name="icon">
+        <pixmap>keys.png</pixmap>
     </property>
     <vbox>
         <property name="name">
@@ -64,7 +67,7 @@
                 <widget class="QComboBox">
                     <item>
                         <property name="text">
-                            <string>Open default</string>
+                            <string>Open default safe</string>
                         </property>
                     </item>
                     <item>
@@ -74,7 +77,7 @@
                     </item>
                     <item>
                         <property name="text">
-                            <string>Create new</string>
+                            <string>Create new safe</string>
                         </property>
                     </item>
                     <property name="name">
@@ -144,7 +147,7 @@
                                     <string>What's the pass-phrase for %1?</string>
                                 </property>
                                 <property name="alignment">
-                                    <set>WordBreak|AlignCenter</set>
+                                    <set>WordBreak|AlignVCenter</set>
                                 </property>
                             </widget>
                         </hbox>
