@@ -7,7 +7,7 @@ LIBS	+= uuid-1.0.0/.libs/libuuid.a
 INCLUDEPATH	+= uuid-1.0.0
 
 HEADERS	+= src/safe.hpp \
-        src/safeserializer.hpp \
+	src/safeserializer.hpp \
 	src/securedstring.hpp \
 	src/encryptedstring.hpp \
 	src/serializers.hpp \
@@ -25,7 +25,7 @@ HEADERS	+= src/safe.hpp \
 SOURCES	+= src/main.cpp \
 	src/securedstring.cpp \
 	src/safe.cpp \
-        src/safeserializer.cpp \
+	src/safeserializer.cpp \
 	src/serializers.cpp \
 	src/encryptedstring.cpp \
 	src/pwsafe/BlowFish.cpp \
@@ -75,6 +75,14 @@ IMAGES	= images/searchfind \
 	images/folder_new.png \
 	images/folder_blue.png \
 	images/folder_blue_open.png
+
+
+
+
+
+
+
+
 
 
 
