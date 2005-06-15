@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.25 2005/06/15 08:32:00 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.26 2005/06/15 09:10:31 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -156,7 +156,7 @@ int BlowfishLizer::readCBC(FILE *fp, CryptoInterface *fish,
     BlockLength = 8;
 
   buffer_len = length;
-  unsigned char *buffer = new unsigned char[BlockLength]; // so we lie a little...
+  unsigned char *buffer = new unsigned char[BlockLength + 1]; // so we lie a little...and a little more
 
   unsigned char tempcbc[8];
   numRead += fread(buffer, 1, BlockLength, fp);
