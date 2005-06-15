@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.24 2004/12/06 12:34:28 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.25 2005/06/15 08:32:00 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -171,6 +171,7 @@ int BlowfishLizer::readCBC(FILE *fp, CryptoInterface *fish,
 
   buffer[length] = '\0';
   data.set((const char *)buffer);
+  delete buffer;
 
   return numRead;
 }
