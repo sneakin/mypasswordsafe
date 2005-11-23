@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.23 2004/12/09 06:49:06 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.24 2005/11/23 13:21:29 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -462,7 +462,7 @@ void SafeListView::itemChanged(SafeItem *item)
   list_item->setup();
 }
 
-void SafeListView::itemAdded(SafeItem *item, SafeGroup *group)
+void SafeListView::itemAdded(SafeItem *item, SafeGroup *group, bool make_current)
 {
   DBGOUT("Item added:");
   SafeListViewGroup *parent = (SafeListViewGroup *)findItem(group);
@@ -470,24 +470,34 @@ void SafeListView::itemAdded(SafeItem *item, SafeGroup *group)
     parent->setOpen(true);
   }
 
+  SafeListViewItem *lv_item = NULL;
+
   if(item->rtti() == SafeEntry::RTTI) {
     DBGOUT("Item name: " << ((SafeEntry *)item)->name());
+
     if(parent)
-      (void)new SafeListViewEntry(parent, (SafeEntry *)item);
+      lv_item = new SafeListViewEntry(parent, (SafeEntry *)item);
     else
-      (void)new SafeListViewEntry(this, (SafeEntry *)item);
+      lv_item = new SafeListViewEntry(this, (SafeEntry *)item);
   }
   else if(item->rtti() == SafeGroup::RTTI) {
-    SafeListViewGroup *lv_group;
     if(parent)
-      lv_group = new SafeListViewGroup(parent, (SafeGroup *)item);
+      lv_item = new SafeListViewGroup(parent, (SafeGroup *)item);
     else
-      lv_group = new SafeListViewGroup(this, (SafeGroup *)item);
+      lv_item = new SafeListViewGroup(this, (SafeGroup *)item);
 
-    populate((SafeGroup *)item, lv_group);
+    populate(static_cast<SafeGroup *>(item),
+	     static_cast<SafeListViewGroup *>(lv_item));
   }
   else {
     DBGOUT("Unkown item type: " << item->rtti());
+  }
+
+  // set the current item?
+  if(make_current) {
+    DBGOUT("Selecting new item");
+    ensureItemVisible(lv_item); // this scrolls the view
+    setCurrentItem(lv_item); // and this makes it more apparent
   }
 }
 

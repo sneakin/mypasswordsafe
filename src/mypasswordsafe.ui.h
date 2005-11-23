@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.33 2004/12/06 16:03:46 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.34 2005/11/23 13:21:28 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -29,6 +29,8 @@
 #include <qsettings.h>
 #include <qlistview.h>
 #include <qdom.h>
+#include <qtimer.h>
+#include "tools/idle/idle.h"
 #include "passphrasedlg.h"
 #include "pwordeditdlg.h"
 #include "manualdlg.h"
@@ -47,13 +49,22 @@ void MyPasswordSafe::init()
   readConfig();
 
   m_safe = NULL; // m_safe gets setup by the Startup dialog
+
+  m_idle = new Idle;
+  m_idle->start();
+  connect(m_idle, SIGNAL(secondsIdle(int)), this, SLOT(slotSecondsIdle(int)));
+
+  m_clear_timer = new QTimer(this, "clear_timer");
+  connect(m_clear_timer, SIGNAL(timeout()), this, SLOT(editClearClipboard()));
 }
 
 void MyPasswordSafe::destroy()
 {
+  delete m_idle;
+
   // ask to save file if needed
   if(clearClipboardOnExit())
-	  copyToClipboard("");
+    copyToClipboard("");
 
   writeConfig();
 
@@ -136,12 +147,16 @@ void MyPasswordSafe::filePreferences()
   dlg.setDefaultSafe(m_default_safe);
   dlg.setGenPwordLength(m_gen_pword_length);
   dlg.setMaxTries(m_max_tries);
+  dlg.setIdleTime(m_idle_timeout);
+  dlg.setClearTime(m_clear_timeout);
   if(dlg.exec() == QDialog::Accepted) {
     m_def_user = dlg.getDefUser();
     setDefaultSafe(dlg.getDefaultSafe());
     m_gen_pword_length = dlg.getGenPwordLength();
     m_max_tries = dlg.getMaxTries();
-	
+    m_idle_timeout = dlg.getIdleTime();
+    m_clear_timeout = dlg.getClearTime();
+
     if(m_default_safe.isEmpty() == false)
       fileOpenDefaultAction->setEnabled(true);
     else
@@ -184,7 +199,7 @@ void MyPasswordSafe::fileOpen()
       }
 
       if(open(filename, pword, filter)) {
-	statusBar()->message(tr("Safe opened"));
+	statusBar()->message(tr("Opened %1 entries in %2 groups").arg(m_safe->totalNumEntries()).arg(m_safe->totalNumGroups()));
       }
     }
     else {
@@ -307,9 +322,13 @@ void MyPasswordSafe::pwordAdd()
  * and then adds the item to safe and view.
  */
 {
-  PwordEditDlg dlg;
+  PwordEditDlg dlg(this);
   dlg.setGenPwordLength(m_gen_pword_length);
   dlg.setUser(m_def_user);
+
+  // automatically generate the password
+  dlg.genPassword(false);
+
   dlg.showDetails(false);
   
   if(dlg.exec() == QDialog::Accepted) {
@@ -332,7 +351,8 @@ void MyPasswordSafe::pwordAdd()
 					 dlg.getNotes());
     if(safe_item != NULL) {
       m_safe->setChanged(true);
-      pwordListView->itemAdded(safe_item, parent);
+      pwordListView->itemAdded(safe_item, parent, true);
+
       savingEnabled(true);
       statusBar()->message(tr("Item added"));
     }
@@ -387,7 +407,7 @@ void MyPasswordSafe::pwordEdit()
 
       entry->updateAccessTime();
 
-      PwordEditDlg dlg;
+      PwordEditDlg dlg(this);
 
       dlg.setGenPwordLength(m_gen_pword_length);
       dlg.setItemName(entry->name());
@@ -425,6 +445,12 @@ void MyPasswordSafe::pwordEdit()
   }
 }
 
+void MyPasswordSafe::startClearTimer()
+{
+  if(m_clear_timeout > 0) {
+    m_clear_timer->start(m_clear_timeout * 1000, true);
+  }
+}
 
 void MyPasswordSafe::pwordFetch()
 {
@@ -435,6 +461,8 @@ void MyPasswordSafe::pwordFetch()
     SecuredString pword(entry->password().get());
 	copyToClipboard(QString::fromUtf8(pword.get()));
     statusBar()->message(tr("Password copied to clipboard"));
+
+    startClearTimer();
 
     entry->updateAccessTime();
   }
@@ -451,6 +479,8 @@ void MyPasswordSafe::pwordFetchUser()
     SafeEntry *entry = (SafeEntry *)item;
     copyToClipboard(entry->user());
     statusBar()->message(tr("Username copied to clipboard"));
+
+    startClearTimer();
 
     entry->updateAccessTime();
   }
@@ -604,7 +634,7 @@ void MyPasswordSafe::fileOpenDefault()
   PassPhraseDlg dlg;
   if(dlg.exec() == PassPhraseDlg::Accepted) {
     if(open((const char *)getDefaultSafe(), (const char *)dlg.getText()))
-      statusBar()->message(tr("Default safe opened"));
+      statusBar()->message(tr("Opened %1 entries in %2 groups").arg(m_safe->totalNumEntries()).arg(m_safe->totalNumGroups()));
     else
       statusBar()->message(tr("Unable to open the default safe"));
   }
@@ -635,6 +665,8 @@ void MyPasswordSafe::lock()
   PassPhraseDlg dlg;
   dlg.hideCancel(true);
   hide();
+
+  editClearClipboard();
 
   do {
     dlg.exec(); // will only accept
@@ -688,7 +720,8 @@ void MyPasswordSafe::createGroup()
   }
   else {
     m_safe->setChanged(true);
-    pwordListView->itemAdded(group, parent);
+    pwordListView->itemAdded(group, parent, true);
+
     savingEnabled(true);
     statusBar()->message(tr("Created the group \"%1\"").arg(group_name));
   }
@@ -721,12 +754,16 @@ void MyPasswordSafe::setLockOnMinimize(bool yes)
 
 void MyPasswordSafe::hideEvent(QHideEvent *)
 {
+  DBGOUT("Hide event: " << isMinimized());
+
   if(isMinimized())
     m_shown = false;
 }
 
 void MyPasswordSafe::showEvent(QShowEvent *)
 {
+  DBGOUT("Show event");
+
   if(!m_shown && lockOnMinimize()) {
     lock();
   }
@@ -767,6 +804,9 @@ void MyPasswordSafe::readConfig()
   if(m_max_tries > 10)
     m_max_tries = 10;
   
+  m_idle_timeout = m_config.readNumEntry("/prefs/idle_timeout", 2); // 2 minute default
+  m_clear_timeout = m_config.readNumEntry("/prefs/clear_timeout", 60); // 1 minute default
+
   int w, h;
   w = m_config.readNumEntry("/MainWindow/width", 400);
   h = m_config.readNumEntry("/MainWindow/height", 320);
@@ -809,7 +849,9 @@ void MyPasswordSafe::writeConfig()
   m_config.writeEntry("/prefs/clear_clipboard", clearClipboardOnExit());
   m_config.writeEntry("/prefs/lock_on_minimize", lockOnMinimize());
   m_config.writeEntry("/prefs/max_tries", m_max_tries);
-  
+  m_config.writeEntry("/prefs/idle_timeout", m_idle_timeout);
+  m_config.writeEntry("/prefs/clear_timeout", m_clear_timeout);
+
   QSize sz = size();
   m_config.writeEntry("/MainWindow/width", sz.width());
   m_config.writeEntry("/MainWindow/height", sz.height());
@@ -877,9 +919,31 @@ bool MyPasswordSafe::firstTime() const
 void MyPasswordSafe::editClearClipboard()
 {
   copyToClipboard("");
+  m_clear_timer->stop();
+
+  statusBar()->message(tr("Clipboard cleared"));
 }
 
 void MyPasswordSafe::helpAbout()
 {
   helpAbout(0);
+}
+
+void MyPasswordSafe::slotSecondsIdle(int secs)
+{
+  if(m_idle_timeout > 0) { // zero means off
+    int timeout = m_idle_timeout * 60;
+    int count_down = timeout - secs;
+
+    if(count_down == 30
+       || count_down == 20
+       || count_down <= 10) {
+      statusBar()->message(tr("Locking in %1 seconds.").arg(count_down), 2000);
+    }
+
+    if(count_down <= 0 && isVisible()) {
+      DBGOUT("Locking due to idle");
+      lock();
+    }
+  }
 }

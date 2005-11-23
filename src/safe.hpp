@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.17 2004/12/06 12:32:05 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.hpp,v 1.18 2005/11/23 13:21:29 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -105,6 +105,7 @@ public:
   bool takeItem(SafeItem *item);
 
   int count() const;
+
   void empty();
   SafeItem *at(int i);
 
@@ -224,6 +225,9 @@ public:
   inline bool hasChanged() { return m_changed; }
   void setChanged(bool value);
 
+  int totalNumEntries(const SafeGroup *group = NULL) const;
+  int totalNumGroups(const SafeGroup *group = NULL) const;
+
 signals:
   void changed();
   void itemChanged(SafeItem *);
@@ -233,6 +237,8 @@ signals:
   void loaded();
 
 protected:
+  int totalNumItems(const SafeGroup *group, int type) const;
+
   bool makeBackup(const QString &path);
   void setType(const QString &type);
   static SafeSerializer *createSerializer(const QString &extension,

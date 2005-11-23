@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/preferencesdlg.ui.h,v 1.6 2004/11/01 21:34:58 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/preferencesdlg.ui.h,v 1.7 2005/11/23 13:21:28 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -76,7 +76,25 @@ void PreferencesDlg::setMaxTries(int tries)
 	maxTriesBox->setValue(tries);
 }
 
+int PreferencesDlg::getIdleTime()
+{
+	return idleTimeBox->value();
+}
 
+void PreferencesDlg::setIdleTime(int minutes)
+{
+	idleTimeBox->setValue(minutes);
+}
+
+int PreferencesDlg::getClearTime()
+{
+	return clearTimeBox->value();
+}
+
+void PreferencesDlg::setClearTime(int seconds)
+{
+	clearTimeBox->setValue(seconds);
+}
 
 void PreferencesDlg::onHelp()
 {

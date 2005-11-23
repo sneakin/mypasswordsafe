@@ -338,7 +338,7 @@
         <sender>showButton</sender>
         <signal>clicked()</signal>
         <receiver>PwordEditDlg</receiver>
-        <slot>showPassword()</slot>
+        <slot>togglePassword()</slot>
     </connection>
     <connection>
         <sender>fetchButton</sender>
@@ -371,11 +371,17 @@
 </includes>
 <variables>
     <variable access="private">int m_pword_length;</variable>
+    <variable access="private">QString m_orig_pword;</variable>
+    <variable access="private">QString m_orig_user;</variable>
 </variables>
 <slots>
     <slot>showPassword()</slot>
+    <slot>hidePassword()</slot>
+    <slot>togglePassword()</slot>
     <slot>genPassword()</slot>
+    <slot>genPassword(bool)</slot>
     <slot>fetchPassword()</slot>
+    <slot>accept()</slot>
 </slots>
 <functions>
     <function returnType="QString">getItemName() const</function>

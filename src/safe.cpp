@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.28 2004/12/06 16:03:46 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safe.cpp,v 1.29 2005/11/23 13:21:29 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -783,6 +783,42 @@ void Safe::setChanged(bool value)
 {
   m_changed = value;
   changed();
+}
+
+int Safe::totalNumItems(const SafeGroup *group, int type) const
+{
+  // c++ didn't like this at toplevel
+  if(group == NULL) {
+    group = this;
+  }
+
+  SafeGroup::Iterator it(group);
+  int count = 0;
+
+  while(it.current()) {
+    SafeItem *item = *it;
+    if(item->rtti() == type) {
+      count++;
+    }
+
+    if(item->rtti() == SafeGroup::RTTI) {
+      count += totalNumItems(dynamic_cast<const SafeGroup *>(item), type);
+    }
+
+    ++it;
+  }
+
+  return count;
+}
+
+int Safe::totalNumEntries(const SafeGroup *group) const
+{
+  return totalNumItems(group, SafeEntry::RTTI);
+}
+
+int Safe::totalNumGroups(const SafeGroup *group) const
+{
+  return totalNumItems(group, SafeGroup::RTTI);
 }
 
 /** Returns a string that describes an error.

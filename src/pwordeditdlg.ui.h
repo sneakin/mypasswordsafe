@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.8 2004/11/01 21:34:58 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.9 2005/11/23 13:21:29 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -20,31 +20,82 @@
 #include <qapplication.h>
 #include <qclipboard.h>
 #include <qdatetime.h>
+#include <qmessagebox.h>
 #include "mypasswordsafe.h"
 #include "pwsafe/Util.h"
 
+void PwordEditDlg::accept()
+{
+	// if the username or password have changed,
+	if((m_orig_pword != passwordEdit->text() && m_orig_pword.length() > 0) ||
+	   (m_orig_user != userEdit->text() && m_orig_user.length() > 0)) {
+		// prompt the user to see if they are sure they
+		// want to edit the entry
+		switch(QMessageBox::warning(this, tr("Entry Changed"),
+					    tr("Are you sure that you want to edit this password?"),
+					    QMessageBox::Yes,
+					    QMessageBox::No,
+					    QMessageBox::Cancel)) {
+		case QMessageBox::No:
+			reject();
+		case QMessageBox::Cancel:
+			return;
+		}
+	}
+
+	QDialog::accept();
+}
+
 void PwordEditDlg::showPassword()
 {
+	showButton->setText(tr("Hide"));
+	passwordEdit->setEchoMode(QLineEdit::Normal);
+}
+
+void PwordEditDlg::hidePassword()
+{
+	showButton->setText(tr("Show"));
+	passwordEdit->setEchoMode(QLineEdit::Password);
+}
+
+void PwordEditDlg::togglePassword()
+{
 	if(passwordEdit->echoMode() == QLineEdit::Normal) {
-		showButton->setText(tr("Show"));
-		passwordEdit->setEchoMode(QLineEdit::Password);
+		showPassword();
 	}
 	else {
-		showButton->setText(tr("Hide"));
-		passwordEdit->setEchoMode(QLineEdit::Normal);
+		hidePassword();
 	}
 }
 
 
 void PwordEditDlg::genPassword()
-{    
+{
+	genPassword(true);
+}
+
+void PwordEditDlg::genPassword(bool fetch)
+{
 	string s(GetAlphaNumPassword(m_pword_length));
 	passwordEdit->setText(s.c_str());
+	
+	// FIXME: make these optional
+	showPassword();
+
+	if(fetch) {
+		fetchPassword();
+	}
 }
 
 
 void PwordEditDlg::fetchPassword()
 {
+	// FIXME: move the clipboard stuff into a singleton. Then copying,
+	// clearing, the timer, and even the preference variable can be
+	// in one place.
+	MyPasswordSafe *myps = dynamic_cast<MyPasswordSafe *>(parent());
+	myps->startClearTimer();
+
 	copyToClipboard(passwordEdit->text());
 }
 
@@ -80,12 +131,14 @@ void PwordEditDlg::setItemName( const QString &text )
 
 void PwordEditDlg::setUser( const QString &text )
 {
+	m_orig_user = text;
 	userEdit->setText(text);
 }
 
 
 void PwordEditDlg::setPassword( const QString &text )
 {
+	m_orig_pword = text;
 	passwordEdit->setText(text);
 }
 
