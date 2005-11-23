@@ -6,6 +6,15 @@ CONFIG	+= qt warn_on
 LIBS	+= uuid-1.0.0/.libs/libuuid.a
 INCLUDEPATH	+= uuid-1.0.0
 
+# idle
+CONFIG += idle
+IDLE_CPP = src/tools/idle
+INCLUDEPATH += $$IDLE_CPP
+unix {
+	LIBS += -lXss
+}
+include($$IDLE_CPP/idle.pri)
+
 HEADERS	+= src/safe.hpp \
 	src/safeserializer.hpp \
 	src/securedstring.hpp \
