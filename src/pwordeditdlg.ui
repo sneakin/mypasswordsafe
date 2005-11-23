@@ -373,6 +373,7 @@
     <variable access="private">int m_pword_length;</variable>
     <variable access="private">QString m_orig_pword;</variable>
     <variable access="private">QString m_orig_user;</variable>
+    <variable access="private">bool m_is_new;</variable>
 </variables>
 <slots>
     <slot>showPassword()</slot>
@@ -384,6 +385,7 @@
     <slot>accept()</slot>
 </slots>
 <functions>
+    <function access="private" specifier="non virtual">init()</function>
     <function returnType="QString">getItemName() const</function>
     <function returnType="QString">getUser() const</function>
     <function returnType="QString">getPassword() const</function>
@@ -400,6 +402,8 @@
     <function>setUUID( const QString &amp; uuid )</function>
     <function>showDetails( bool yes )</function>
     <function returnType="bool">detailsShown() const</function>
+    <function returnType="bool">isNew() const</function>
+    <function>setIsNew(bool yes)</function>
 </functions>
 <pixmapinproject/>
 <layoutdefaults spacing="6" margin="11"/>

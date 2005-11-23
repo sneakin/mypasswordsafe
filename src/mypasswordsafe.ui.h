@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.34 2005/11/23 13:21:28 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.35 2005/11/23 16:14:25 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -323,6 +323,7 @@ void MyPasswordSafe::pwordAdd()
  */
 {
   PwordEditDlg dlg(this);
+  dlg.setIsNew(true);
   dlg.setGenPwordLength(m_gen_pword_length);
   dlg.setUser(m_def_user);
 
@@ -409,6 +410,7 @@ void MyPasswordSafe::pwordEdit()
 
       PwordEditDlg dlg(this);
 
+      dlg.setIsNew(false);
       dlg.setGenPwordLength(m_gen_pword_length);
       dlg.setItemName(entry->name());
       dlg.setUser(entry->user());

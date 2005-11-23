@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.9 2005/11/23 13:21:29 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.10 2005/11/23 16:14:25 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -24,11 +24,17 @@
 #include "mypasswordsafe.h"
 #include "pwsafe/Util.h"
 
+void PwordEditDlg::init()
+{
+	setIsNew(true);
+}
+
 void PwordEditDlg::accept()
 {
 	// if the username or password have changed,
-	if((m_orig_pword != passwordEdit->text() && m_orig_pword.length() > 0) ||
-	   (m_orig_user != userEdit->text() && m_orig_user.length() > 0)) {
+	if(!isNew()
+	   && ((m_orig_pword != passwordEdit->text() && m_orig_pword.length() > 0)
+	       || (m_orig_user != userEdit->text() && m_orig_user.length() > 0))) {
 		// prompt the user to see if they are sure they
 		// want to edit the entry
 		switch(QMessageBox::warning(this, tr("Entry Changed"),
@@ -189,4 +195,14 @@ bool PwordEditDlg::detailsShown() const
 {
 	QWidget *tab(tabWidget->page(1));
 	return tabWidget->isTabEnabled(tab);
+}
+
+void PwordEditDlg::setIsNew(bool yes)
+{
+	m_is_new = yes;
+}
+
+bool PwordEditDlg::isNew() const
+{
+	return m_is_new;
 }
