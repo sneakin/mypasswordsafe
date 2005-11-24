@@ -3,7 +3,7 @@ DATE=$(shell date +%Y%m%d)
 GPGSIGN=gpg --detach-sign -a
 BRANCH=
 RELEASE=$(PROGRAM)-$(DATE)
-UPLOAD_TO=sg:/home/nolan/web/semanticgap.com/myps/release/devel
+UPLOAD_TO=sg:/home/sneakin/web/semanticgap.com/myps/release/devel
 
 all: src bin
 
@@ -36,11 +36,11 @@ $(RELEASE).bin.tgz.asc: $(RELEASE).bin.tgz
 $(RELEASE).src.tgz.asc: $(RELEASE).src.tgz
 	$(GPGSIGN) $<
 
-upload-src: src.sig
+upload-src: $(RELEASE).src.tgz.asc
 	scp $(RELEASE).src.tgz $(UPLOAD_TO)
 	scp $(RELEASE).src.tgz.asc $(UPLOAD_TO)
 
-upload-bin: bin.sig
+upload-bin: $(RELEASE).bin.tgz.asc
 	scp $(RELEASE).bin.tgz $(UPLOAD_TO)
 	scp $(RELEASE).bin.tgz.asc $(UPLOAD_TO)
 
