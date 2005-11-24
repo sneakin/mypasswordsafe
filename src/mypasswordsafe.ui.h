@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.35 2005/11/23 16:14:25 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.36 2005/11/24 06:23:29 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -110,7 +110,7 @@ bool MyPasswordSafe::closeSafe()
 
 void MyPasswordSafe::fileNew()
 {
-  NewPassPhraseDlg dlg;
+  NewPassPhraseDlg dlg(this);
   // NOTE:  the dialog doesn't trash the memory
   if(dlg.exec() == QDialog::Rejected) {
     statusBar()->message(tr("No pass-phrase entered"));
@@ -142,7 +142,7 @@ void MyPasswordSafe::fileMakeDefault()
 
 void MyPasswordSafe::filePreferences()
 {
-  PreferencesDlg dlg;
+  PreferencesDlg dlg(this);
   dlg.setDefUser(m_def_user);
   dlg.setDefaultSafe(m_default_safe);
   dlg.setGenPwordLength(m_gen_pword_length);
@@ -175,7 +175,7 @@ void MyPasswordSafe::fileOpen()
       Safe::Error open_ret = Safe::Failed;
 
       // check the password
-      PassPhraseDlg passphrase_dlg;
+      PassPhraseDlg passphrase_dlg(this);
       SecuredString pword;
       int num_tries = 0;
       while(num_tries < m_max_tries) {
@@ -507,7 +507,7 @@ void MyPasswordSafe::onPwordListRightClk( QListViewItem *, const QPoint &point, 
 
 void MyPasswordSafe::helpAbout(int page)
 {
-  AboutDlg dlg;
+  AboutDlg dlg(this);
   dlg.setCurrentPage(page);
   dlg.exec();
 }
@@ -633,7 +633,7 @@ void MyPasswordSafe::createNewSafe(const EncryptedString &passphrase)
 
 void MyPasswordSafe::fileOpenDefault()
 {
-  PassPhraseDlg dlg;
+  PassPhraseDlg dlg(this);
   if(dlg.exec() == PassPhraseDlg::Accepted) {
     if(open((const char *)getDefaultSafe(), (const char *)dlg.getText()))
       statusBar()->message(tr("Opened %1 entries in %2 groups").arg(m_safe->totalNumEntries()).arg(m_safe->totalNumGroups()));
@@ -649,7 +649,7 @@ void MyPasswordSafe::fileOpenDefault()
 void MyPasswordSafe::fileChangePassPhrase()
 {
   // prompt the user for a new password
-  NewPassPhraseDlg dlg;
+  NewPassPhraseDlg dlg(this);
   if(dlg.exec() == NewPassPhraseDlg::Accepted) {
     // set the new password
     m_safe->setPassPhrase(EncryptedString((const char *)dlg.password().utf8()));
@@ -664,7 +664,7 @@ void MyPasswordSafe::fileChangePassPhrase()
 
 void MyPasswordSafe::lock()
 {
-  PassPhraseDlg dlg;
+  PassPhraseDlg dlg(this);
   dlg.hideCancel(true);
   hide();
 
