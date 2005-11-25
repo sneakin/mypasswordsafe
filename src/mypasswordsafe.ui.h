@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.36 2005/11/24 06:23:29 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.37 2005/11/25 05:21:20 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -43,7 +43,7 @@ using namespace std;
 
 void MyPasswordSafe::init()
 {
-  m_shown = true;
+  m_do_lock = false;
   savingEnabled(false);
 
   readConfig();
@@ -674,8 +674,7 @@ void MyPasswordSafe::lock()
     dlg.exec(); // will only accept
   } while(m_safe->getPassPhrase() != EncryptedString(dlg.getText().utf8()));
   
-  m_shown = true; // make sure it gets shown again
-  show();
+  showNormal();
   statusBar()->message(tr("MyPasswordSafe unlocked"));
 }
 
@@ -753,26 +752,63 @@ void MyPasswordSafe::setLockOnMinimize(bool yes)
   lockOnMinimizeAction->setOn(yes);
 }
 
+#ifdef Q_WS_X11
+#include <X11/X.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
+bool MyPasswordSafe::isMinimized() const
+{
+  //DBGOUT("isMinimized: " << QMainWindow::isMinimized());
+
+  Display *display = x11Display();
+  Atom atom;
+  static const int prop_buffer_lengh = 1024 * 1024;
+  Atom type_returned = 0;
+  int format_returned = 0;
+  unsigned long n_clients;
+  unsigned long bytes_after_return = 0;
+  unsigned char *data = NULL;
+
+  atom = XInternAtom (display, "WM_STATE", False);
+  XGetWindowProperty (display, (Window)winId(),
+		      atom, 0, prop_buffer_lengh, False, atom,
+		      &type_returned, &format_returned, &n_clients,
+		      &bytes_after_return, &data);
+
+  /*#ifdef DEBUG
+  for(int i = 0; i < n_clients; i++) {
+    DBGOUT("data[" << i << "] = " << data[i] << "\t" << (data[i] == IconicState));
+  }
+  #endif*/
+  return (n_clients > 0 && data[0] == IconicState);
+}
+#else
+bool MyPasswordSafe::isMinimized() const
+{
+  return QMainWindow::isMinimized();
+}
+#endif
 
 void MyPasswordSafe::hideEvent(QHideEvent *)
 {
   DBGOUT("Hide event: " << isMinimized());
 
-  if(isMinimized())
-    m_shown = false;
+  // Fire a timer to see if we need to lock due
+  // to a minimization after 5 seconds
+  if(lockOnMinimize()) {
+    QTimer::singleShot(5*1000, this, SLOT(checkMinimization()));
+  }
 }
 
 void MyPasswordSafe::showEvent(QShowEvent *)
 {
-  DBGOUT("Show event");
+  DBGOUT("Show event: " << isMinimized());
 
-  if(!m_shown && lockOnMinimize()) {
+  if(m_do_lock && lockOnMinimize()) {
+    m_do_lock = false;
     lock();
   }
-
-  // this will get set after MyPS is shown for the first time,
-  // and will remain set
-  m_shown = true;
 }
 
 static const char *MyPS_Column_Fields[] = {
@@ -947,5 +983,13 @@ void MyPasswordSafe::slotSecondsIdle(int secs)
       DBGOUT("Locking due to idle");
       lock();
     }
+  }
+}
+
+void MyPasswordSafe::checkMinimization()
+{
+  DBGOUT("isMinimized: " << (isMinimized() == QMainWindow::isMinimized()));
+  if(lockOnMinimize()) {
+    m_do_lock = isMinimized();
   }
 }
