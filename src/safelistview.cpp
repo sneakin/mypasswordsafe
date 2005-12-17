@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.25 2005/12/17 10:03:46 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.26 2005/12/17 11:33:21 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -459,7 +459,10 @@ void SafeListView::itemChanged(SafeItem *item)
 {
   DBGOUT("Item changed");
   SafeListViewItem *list_item = findItem(item);
+
+  // are both needed? I really don't know.
   list_item->setup();
+  list_item->repaint();
 }
 
 void SafeListView::itemAdded(SafeItem *item, bool make_current)
@@ -633,7 +636,7 @@ void SafeListView::populate(SafeGroup *group, SafeListViewGroup *view)
   }
 }
 
-/*
+#if 0
 QString SafeListView::thisGroup(const QString &group)
 {
   unsigned int i;
@@ -692,4 +695,4 @@ QString SafeListView::parentGroup(const QString &group)
   ret.truncate(i);
   return ret;
 }
-*/
+#endif

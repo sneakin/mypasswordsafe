@@ -371,12 +371,18 @@
 </includes>
 <forwards>
   <forward>class SafeEntry</forward>
+  <forward>class SafeGroup</forward>
 </forwards>
 <variables>
-    <variable access="private">SafeEntry *m_item;</variable>
-    <variable access="public">static int gen_pword_length;</variable>
-    <variable access="public">static QString default_user;</variable>
+  <variable access="private">SafeEntry *m_item;</variable>
+  <variable access="private">SafeGroup *m_future_group;</variable>
+  <variable access="public">static int gen_pword_length;</variable>
+  <variable access="public">static QString default_user;</variable>
 </variables>
+<signals>
+  <signal>accepted()</signal>
+  <signal>rejected()</signal>
+</signals>
 <slots>
     <slot>showPassword()</slot>
     <slot>hidePassword()</slot>
@@ -385,6 +391,7 @@
     <slot>genPassword(bool)</slot>
     <slot>fetchPassword()</slot>
     <slot>accept()</slot>
+    <slot>reject()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

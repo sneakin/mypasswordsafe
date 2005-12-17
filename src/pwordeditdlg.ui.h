@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.12 2005/12/17 10:03:46 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.13 2005/12/17 11:33:21 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -47,6 +47,9 @@ void PwordEditDlg::setItem(SafeEntry *item)
 void PwordEditDlg::updateItem()
 {
 	if(m_item == NULL) {
+		MyPasswordSafe *myps = dynamic_cast<MyPasswordSafe *>(parent());
+		m_future_group = myps->getSelectedParent();
+
 		setNotes(QString::null);
 		setUser(default_user);
 
@@ -56,6 +59,8 @@ void PwordEditDlg::updateItem()
 		showDetails(false);
 	}
 	else {
+		m_future_group = NULL;
+
 		setItemName(m_item->name());
 		setUser(m_item->user());
 		// NOTE: password decrypted
@@ -67,12 +72,16 @@ void PwordEditDlg::updateItem()
 		setLifetime(m_item->lifetime());
 		setUUID(m_item->uuid().toString());
 
+		m_item->updateAccessTime();
+
 		showDetails(true);
 	}
 }
 
 void PwordEditDlg::accept()
 {
+	DBGOUT("PwordEditDlg::accept");
+
 	// if the username or password have changed,
 	if(!isNew()
 	   && ((m_item->password() != EncryptedString(passwordEdit->text().utf8())
@@ -94,9 +103,7 @@ void PwordEditDlg::accept()
 
 	// create a new item if we don't have one
 	if(isNew()) {
-		MyPasswordSafe *myps = dynamic_cast<MyPasswordSafe *>(parent());
-		SafeGroup *group = myps->getSelectedParent();
-		m_item = new SafeEntry(group,
+		m_item = new SafeEntry(m_future_group,
 				       getItemName(),
 				       getUser(),
 				       EncryptedString(getPassword().utf8()),
@@ -115,7 +122,14 @@ void PwordEditDlg::accept()
 		m_item->safe()->setChanged(true);
 	}
 
+	accepted();
 	QDialog::accept();
+}
+
+void PwordEditDlg::reject()
+{
+	rejected();
+	QDialog::reject();
 }
 
 void PwordEditDlg::showPassword()
@@ -266,5 +280,5 @@ bool PwordEditDlg::detailsShown() const
 
 bool PwordEditDlg::isNew() const
 {
-	return (m_item == NULL);
+	return (m_future_group != NULL);
 }

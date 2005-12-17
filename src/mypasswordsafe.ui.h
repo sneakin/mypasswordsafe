@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.38 2005/12/17 10:03:46 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.39 2005/12/17 11:33:21 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -48,7 +48,6 @@ void MyPasswordSafe::init()
 
   readConfig();
 
-  m_child_dialog = NULL;
   m_safe = NULL; // m_safe gets setup by the Startup dialog
 
   m_idle = new Idle;
@@ -333,27 +332,85 @@ SafeGroup *MyPasswordSafe::getSelectedParent() const
     return parent;
 }
 
+bool MyPasswordSafe::createEditDialog(SafeEntry *entry)
+{
+  // return false if we're already editing this item
+  if(entry != NULL) {
+    for(PwordEditDlg *iter = m_children.first();
+	iter;
+	iter = m_children.next()) {
+      if(iter->getItem() == entry) {
+	iter->raise();
+	return false;
+      }
+    }
+  }
+
+  // create the dialog
+  PwordEditDlg *dlg = new PwordEditDlg(this);
+  dlg->setItem(entry);
+
+  // connect the dialog to the close slot
+  connect(dlg, SIGNAL(accepted()), this, SLOT(editDialogAccepted()));
+  connect(dlg, SIGNAL(rejected()), this, SLOT(editDialogRejected()));
+
+  // add the dialog to the list
+  m_children.append(dlg);
+
+  // show the dialog
+  dlg->show();
+
+  return true;
+}
+
+bool MyPasswordSafe::removeEditDialog(const PwordEditDlg *dlg)
+{
+  // find and remove the dialog
+  return m_children.remove(dlg);
+}
+
 void MyPasswordSafe::pwordAdd()
 /* Shows the password edit dialog for the user to
  * fill out the values that the new entry will have,
  * and then adds the item to safe and view.
  */
 {
-  PwordEditDlg *dlg = new PwordEditDlg(this);
-  dlg->setItem(NULL);
+  if(createEditDialog(NULL) == false) {
+    statusBar()->message(tr("Failed to create password entry dialog"));
+  }
+}
 
-  if(dlg->exec() == QDialog::Accepted) {
+void MyPasswordSafe::editDialogAccepted()
+{
+  const PwordEditDlg *dlg = dynamic_cast<const PwordEditDlg *>(sender());
+  DBGOUT("editDialogClosed: " << dlg->result());
+
+  if(dlg->isNew()) {
     pwordListView->itemAdded(dlg->getItem(), true);
-
-    savingEnabled(true);
     statusBar()->message(tr("Item added"));
   }
   else {
-    statusBar()->message(tr("Add canceled"));
+    pwordListView->itemChanged(dlg->getItem());
+    statusBar()->message(tr("Password updated"));
   }
 
-  m_child_dialog = NULL;
-  delete m_child_dialog;
+  savingEnabled(true);
+  removeEditDialog(dlg);
+}
+
+void MyPasswordSafe::editDialogRejected()
+{
+  const PwordEditDlg *dlg = dynamic_cast<const PwordEditDlg *>(sender());
+
+  if(dlg->isNew()) {
+    statusBar()->message(tr("Add canceled"));
+  }
+  else {
+    statusBar()->message(tr("Edit password cancelled"));
+    savingEnabled(true); // updated the access time
+  }
+
+  removeEditDialog(dlg);
 }
 
 
@@ -396,25 +453,9 @@ void MyPasswordSafe::pwordEdit()
     if(item->rtti() == SafeEntry::RTTI) {
       SafeEntry *entry = (SafeEntry *)item;
 
-      entry->updateAccessTime();
-
-      PwordEditDlg *dlg = new PwordEditDlg(this);
-      dlg->setItem(entry);
-      m_child_dialog = dlg;
-
-      if(dlg->exec() == QDialog::Accepted) {
-	pwordListView->itemChanged(entry);
-	statusBar()->message(tr("Password updated"));
+      if(createEditDialog(entry) == false) {
+	statusBar()->message(tr("You are already editing this item."));
       }
-      else {
-	statusBar()->message(tr("Edit password cancelled"));
-      }
-
-      m_child_dialog = NULL;
-      delete dlg;
-
-      m_safe->setChanged(true); // FIXME: send this through the view
-      savingEnabled(true);
     }
   }
   else {
@@ -636,18 +677,22 @@ void MyPasswordSafe::fileChangePassPhrase()
   }
 }
 
-void MyPasswordSafe::closeChild()
+void MyPasswordSafe::hideChildren()
 {
-  if(m_child_dialog) {
-    m_child_dialog->close();
-  }
+    for(PwordEditDlg *iter = m_children.first();
+	iter;
+	iter = m_children.next()) {
+      iter->hide();
+    }
 }
 
-void MyPasswordSafe::showChild()
+void MyPasswordSafe::showChildren()
 {
-  if(m_child_dialog) {
-    m_child_dialog->show();
-  }
+    for(PwordEditDlg *iter = m_children.first();
+	iter;
+	iter = m_children.next()) {
+      iter->show();
+    }
 }
 
 void MyPasswordSafe::lock()
@@ -656,7 +701,8 @@ void MyPasswordSafe::lock()
   dlg.hideCancel(true);
 
   hide();
-  closeChild(); // NOTE: hiding would cause a crash on show
+  hideChildren();
+  //closeChild(); // NOTE: hiding would cause a crash on show
   // FIXME: hiding the edit dialog should work with non-modal dialogs
 
   editClearClipboard();
@@ -666,7 +712,7 @@ void MyPasswordSafe::lock()
   } while(m_safe->getPassPhrase() != EncryptedString(dlg.getText().utf8()));
   
   showNormal();
-  //showChild();
+  showChildren();
 
   statusBar()->message(tr("MyPasswordSafe unlocked"));
 }
