@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.37 2005/11/25 05:21:20 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.38 2005/12/17 10:03:46 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -48,6 +48,7 @@ void MyPasswordSafe::init()
 
   readConfig();
 
+  m_child_dialog = NULL;
   m_safe = NULL; // m_safe gets setup by the Startup dialog
 
   m_idle = new Idle;
@@ -143,16 +144,16 @@ void MyPasswordSafe::fileMakeDefault()
 void MyPasswordSafe::filePreferences()
 {
   PreferencesDlg dlg(this);
-  dlg.setDefUser(m_def_user);
+  dlg.setDefUser(PwordEditDlg::default_user);
   dlg.setDefaultSafe(m_default_safe);
-  dlg.setGenPwordLength(m_gen_pword_length);
+  dlg.setGenPwordLength(PwordEditDlg::gen_pword_length);
   dlg.setMaxTries(m_max_tries);
   dlg.setIdleTime(m_idle_timeout);
   dlg.setClearTime(m_clear_timeout);
   if(dlg.exec() == QDialog::Accepted) {
-    m_def_user = dlg.getDefUser();
+    PwordEditDlg::default_user = dlg.getDefUser();
     setDefaultSafe(dlg.getDefaultSafe());
-    m_gen_pword_length = dlg.getGenPwordLength();
+    PwordEditDlg::gen_pword_length = dlg.getGenPwordLength();
     m_max_tries = dlg.getMaxTries();
     m_idle_timeout = dlg.getIdleTime();
     m_clear_timeout = dlg.getClearTime();
@@ -234,7 +235,7 @@ bool MyPasswordSafe::open( const char *filename, const EncryptedString &passkey,
     ret = s->load((const char *)filename,
 			      (const char *)type,
 			      passkey,
-			      (const char *)m_def_user);
+			      (const char *)PwordEditDlg::default_user);
     if(ret == Safe::Success) {
       DBGOUT(filename << " has " << s->count() << " entries");
 
@@ -271,7 +272,7 @@ bool MyPasswordSafe::save()
     if(path.isEmpty())
       return saveAs();
     else {
-      Safe::Error error = m_safe->save((const char *)m_def_user);
+      Safe::Error error = m_safe->save((const char *)PwordEditDlg::default_user);
       if(error == Safe::Success) {
 	savingEnabled(false);
 	statusBar()->message(tr("Safe saved"));
@@ -295,7 +296,7 @@ bool MyPasswordSafe::saveAs()
     if(!filename.isEmpty()) {
       Safe::Error error = m_safe->save(filename,
 				       filter,
-				       m_def_user);
+				       PwordEditDlg::default_user);
       if(error == Safe::Success) {
 	setCaption(tr("MyPasswordSafe: ") + m_safe->getPath());
 	statusBar()->message(tr("Safe saved"));
@@ -315,24 +316,8 @@ bool MyPasswordSafe::saveAs()
 }
 
 
-
-void MyPasswordSafe::pwordAdd()
-/* Shows the password edit dialog for the user to
- * fill out the values that the new entry will have,
- * and then adds the item to safe and view.
- */
+SafeGroup *MyPasswordSafe::getSelectedParent() const
 {
-  PwordEditDlg dlg(this);
-  dlg.setIsNew(true);
-  dlg.setGenPwordLength(m_gen_pword_length);
-  dlg.setUser(m_def_user);
-
-  // automatically generate the password
-  dlg.genPassword(false);
-
-  dlg.showDetails(false);
-  
-  if(dlg.exec() == QDialog::Accepted) {
     SafeItem *selection = pwordListView->getSelectedItem();
     SafeGroup *parent = m_safe;
 
@@ -345,25 +330,30 @@ void MyPasswordSafe::pwordAdd()
       }
     }
 
-    SafeEntry *safe_item = new SafeEntry(parent,
-					 dlg.getItemName(),
-					 dlg.getUser(),
-					 EncryptedString(dlg.getPassword().utf8()),
-					 dlg.getNotes());
-    if(safe_item != NULL) {
-      m_safe->setChanged(true);
-      pwordListView->itemAdded(safe_item, parent, true);
+    return parent;
+}
 
-      savingEnabled(true);
-      statusBar()->message(tr("Item added"));
-    }
-    else {
-      statusBar()->message(tr("Unable to allocate new item"));
-    }
+void MyPasswordSafe::pwordAdd()
+/* Shows the password edit dialog for the user to
+ * fill out the values that the new entry will have,
+ * and then adds the item to safe and view.
+ */
+{
+  PwordEditDlg *dlg = new PwordEditDlg(this);
+  dlg->setItem(NULL);
+
+  if(dlg->exec() == QDialog::Accepted) {
+    pwordListView->itemAdded(dlg->getItem(), true);
+
+    savingEnabled(true);
+    statusBar()->message(tr("Item added"));
   }
   else {
     statusBar()->message(tr("Add canceled"));
   }
+
+  m_child_dialog = NULL;
+  delete m_child_dialog;
 }
 
 
@@ -408,35 +398,20 @@ void MyPasswordSafe::pwordEdit()
 
       entry->updateAccessTime();
 
-      PwordEditDlg dlg(this);
+      PwordEditDlg *dlg = new PwordEditDlg(this);
+      dlg->setItem(entry);
+      m_child_dialog = dlg;
 
-      dlg.setIsNew(false);
-      dlg.setGenPwordLength(m_gen_pword_length);
-      dlg.setItemName(entry->name());
-      dlg.setUser(entry->user());
-      // NOTE: password decrypted
-      dlg.setPassword(QString::fromUtf8(entry->password().get().get()));
-      dlg.setNotes(entry->notes());
-      dlg.setAccessedOn(entry->accessTime());
-      dlg.setCreatedOn(entry->creationTime());
-      dlg.setModifiedOn(entry->modifiedTime());
-      dlg.setLifetime(entry->lifetime());
-      dlg.setUUID(entry->uuid().toString());
-
-      if(dlg.exec() == QDialog::Accepted) {
-	entry->setName(dlg.getItemName());
-	entry->setUser(dlg.getUser());
-	entry->setPassword(EncryptedString((const char *)dlg.getPassword().utf8()));
-	entry->setNotes(dlg.getNotes());
-	entry->updateModTime();
-
-	m_safe->setChanged(true);
+      if(dlg->exec() == QDialog::Accepted) {
 	pwordListView->itemChanged(entry);
 	statusBar()->message(tr("Password updated"));
       }
       else {
 	statusBar()->message(tr("Edit password cancelled"));
       }
+
+      m_child_dialog = NULL;
+      delete dlg;
 
       m_safe->setChanged(true); // FIXME: send this through the view
       savingEnabled(true);
@@ -532,7 +507,7 @@ Safe *MyPasswordSafe::getSafe()
 
 int MyPasswordSafe::getGeneratedPwordLength()
 {
-  return m_gen_pword_length;
+  return PwordEditDlg::gen_pword_length;
 }
 
 void MyPasswordSafe::savingEnabled()
@@ -661,12 +636,28 @@ void MyPasswordSafe::fileChangePassPhrase()
   }
 }
 
+void MyPasswordSafe::closeChild()
+{
+  if(m_child_dialog) {
+    m_child_dialog->close();
+  }
+}
+
+void MyPasswordSafe::showChild()
+{
+  if(m_child_dialog) {
+    m_child_dialog->show();
+  }
+}
 
 void MyPasswordSafe::lock()
 {
   PassPhraseDlg dlg(this);
   dlg.hideCancel(true);
+
   hide();
+  closeChild(); // NOTE: hiding would cause a crash on show
+  // FIXME: hiding the edit dialog should work with non-modal dialogs
 
   editClearClipboard();
 
@@ -675,6 +666,8 @@ void MyPasswordSafe::lock()
   } while(m_safe->getPassPhrase() != EncryptedString(dlg.getText().utf8()));
   
   showNormal();
+  //showChild();
+
   statusBar()->message(tr("MyPasswordSafe unlocked"));
 }
 
@@ -721,7 +714,7 @@ void MyPasswordSafe::createGroup()
   }
   else {
     m_safe->setChanged(true);
-    pwordListView->itemAdded(group, parent, true);
+    pwordListView->itemAdded(group, true);
 
     savingEnabled(true);
     statusBar()->message(tr("Created the group \"%1\"").arg(group_name));
@@ -828,13 +821,13 @@ void MyPasswordSafe::readConfig()
   m_config.beginGroup("/MyPasswordSafe");
 
   m_first_time = m_config.readBoolEntry("/prefs/first_time", true);
-  m_gen_pword_length = m_config.readNumEntry("/prefs/password_length", 8);
+  PwordEditDlg::gen_pword_length = m_config.readNumEntry("/prefs/password_length", 8);
   
   m_default_safe = m_config.readEntry("/prefs/default_safe", "");
   if(m_default_safe.isEmpty())
     fileOpenDefaultAction->setEnabled(false);
   
-  m_def_user = m_config.readEntry("/prefs/default_username", "");
+  PwordEditDlg::default_user = m_config.readEntry("/prefs/default_username", "");
   setClearClipboardOnExit(m_config.readBoolEntry("/prefs/clear_clipboard", true));
   setLockOnMinimize(m_config.readBoolEntry("/prefs/lock_on_minimize", true));
   
@@ -881,9 +874,9 @@ void MyPasswordSafe::writeConfig()
   m_config.beginGroup("/MyPasswordSafe");
 
   m_config.writeEntry("/prefs/first_time", false);
-  m_config.writeEntry("/prefs/password_length", (int)m_gen_pword_length);
+  m_config.writeEntry("/prefs/password_length", (int)PwordEditDlg::gen_pword_length);
   m_config.writeEntry("/prefs/default_safe", m_default_safe);
-  m_config.writeEntry("/prefs/default_username", m_def_user);
+  m_config.writeEntry("/prefs/default_username", PwordEditDlg::default_user);
   m_config.writeEntry("/prefs/clear_clipboard", clearClipboardOnExit());
   m_config.writeEntry("/prefs/lock_on_minimize", lockOnMinimize());
   m_config.writeEntry("/prefs/max_tries", m_max_tries);
@@ -935,13 +928,13 @@ void MyPasswordSafe::dragObjectDropped(QMimeSource *drag, SafeListViewItem *targ
 	if(tag_name == "item") {
 	  SafeEntry *entry = new SafeEntry(safe_parent);
 	  if(XmlSerializer::safeEntryFromXml(elem, entry)) {
-	    pwordListView->itemAdded(entry, safe_parent);
+	    pwordListView->itemAdded(entry);
 	  }
 	}
 	else if(tag_name == "group") {
 	  SafeGroup *group = new SafeGroup(safe_parent);
 	  if(XmlSerializer::safeGroupFromXml(elem, group))
-	    pwordListView->itemAdded(group, safe_parent);
+	    pwordListView->itemAdded(group);
 	}
       }
     }

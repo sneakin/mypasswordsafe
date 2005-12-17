@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.14 2005/11/23 13:21:29 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.hpp,v 1.15 2005/12/17 10:03:46 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -109,7 +109,7 @@ public:
   //void doubleClicked(QListViewItem *);
 
   void itemChanged(SafeItem *);
-  void itemAdded(SafeItem *, SafeGroup *, bool make_current = false);
+  void itemAdded(SafeItem *, bool make_current = false);
   void itemDeleted(SafeItem *);
 
   void dropped(QDropEvent *, SafeListViewItem *);

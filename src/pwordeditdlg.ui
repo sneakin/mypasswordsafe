@@ -369,11 +369,13 @@
     <include location="global" impldecl="in declaration">time.h</include>
     <include location="local" impldecl="in implementation">pwordeditdlg.ui.h</include>
 </includes>
+<forwards>
+  <forward>class SafeEntry</forward>
+</forwards>
 <variables>
-    <variable access="private">int m_pword_length;</variable>
-    <variable access="private">QString m_orig_pword;</variable>
-    <variable access="private">QString m_orig_user;</variable>
-    <variable access="private">bool m_is_new;</variable>
+    <variable access="private">SafeEntry *m_item;</variable>
+    <variable access="public">static int gen_pword_length;</variable>
+    <variable access="public">static QString default_user;</variable>
 </variables>
 <slots>
     <slot>showPassword()</slot>
@@ -386,6 +388,9 @@
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
+    <function returnType="SafeEntry *">getItem() const</function>
+    <function>setItem(SafeEntry *)</function>
+    <function access="private">updateItem();</function>
     <function returnType="QString">getItemName() const</function>
     <function returnType="QString">getUser() const</function>
     <function returnType="QString">getPassword() const</function>
@@ -403,7 +408,6 @@
     <function>showDetails( bool yes )</function>
     <function returnType="bool">detailsShown() const</function>
     <function returnType="bool">isNew() const</function>
-    <function>setIsNew(bool yes)</function>
 </functions>
 <pixmapinproject/>
 <layoutdefaults spacing="6" margin="11"/>

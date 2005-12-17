@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.24 2005/11/23 13:21:29 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/safelistview.cpp,v 1.25 2005/12/17 10:03:46 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -462,10 +462,10 @@ void SafeListView::itemChanged(SafeItem *item)
   list_item->setup();
 }
 
-void SafeListView::itemAdded(SafeItem *item, SafeGroup *group, bool make_current)
+void SafeListView::itemAdded(SafeItem *item, bool make_current)
 {
   DBGOUT("Item added:");
-  SafeListViewGroup *parent = (SafeListViewGroup *)findItem(group);
+  SafeListViewGroup *parent = (SafeListViewGroup *)findItem(item->parent());
   if(parent) {
     parent->setOpen(true);
   }

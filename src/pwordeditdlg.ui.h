@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.11 2005/12/17 07:42:10 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.12 2005/12/17 10:03:46 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -22,19 +22,62 @@
 #include <qdatetime.h>
 #include <qmessagebox.h>
 #include "mypasswordsafe.h"
+#include "safe.hpp"
 #include "pwsafe/Util.h"
+
+int PwordEditDlg::gen_pword_length = 8;
+QString PwordEditDlg::default_user;
 
 void PwordEditDlg::init()
 {
-	setIsNew(true);
+	setItem(NULL);
+}
+
+SafeEntry *PwordEditDlg::getItem() const
+{
+	return m_item;
+}
+
+void PwordEditDlg::setItem(SafeEntry *item)
+{
+	m_item = item;
+	updateItem();
+}
+
+void PwordEditDlg::updateItem()
+{
+	if(m_item == NULL) {
+		setNotes(QString::null);
+		setUser(default_user);
+
+		// automatically generate the password
+		genPassword(false);
+
+		showDetails(false);
+	}
+	else {
+		setItemName(m_item->name());
+		setUser(m_item->user());
+		// NOTE: password decrypted
+		setPassword(QString::fromUtf8(m_item->password().get().get()));
+		setNotes(m_item->notes());
+		setAccessedOn(m_item->accessTime());
+		setCreatedOn(m_item->creationTime());
+		setModifiedOn(m_item->modifiedTime());
+		setLifetime(m_item->lifetime());
+		setUUID(m_item->uuid().toString());
+
+		showDetails(true);
+	}
 }
 
 void PwordEditDlg::accept()
 {
 	// if the username or password have changed,
 	if(!isNew()
-	   && ((m_orig_pword != passwordEdit->text() && m_orig_pword.length() > 0)
-	       || (m_orig_user != userEdit->text() && m_orig_user.length() > 0))) {
+	   && ((m_item->password() != EncryptedString(passwordEdit->text().utf8())
+		&& m_item->password().length() > 0)
+	       || (m_item->user() != userEdit->text() && m_item->user().length() > 0))) {
 		// prompt the user to see if they are sure they
 		// want to edit the entry
 		switch(QMessageBox::warning(this, tr("Entry Changed"),
@@ -47,6 +90,29 @@ void PwordEditDlg::accept()
 		case QMessageBox::Cancel:
 			return;
 		}
+	}
+
+	// create a new item if we don't have one
+	if(isNew()) {
+		MyPasswordSafe *myps = dynamic_cast<MyPasswordSafe *>(parent());
+		SafeGroup *group = myps->getSelectedParent();
+		m_item = new SafeEntry(group,
+				       getItemName(),
+				       getUser(),
+				       EncryptedString(getPassword().utf8()),
+				       getNotes());
+		assert(m_item != NULL);
+		m_item->safe()->setChanged(true);
+	}
+	else {
+		// otherwise update the item if it's set
+		m_item->setName(getItemName());
+		m_item->setUser(getUser());
+		m_item->setPassword(EncryptedString((const char *)getPassword().utf8()));
+		m_item->setNotes(getNotes());
+		m_item->updateModTime();
+
+		m_item->safe()->setChanged(true);
 	}
 
 	QDialog::accept();
@@ -85,7 +151,7 @@ void PwordEditDlg::genPassword()
 
 void PwordEditDlg::genPassword(bool fetch)
 {
-	string s(GetAlphaNumPassword(m_pword_length));
+	string s(GetAlphaNumPassword(gen_pword_length));
 	passwordEdit->setText(s.c_str());
 	
 	// FIXME: make these optional
@@ -140,14 +206,12 @@ void PwordEditDlg::setItemName( const QString &text )
 
 void PwordEditDlg::setUser( const QString &text )
 {
-	m_orig_user = text;
 	userEdit->setText(text);
 }
 
 
 void PwordEditDlg::setPassword( const QString &text )
 {
-	m_orig_pword = text;
 	passwordEdit->setText(text);
 }
 
@@ -160,7 +224,7 @@ void PwordEditDlg::setNotes( const QString &text )
 
 void PwordEditDlg::setGenPwordLength( int value )
 {
-	m_pword_length = value;
+	gen_pword_length = value;
 }
 
 void PwordEditDlg::setCreatedOn(const QDateTime &time)
@@ -200,12 +264,7 @@ bool PwordEditDlg::detailsShown() const
 	return tabWidget->isTabEnabled(tab);
 }
 
-void PwordEditDlg::setIsNew(bool yes)
-{
-	m_is_new = yes;
-}
-
 bool PwordEditDlg::isNew() const
 {
-	return m_is_new;
+	return (m_item == NULL);
 }
