@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.10 2005/11/23 16:14:25 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.11 2005/12/17 07:42:10 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -54,19 +54,22 @@ void PwordEditDlg::accept()
 
 void PwordEditDlg::showPassword()
 {
+	DBGOUT("showPassword");
 	showButton->setText(tr("Hide"));
 	passwordEdit->setEchoMode(QLineEdit::Normal);
 }
 
 void PwordEditDlg::hidePassword()
 {
+	DBGOUT("hidePassword");
 	showButton->setText(tr("Show"));
 	passwordEdit->setEchoMode(QLineEdit::Password);
 }
 
 void PwordEditDlg::togglePassword()
 {
-	if(passwordEdit->echoMode() == QLineEdit::Normal) {
+	DBGOUT("togglePassword " << passwordEdit->echoMode());
+	if(passwordEdit->echoMode() == QLineEdit::Password) {
 		showPassword();
 	}
 	else {

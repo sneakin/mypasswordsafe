@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.27 2005/11/23 13:21:29 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.28 2005/12/17 07:42:10 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -808,9 +808,14 @@ int BlowfishLizer2::writeString(FILE *out, CryptoInterface *fish,
   // Note: this did check to see if the string was empty, and saved
   // nothing if it was. Password Safe had a bug which made this bad,
   // especially with groups.
-  QCString utf(str.utf8());
-  return writeCBC(out, fish, (const char *)utf,
-		  utf.length(), type, ipthing);
+  // FIXME: this should use EncryptedString
+  //if(!str.isEmpty()) {
+    QCString utf(str.utf8());
+    return writeCBC(out, fish, (const char *)utf,
+		    utf.length(), type, ipthing);
+    //}
+
+    //return 0;
 }
 
 int BlowfishLizer2::writeTime(FILE *out, CryptoInterface *fish, time_t time,
