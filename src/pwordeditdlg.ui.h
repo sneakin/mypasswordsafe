@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.13 2005/12/17 11:33:21 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.14 2005/12/17 11:47:13 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -38,17 +38,16 @@ SafeEntry *PwordEditDlg::getItem() const
 	return m_item;
 }
 
-void PwordEditDlg::setItem(SafeEntry *item)
+void PwordEditDlg::setItem(SafeEntry *item, SafeGroup *future_group)
 {
 	m_item = item;
-	updateItem();
+	updateItem(future_group);
 }
 
-void PwordEditDlg::updateItem()
+void PwordEditDlg::updateItem(SafeGroup *future_group)
 {
 	if(m_item == NULL) {
-		MyPasswordSafe *myps = dynamic_cast<MyPasswordSafe *>(parent());
-		m_future_group = myps->getSelectedParent();
+		m_future_group = future_group;
 
 		setNotes(QString::null);
 		setUser(default_user);
@@ -75,6 +74,7 @@ void PwordEditDlg::updateItem()
 		m_item->updateAccessTime();
 
 		showDetails(true);
+		hidePassword();
 	}
 }
 

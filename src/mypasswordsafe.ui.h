@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.39 2005/12/17 11:33:21 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.40 2005/12/17 11:47:13 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -341,6 +341,7 @@ bool MyPasswordSafe::createEditDialog(SafeEntry *entry)
 	iter = m_children.next()) {
       if(iter->getItem() == entry) {
 	iter->raise();
+	iter->setActiveWindow();
 	return false;
       }
     }
@@ -348,7 +349,7 @@ bool MyPasswordSafe::createEditDialog(SafeEntry *entry)
 
   // create the dialog
   PwordEditDlg *dlg = new PwordEditDlg(this);
-  dlg->setItem(entry);
+  dlg->setItem(entry, getSelectedParent());
 
   // connect the dialog to the close slot
   connect(dlg, SIGNAL(accepted()), this, SLOT(editDialogAccepted()));

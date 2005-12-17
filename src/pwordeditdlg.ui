@@ -396,8 +396,8 @@
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function returnType="SafeEntry *">getItem() const</function>
-    <function>setItem(SafeEntry *)</function>
-    <function access="private">updateItem();</function>
+    <function>setItem(SafeEntry *, SafeGroup *future_group = NULL)</function>
+    <function access="private">updateItem(SafeGroup *future_group = NULL);</function>
     <function returnType="QString">getItemName() const</function>
     <function returnType="QString">getUser() const</function>
     <function returnType="QString">getPassword() const</function>
