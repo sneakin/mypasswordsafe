@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.28 2005/12/17 07:42:10 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.29 2006/03/27 00:06:33 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -401,7 +401,10 @@ Safe::Error BlowfishLizer::saveGroup(FILE *out, SafeGroup *group, CryptoInterfac
       }
     }
     else if(item->rtti() == SafeGroup::RTTI) {
-      return saveGroup(out, (SafeGroup *)item, fish, ipthing, def_user);
+      Safe::Error ret = saveGroup(out, (SafeGroup *)item, fish, ipthing, def_user);
+      if(ret != Safe::Success) {
+	return ret;
+      }
     }
     
     ++iter;
