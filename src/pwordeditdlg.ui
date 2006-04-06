@@ -378,6 +378,9 @@
   <variable access="private">SafeGroup *m_future_group;</variable>
   <variable access="public">static int gen_pword_length;</variable>
   <variable access="public">static QString default_user;</variable>
+  <variable access="private">static bool generate_and_show;</variable>
+  <variable access="private">static bool generate_and_fetch;</variable>
+  <variable access="private">static bool generate_on_new;</variable>
 </variables>
 <signals>
   <signal>accepted()</signal>
@@ -392,6 +395,9 @@
     <slot>fetchPassword()</slot>
     <slot>accept()</slot>
     <slot>reject()</slot>
+    <slot specifier="static">setGenerateAndShow(bool)</slot>
+    <slot specifier="static">setGenerateAndFetch(bool)</slot>
+    <slot specifier="static">setGenerateOnNew(bool)</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
@@ -415,6 +421,9 @@
     <function>showDetails( bool yes )</function>
     <function returnType="bool">detailsShown() const</function>
     <function returnType="bool">isNew() const</function>
+    <function returnType="bool" specifier="static">generateAndShow()</function>
+    <function returnType="bool" specifier="static">generateAndFetch()</function>
+    <function returnType="bool" specifier="static">generateOnNew()</function>
 </functions>
 <pixmapinproject/>
 <layoutdefaults spacing="6" margin="11"/>

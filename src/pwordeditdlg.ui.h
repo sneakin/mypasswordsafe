@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.14 2005/12/17 11:47:13 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.15 2006/04/06 07:14:25 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -27,6 +27,10 @@
 
 int PwordEditDlg::gen_pword_length = 8;
 QString PwordEditDlg::default_user;
+bool PwordEditDlg::generate_and_show = true;
+bool PwordEditDlg::generate_and_fetch = true;
+bool PwordEditDlg::generate_on_new = true;
+
 
 void PwordEditDlg::init()
 {
@@ -46,17 +50,21 @@ void PwordEditDlg::setItem(SafeEntry *item, SafeGroup *future_group)
 
 void PwordEditDlg::updateItem(SafeGroup *future_group)
 {
+	// Branch new item
 	if(m_item == NULL) {
 		m_future_group = future_group;
 
 		setNotes(QString::null);
 		setUser(default_user);
 
-		// automatically generate the password
-		genPassword(false);
+		// automatically generate the password?
+		if(generateOnNew()) {
+			genPassword(false);
+		}
 
 		showDetails(false);
 	}
+	// Existing item
 	else {
 		m_future_group = NULL;
 
@@ -160,7 +168,8 @@ void PwordEditDlg::togglePassword()
 
 void PwordEditDlg::genPassword()
 {
-	genPassword(true);
+	// this method is seperate from the one below since it's a slot
+	genPassword(generateAndFetch());
 }
 
 void PwordEditDlg::genPassword(bool fetch)
@@ -168,8 +177,9 @@ void PwordEditDlg::genPassword(bool fetch)
 	string s(GetAlphaNumPassword(gen_pword_length));
 	passwordEdit->setText(s.c_str());
 	
-	// FIXME: make these optional
-	showPassword();
+	if(generateAndShow()) {
+		showPassword();
+	}
 
 	if(fetch) {
 		fetchPassword();
@@ -281,4 +291,34 @@ bool PwordEditDlg::detailsShown() const
 bool PwordEditDlg::isNew() const
 {
 	return (m_future_group != NULL);
+}
+
+bool PwordEditDlg::generateAndFetch()
+{
+	return generate_and_fetch;
+}
+
+void PwordEditDlg::setGenerateAndFetch(bool yes) 
+{
+	generate_and_fetch = yes;
+}
+
+bool PwordEditDlg::generateAndShow()
+{
+	return generate_and_show;
+}
+
+void PwordEditDlg::setGenerateAndShow(bool yes) 
+{
+	generate_and_show = yes;
+}
+
+bool PwordEditDlg::generateOnNew()
+{
+	return generate_on_new;
+}
+
+void PwordEditDlg::setGenerateOnNew(bool yes) 
+{
+	generate_on_new = yes;
 }

@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.40 2005/12/17 11:47:13 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.41 2006/04/06 07:14:25 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -56,6 +56,10 @@ void MyPasswordSafe::init()
 
   m_clear_timer = new QTimer(this, "clear_timer");
   connect(m_clear_timer, SIGNAL(timeout()), this, SLOT(editClearClipboard()));
+
+  settingsGenerateAndShow->setOn(PwordEditDlg::generateAndShow());
+  settingsGenerateAndFetch->setOn(PwordEditDlg::generateAndFetch());
+  settingsGenerateOnNew->setOn(PwordEditDlg::generateOnNew());
 }
 
 void MyPasswordSafe::destroy()
@@ -792,6 +796,21 @@ void MyPasswordSafe::setLockOnMinimize(bool yes)
   lockOnMinimizeAction->setOn(yes);
 }
 
+void MyPasswordSafe::setGenerateAndShow(bool yes) 
+{
+  PwordEditDlg::setGenerateAndShow(yes);
+}
+
+void MyPasswordSafe::setGenerateAndFetch(bool yes) 
+{
+  PwordEditDlg::setGenerateAndFetch(yes);
+}
+
+void MyPasswordSafe::setGenerateOnNew(bool yes) 
+{
+  PwordEditDlg::setGenerateOnNew(yes);
+}
+
 #ifdef Q_WS_X11
 #include <X11/X.h>
 #include <X11/Xlib.h>
@@ -877,6 +896,9 @@ void MyPasswordSafe::readConfig()
   PwordEditDlg::default_user = m_config.readEntry("/prefs/default_username", "");
   setClearClipboardOnExit(m_config.readBoolEntry("/prefs/clear_clipboard", true));
   setLockOnMinimize(m_config.readBoolEntry("/prefs/lock_on_minimize", true));
+  PwordEditDlg::setGenerateAndShow(m_config.readBoolEntry("/prefs/generate/show", true));
+  PwordEditDlg::setGenerateAndFetch(m_config.readBoolEntry("/prefs/generate/fetch", true));
+  PwordEditDlg::setGenerateOnNew(m_config.readBoolEntry("/prefs/generate/on_new", true));
   
   m_max_tries = m_config.readNumEntry("/prefs/max_tries", 3);
   if(m_max_tries > 10)
@@ -924,6 +946,9 @@ void MyPasswordSafe::writeConfig()
   m_config.writeEntry("/prefs/password_length", (int)PwordEditDlg::gen_pword_length);
   m_config.writeEntry("/prefs/default_safe", m_default_safe);
   m_config.writeEntry("/prefs/default_username", PwordEditDlg::default_user);
+  m_config.writeEntry("/prefs/generate/show", PwordEditDlg::generateAndShow());
+  m_config.writeEntry("/prefs/generate/fetch", PwordEditDlg::generateAndFetch());
+  m_config.writeEntry("/prefs/generate/on_new", PwordEditDlg::generateOnNew());
   m_config.writeEntry("/prefs/clear_clipboard", clearClipboardOnExit());
   m_config.writeEntry("/prefs/lock_on_minimize", lockOnMinimize());
   m_config.writeEntry("/prefs/max_tries", m_max_tries);
