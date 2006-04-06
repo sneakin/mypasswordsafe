@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.16 2006/04/06 08:18:25 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.17 2006/04/06 11:04:41 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -18,12 +18,11 @@
  */
 
 #include <qapplication.h>
-#include <qclipboard.h>
 #include <qdatetime.h>
 #include <qmessagebox.h>
-#include "mypasswordsafe.h"
 #include "safe.hpp"
 #include "pwsafe/Util.h"
+#include "clipboard.hpp"
 
 int PwordEditDlg::gen_pword_length = 8;
 QString PwordEditDlg::default_user;
@@ -59,7 +58,7 @@ void PwordEditDlg::updateItem(SafeGroup *future_group)
 
 		// automatically generate the password?
 		if(generateOnNew()) {
-			genPassword(false);
+			genPassword();
 		}
 
 		showDetails(false);
@@ -202,13 +201,7 @@ void PwordEditDlg::genPassword(bool fetch)
 
 void PwordEditDlg::fetchPassword()
 {
-	// FIXME: move the clipboard stuff into a singleton. Then copying,
-	// clearing, the timer, and even the preference variable can be
-	// in one place.
-	MyPasswordSafe *myps = dynamic_cast<MyPasswordSafe *>(parent());
-	myps->startClearTimer();
-
-	copyToClipboard(passwordEdit->text());
+	Clipboard::instance()->copy(passwordEdit->text(), true);
 }
 
 

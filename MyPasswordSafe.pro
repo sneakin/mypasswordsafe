@@ -38,7 +38,8 @@ HEADERS	+= src/safe.hpp \
 	src/crypto/sha1.h \
 	src/crypto/blowfish.h \
         src/crypto/cryptointerface.hpp \
-        src/crypto/bfproxy.hpp
+        src/crypto/bfproxy.hpp \
+        src/clipboard.hpp
 
 SOURCES	+= src/main.cpp \
 	src/securedstring.cpp \
@@ -59,7 +60,8 @@ SOURCES	+= src/main.cpp \
 	src/safedragobject.cpp \
 	src/crypto/sha1.cpp \
 	src/crypto/blowfish.cpp \
-        src/crypto/bfproxy.cpp
+        src/crypto/bfproxy.cpp \
+        src/clipboard.cpp
 
 FORMS	= src/mypasswordsafe.ui \
 	src/pwordeditdlg.ui \

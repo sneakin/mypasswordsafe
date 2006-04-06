@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.42 2006/04/06 08:05:13 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.43 2006/04/06 11:04:41 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -38,11 +38,16 @@
 #include "myutil.hpp"
 #include "safedragobject.hpp"
 #include "xmlserializer.hpp"
+#include "clipboard.hpp"
 
 using namespace std;
 
 void MyPasswordSafe::init()
 {
+  m_clipboard = Clipboard::instance();
+  connect(editClearClipboardAction, SIGNAL(activated()), m_clipboard, SLOT(clear()));
+  connect(m_clipboard, SIGNAL(cleared()), this, SLOT(clipboardCleared()));
+
   m_do_lock = false;
   savingEnabled(false);
 
@@ -53,9 +58,6 @@ void MyPasswordSafe::init()
   m_idle = new Idle;
   m_idle->start();
   connect(m_idle, SIGNAL(secondsIdle(int)), this, SLOT(slotSecondsIdle(int)));
-
-  m_clear_timer = new QTimer(this, "clear_timer");
-  connect(m_clear_timer, SIGNAL(timeout()), this, SLOT(editClearClipboard()));
 
   settingsGenerateAndShow->setOn(PwordEditDlg::generateAndShow());
   settingsGenerateAndFetch->setOn(PwordEditDlg::generateAndFetch());
@@ -68,7 +70,7 @@ void MyPasswordSafe::destroy()
 
   // ask to save file if needed
   if(clearClipboardOnExit())
-    copyToClipboard("");
+    m_clipboard->copy("");
 
   writeConfig();
 
@@ -143,6 +145,15 @@ void MyPasswordSafe::fileMakeDefault()
   fileOpenDefaultAction->setEnabled(true);
 }
 
+unsigned int MyPasswordSafe::clearTimeOut()
+{
+  return Clipboard::timeOut() / 1000;
+}
+
+void MyPasswordSafe::setClearTimeOut(unsigned int timeout)
+{
+  Clipboard::setTimeOut(timeout * 1000);
+}
 
 void MyPasswordSafe::filePreferences()
 {
@@ -152,14 +163,15 @@ void MyPasswordSafe::filePreferences()
   dlg.setGenPwordLength(PwordEditDlg::gen_pword_length);
   dlg.setMaxTries(m_max_tries);
   dlg.setIdleTime(m_idle_timeout);
-  dlg.setClearTime(m_clear_timeout);
+  dlg.setClearTime(clearTimeOut());
+
   if(dlg.exec() == QDialog::Accepted) {
     PwordEditDlg::default_user = dlg.getDefUser();
     setDefaultSafe(dlg.getDefaultSafe());
     PwordEditDlg::gen_pword_length = dlg.getGenPwordLength();
     m_max_tries = dlg.getMaxTries();
     m_idle_timeout = dlg.getIdleTime();
-    m_clear_timeout = dlg.getClearTime();
+    setClearTimeOut(dlg.getClearTime());
 
     if(m_default_safe.isEmpty() == false)
       fileOpenDefaultAction->setEnabled(true);
@@ -468,26 +480,18 @@ void MyPasswordSafe::pwordEdit()
   }
 }
 
-void MyPasswordSafe::startClearTimer()
-{
-  if(m_clear_timeout > 0) {
-    m_clear_timer->start(m_clear_timeout * 1000, true);
-  }
-}
-
 void MyPasswordSafe::pwordFetch()
 {
   SafeItem *item = pwordListView->getSelectedItem();
   if(item && item->rtti() == SafeEntry::RTTI) {
     SafeEntry *entry = (SafeEntry *)item;
+    entry->updateAccessTime();
+
     // NOTE: password decrypted
     SecuredString pword(entry->password().get());
-	copyToClipboard(QString::fromUtf8(pword.get()));
+    m_clipboard->copy(QString::fromUtf8(pword.get()), true);
+
     statusBar()->message(tr("Password copied to clipboard"));
-
-    startClearTimer();
-
-    entry->updateAccessTime();
   }
   else {
     statusBar()->message(tr("No item selected"));
@@ -500,12 +504,10 @@ void MyPasswordSafe::pwordFetchUser()
   SafeItem *item = pwordListView->getSelectedItem();
   if(item && item->rtti() == SafeEntry::RTTI) {
     SafeEntry *entry = (SafeEntry *)item;
-    copyToClipboard(entry->user());
-    statusBar()->message(tr("Username copied to clipboard"));
-
-    startClearTimer();
-
     entry->updateAccessTime();
+
+    m_clipboard->copy(entry->user(), true);
+    statusBar()->message(tr("Username copied to clipboard"));
   }
   else {
     statusBar()->message(tr("No item selected"));
@@ -710,7 +712,7 @@ void MyPasswordSafe::lock()
   //closeChild(); // NOTE: hiding would cause a crash on show
   // FIXME: hiding the edit dialog should work with non-modal dialogs
 
-  editClearClipboard();
+  m_clipboard->clear();
 
   do {
     dlg.exec(); // will only accept
@@ -905,7 +907,7 @@ void MyPasswordSafe::readConfig()
     m_max_tries = 10;
   
   m_idle_timeout = m_config.readNumEntry("/prefs/idle_timeout", 2); // 2 minute default
-  m_clear_timeout = m_config.readNumEntry("/prefs/clear_timeout", 60); // 1 minute default
+  setClearTimeOut(m_config.readNumEntry("/prefs/clear_timeout", 60)); // 1 minute default
 
   int w, h;
   w = m_config.readNumEntry("/MainWindow/width", 400);
@@ -953,7 +955,7 @@ void MyPasswordSafe::writeConfig()
   m_config.writeEntry("/prefs/lock_on_minimize", lockOnMinimize());
   m_config.writeEntry("/prefs/max_tries", m_max_tries);
   m_config.writeEntry("/prefs/idle_timeout", m_idle_timeout);
-  m_config.writeEntry("/prefs/clear_timeout", m_clear_timeout);
+  m_config.writeEntry("/prefs/clear_timeout", (int)clearTimeOut());
 
   QSize sz = size();
   m_config.writeEntry("/MainWindow/width", sz.width());
@@ -1021,11 +1023,8 @@ bool MyPasswordSafe::firstTime() const
 }
 
 
-void MyPasswordSafe::editClearClipboard()
+void MyPasswordSafe::clipboardCleared()
 {
-  copyToClipboard("");
-  m_clear_timer->stop();
-
   statusBar()->message(tr("Clipboard cleared"));
 }
 
