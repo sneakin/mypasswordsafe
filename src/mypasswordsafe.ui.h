@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.41 2006/04/06 07:14:25 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.42 2006/04/06 08:05:13 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -1010,6 +1010,8 @@ void MyPasswordSafe::dragObjectDropped(QMimeSource *drag, SafeListViewItem *targ
 	}
       }
     }
+
+    m_safe->setChanged(true);
   }
 }
 
