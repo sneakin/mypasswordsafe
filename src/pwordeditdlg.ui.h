@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.15 2006/04/06 07:14:25 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/pwordeditdlg.ui.h,v 1.16 2006/04/06 08:18:25 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -91,21 +91,34 @@ void PwordEditDlg::accept()
 	DBGOUT("PwordEditDlg::accept");
 
 	// if the username or password have changed,
-	if(!isNew()
-	   && ((m_item->password() != EncryptedString(passwordEdit->text().utf8())
-		&& m_item->password().length() > 0)
-	       || (m_item->user() != userEdit->text() && m_item->user().length() > 0))) {
+	if(!isNew()) {
 		// prompt the user to see if they are sure they
 		// want to edit the entry
-		switch(QMessageBox::warning(this, tr("Entry Changed"),
-					    tr("Are you sure that you want to edit this password?"),
-					    QMessageBox::Yes,
-					    QMessageBox::No,
-					    QMessageBox::Cancel)) {
-		case QMessageBox::No:
-			reject();
-		case QMessageBox::Cancel:
-			return;
+		bool pword_changed = (m_item->password() != EncryptedString(passwordEdit->text().utf8())
+				      && m_item->password().length() > 0);
+		bool user_changed = (m_item->user() != userEdit->text() && m_item->user().length() > 0);
+		QString msg;
+		if(pword_changed && user_changed) {
+			msg = tr("Are you sure you want to <b>change</b> this entry's <b>user name and password</b>?");
+		}
+		else if(pword_changed) {
+			msg = tr("Are you sure you want to <b>change</b> this entry's <b>password</b>?");
+		}
+		else if(user_changed) {
+			msg = tr("Are you sure you want to <b>change</b> this entry's <b>user name</b>?");
+		}
+
+		if(!msg.isEmpty()) {
+			switch(QMessageBox::warning(this, tr("Entry Changed"),
+						    msg,
+						    QMessageBox::Yes,
+						    QMessageBox::No,
+						    QMessageBox::Cancel)) {
+			case QMessageBox::No:
+				reject();
+			case QMessageBox::Cancel:
+				return;
+			}
 		}
 	}
 
