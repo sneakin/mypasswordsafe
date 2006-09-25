@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.43 2006/04/06 11:04:41 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/mypasswordsafe.ui.h,v 1.44 2006/09/25 07:04:31 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -22,6 +22,7 @@
 #include <string>
 #include <qapplication.h>
 #include <qfiledialog.h>
+// #include <kfiledialog.h>
 #include <qstatusbar.h>
 #include <qclipboard.h>
 #include <qmessagebox.h>
@@ -41,6 +42,8 @@
 #include "clipboard.hpp"
 
 using namespace std;
+
+typedef QFileDialog MyFileDialog;
 
 void MyPasswordSafe::init()
 {
@@ -596,20 +599,20 @@ bool MyPasswordSafe::browseForSafe( QString &filename, QString &filter, bool sav
 
   do {
     if(saving) {
-      f = QFileDialog::getSaveFileName(QString::null,
+      f = MyFileDialog::getSaveFileName(QString::null,
 				       types,
 				       this,
-				       "save file dialog",
-				       tr("Enter a file to save to"),
-				       &filter);
+				       // "save file dialog",
+				       tr("Enter a file to save to")); //,
+				       // &filter);
     }
     else {
-      f = QFileDialog::getOpenFileName(QString::null,
+      f = MyFileDialog::getOpenFileName(QString::null,
 				       types,
 				       this,
-				       "open file dialog",
-				       tr("Choose a file to open"),
-				       &filter);
+				       // "open file dialog",
+				       tr("Choose a file to open")); // ,
+				       // &filter);
     }
   
     if(!f.isEmpty()) {
