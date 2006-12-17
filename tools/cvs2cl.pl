@@ -9,8 +9,8 @@ exec perl -w -x $0 ${1+"$@"} # -*- mode: perl; perl-indent-level: 2; -*-
 ###                                                        ###
 ##############################################################
 
-## $Revision: 1.1 $
-## $Date: 2004/06/22 00:03:32 $
+## $Revision: 1.2 $
+## $Date: 2006/12/17 03:03:16 $
 ## $Author: nolan $
 ##
 
@@ -19,6 +19,7 @@ use strict;
 use File::Basename qw( fileparse );
 use Getopt::Long   qw( GetOptions );
 use Text::Wrap     qw( );
+use Time::Local    qw( timegm );
 use User::pwent    qw( getpwnam );
 
 # The Plan:
@@ -142,7 +143,7 @@ use User::pwent    qw( getpwnam );
 # Globals --------------------------------------------------------------------
 
 # In case we have to print it out:
-my $VERSION = '$Revision: 1.1 $';
+my $VERSION = '$Revision: 1.2 $';
 $VERSION =~ s/\S+\s+(\S+)\s+\S+/$1/;
 
 ## Vars set by options:
@@ -956,7 +957,20 @@ sub pretty_file_list {
 # -------------------------------------
 
 sub output_tagdate {
-  # NOT YET DONE
+  my $self = shift;
+  my ($fh, $time, $tag) = @_;
+
+  my ($y, $m, $d, $H, $M, $S) = (gmtime($time))[5,4,3,2,1,0];
+
+  # Ideally, this would honor $UTC_Times and use +HH:MM syntax
+  my $isoDate = sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ",
+                       $y + 1900, $m + 1, $d, $H, $M, $S);
+
+  print $fh "<tagdate>\n";
+  print $fh "<tagisodate>$isoDate</tagisodate>\n";
+  print $fh "<tagdatetag>$tag</tagdatetag>\n";
+  print $fh "</tagdate>\n\n";
+  return;
 }
 
 # -------------------------------------
@@ -1052,11 +1066,6 @@ sub _revision_is_wanted {
   my $follow_branches = $self->{follow_branches};
   my $follow_only     = $self->{follow_only};
 
-#print STDERR "IG: ", join(',', keys %{$self->{ignore_tags}}), "\n";
-#print STDERR "IX: ", join(',', @{$qunk->{tags}}), "\n" if defined $qunk->{tags};
-#print STDERR "IQ: ", join(',', keys %{$qunk->{branch_numbers}}), "\n" if defined $qunk->{branch_numbers};
-#use Data::Dumper; print STDERR Dumper $qunk;
-
   for my $ignore_tag (keys %{$self->{ignore_tags}}) {
     return
       if defined $qunk->{tags} and grep $_ eq $ignore_tag, @{$qunk->{tags}};
@@ -1096,12 +1105,13 @@ sub _revision_is_wanted {
            ($branch_number . ".") ) {
         if ( $followsub ) {
           return 1;
-        } elsif (length($revision) == length($branch_number)+2 ) {
+#        } elsif ( length($revision) == length($branch_number)+2 ) {
+        } elsif ( substr($revision, length($branch_number)+1) =~ /^\d+$/ ) {
           return 1;
         }
       } elsif ( length($branch_number) > length($revision)
                 and
-                $No_Ancestors ) {
+                ! $No_Ancestors ) {
         # Non-trivial case: check if rev is ancestral to branch
 
         # r_left still has the trailing "."
@@ -1214,13 +1224,13 @@ my $self = shift; my $class = ref $self;
       # XML output includes everything else, we might as well make
       # it always include Day Of Week too, for consistency.
       my $authorhash = $changelog{$time};
-      if ($Show_Tag_Dates) {
+      if ( $Show_Tag_Dates || $XML_Output ) {
         my %tags;
         while (my ($author,$mesghash) = each %$authorhash) {
           while (my ($msg,$qunk) = each %$mesghash) {
-            foreach my $qunkref2 (@$qunk) {
+            for my $qunkref2 (@$qunk) {
               if (defined ($qunkref2->tags)) {
-                foreach my $tag (@{$qunkref2->tags}) {
+                for my $tag (@{$qunkref2->tags}) {
                   $tags{$tag} = 1;
                 }
               }
@@ -1309,9 +1319,9 @@ my $self = shift; my $class = ref $self;
         while (<OLD_LOG>) {
           if ( ! $passed_first_entry ) {
             if ( ( ! $started_first_entry )
-                and /^(\d\d\d\d-\d\d-\d\d\s+\d\d:\d\d)/ ) {
+                and /^(\d\d\d\d-\d\d-\d\d\s+(\w+\s+)?\d\d:\d\d)/ ) {
               $started_first_entry = 1;
-            } elsif ( /^(\d\d\d\d-\d\d-\d\d\s+\d\d:\d\d)/ ) {
+            } elsif ( /^(\d\d\d\d-\d\d-\d\d\s+(\w+\s+)?\d\d:\d\d)/ ) {
               $passed_first_entry = 1;
               print NEW_LOG $_;
             }
@@ -1755,6 +1765,8 @@ sub files { wantarray ? @{$_[0]->{files}} : $_[0]->{files} }
 
 package CVS::Utils::ChangeLog::FileEntry;
 
+use File::Basename qw( fileparse );
+
 # Each revision of a file has a little data structure (a `qunk')
 # associated with it.  That data structure holds not only the
 # file's name, but any additional information about the file
@@ -1923,23 +1935,40 @@ sub grand_poobah { $_[0]->{grand_poobah} }
 sub read_changelog {
   my ($self, $command) = @_;
 
-#  my $grand_poobah = CVS::Utils::ChangeLog::EntrySet->new;
-
+  local (*READER, *WRITER);
+  my $pid;
   if (! $Input_From_Stdin) {
-    my $Log_Source_Command = join(' ', @$command);
-    &main::debug ("(run \"${Log_Source_Command}\")\n");
-    open (LOG_SOURCE, "$Log_Source_Command |")
-        or die "unable to run \"${Log_Source_Command}\"";
+    pipe(READER, WRITER)
+      or die "Couldn't form pipe: $!\n";
+    $pid = fork;
+    die "Couldn't fork: $!\n"
+      if ! defined $pid;
+    if ( ! $pid ) { # child
+      open STDOUT, '>&=' . fileno WRITER
+        or die "Couldn't dup stderr to ", fileno WRITER, "\n";
+      # strangely, some perls give spurious warnings about STDIN being opened
+      # for output only these close calls precede the STDOUT reopen above.
+      # I think they must be reusing fd 1.
+      close READER;
+      close STDIN;
+
+      exec @$command;
+    }
+
+    close WRITER;
+
+    &main::debug ("(run \"@$command\")\n");
   }
   else {
-    open (LOG_SOURCE, "-") or die "unable to open stdin for reading";
+    open READER, '-' or die "unable to open stdin for reading";
   }
 
-  binmode LOG_SOURCE;
+  binmode READER;
 
  XX_Log_Source:
-  while (<LOG_SOURCE>) {
+  while (<READER>) {
     chomp;
+    s!\r$!!;
 
     # If on a new file and don't see filename, skip until we find it, and
     # when we find it, grab it.
@@ -1965,17 +1994,19 @@ sub read_changelog {
       # log message texts:
       $self->{rev_msg} .= $_ . "\n";   # Normally, just accumulate the message...
     } else {
+      my $noadd = 0;
       if ( ! $self->{rev_msg}
            or $self->{rev_msg} =~ /^\s*(\.\s*)?$/
            or index($self->{rev_msg}, EMPTY_LOG_MESSAGE) > -1 ) {
         # ... until a msg separator is encountered:
         # Ensure the message contains something:
-        $self->clear_msg
+        $self->clear_msg, $noadd = 1
           if $Prune_Empty_Msgs;
         $self->{rev_msg} = "[no log message]\n";
       }
 
-      $self->add_file_entry;
+      $self->add_file_entry
+        unless $noadd;
 
       if ( $_ eq FILE_SEPARATOR ) {
         $self->clear_file;
@@ -1985,9 +2016,15 @@ sub read_changelog {
     }
   }
 
-  close LOG_SOURCE
-    or die sprintf("Problem reading log input (exit/signal/core: %d/%d/%d)\n",
-                   $? >> 8, $? & 127, $? & 128);
+  close READER
+    or die "Couldn't close pipe reader: $!\n";
+  if ( defined $pid ) {
+    my $rv;
+    waitpid $pid, 0;
+    0 == $?
+      or $!=1, die sprintf("Problem reading log input (pid/exit/signal/core: %d/%d/%d/%d)\n",
+                           $pid, $? >> 8, $? & 127, $? & 128);
+  }
   return;
 }
 
@@ -2124,9 +2161,8 @@ sub read_file_path {
     ($base, undef, undef) = fileparse($path);
 
     my $xpath = $Case_Insensitive ? lc($path) : $path;
-    if ( grep index($path, $_) > -1, @Ignore_Files ) {
-      return;
-    }
+    return
+      if grep $path =~ /$_/, @Ignore_Files;
   }
 
   $self->{filename} = $path;
@@ -2209,10 +2245,11 @@ sub read_date_author_and_state {
       if defined $Domain && $Domain ne '';
 
     my $pw = getpwnam($author);
-    my ($fullname, $office, $workphone, $homephone);
+    my ($fullname, $office, $workphone, $homephone, $gcos);
     if ( defined $pw ) {
+      $gcos = (getpwnam($author))[6];
       ($fullname, $office, $workphone, $homephone) =
-        split /\s*,\s*/, $pw->gecos;
+        split /\s*,\s*/, $gcos;
     } else {
       warn "Couldn't find gecos info for author '$author'\n"
         unless $gecos_warned{$author}++;
@@ -2283,16 +2320,25 @@ sub parse_date_author_and_state {
   # Parses the date/time and author out of a line like:
   #
   # date: 1999/02/19 23:29:05;  author: apharris;  state: Exp;
+  #
+  # or, in CVS 1.12.9:
+  #
+  # date: 2004-06-05 16:10:32 +0000; author: somebody; state: Exp;
 
-  my ($year, $mon, $mday, $hours, $min, $secs, $author, $state, $rest) =
+  my ($year, $mon, $mday, $hours, $min, $secs, $utcOffset, $author, $state, $rest) =
     $line =~
-      m!(\d+)/(\d+)/(\d+)\s+(\d+):(\d+):(\d+);\s+
+      m!(\d+)[-/](\d+)[-/](\d+)\s+(\d+):(\d+):(\d+)(\s+[+-]\d{4})?;\s+
         author:\s+([^;]+);\s+state:\s+([^;]+);(.*)!x
     or  die "Couldn't parse date ``$line''";
   die "Bad date or Y2K issues"
     unless $year > 1969 and $year < 2258;
   # Kinda arbitrary, but useful as a sanity check
   my $time = timegm($secs, $min, $hours, $mday, $mon-1, $year-1900);
+  if ( defined $utcOffset ) {
+    my ($plusminus, $hour, $minute) = ($utcOffset =~ m/([+-])(\d\d)(\d\d)/);
+    my $offset = (($hour * 60) + $minute) * 60 * ($plusminus eq '+' ? -1 : 1);
+    $time += $offset;
+  }
   if ( $rest =~ m!\s+lines:\s+(.*)! ) {
     $self->{lines} = $1;
   }
@@ -2347,7 +2393,7 @@ sub maybe_grab_accumulation_date {
   my $boundary_date;
   while (<LOG>)
   {
-    if (/^(\d\d\d\d-\d\d-\d\d\s+\d\d:\d\d)/)
+    if (/^(\d\d\d\d-\d\d-\d\d\s+(\w+\s+)?\d\d:\d\d)/)
     {
       $boundary_date = "$1";
       last;
@@ -2386,7 +2432,7 @@ sub derive_changelog {
   my $accumulation_date = maybe_grab_accumulation_date;
   if ($accumulation_date) {
     # Insert -d immediately after 'cvs log'
-    my $Log_Date_Command = "-d\'>${accumulation_date}\'";
+    my $Log_Date_Command = "-d>${accumulation_date}";
 
     my ($log_index) = grep $command->[$_] eq 'log', 0..$#$command;
     splice @$command, $log_index+1, 0, $Log_Date_Command;
@@ -2443,6 +2489,7 @@ sub common_path_prefix {
 }
 
 # -------------------------------------
+
 sub parse_options {
   # Check this internally before setting the global variable.
   my $output_file;
@@ -2592,7 +2639,7 @@ sub parse_options {
             )
     or die "options parsing failed\n";
 
-  push @log_source_command, map "'$_'", @ARGV;
+  push @log_source_command, map "$_", @ARGV;
 
   ## Check for contradictions...
 
@@ -2845,7 +2892,8 @@ times.
 =item B<-I> I<REGEXP>, B<--ignore> I<REGEXP>
 
 Ignore files whose names match I<REGEXP>.  This option may be used multiple
-times.
+times.  The regexp is a perl regular expression.  It is matched as is; you may
+want to prefix with a ^ or suffix with a $ to anchor the match.
 
 =item B<-C>, B<--case-insensitive>
 
@@ -3025,6 +3073,14 @@ systems) for more information.
 
 Note that the rules for quoting under windows shells are different.
 
+=item *
+
+To run in an automated environment such as CGI or PHP, suidperl may be needed
+in order to execute as the correct user to enable /cvsroot read lock files to
+be written for the 'cvs log' command.  This is likely just a case of changing
+the /usr/bin/perl command to /usr/bin/suidperl, and explicitly declaring the
+PATH variable.
+
 =back
 
 =head1 EXAMPLES
@@ -3086,6 +3142,8 @@ Contributions from
 
 =item Terry Kane
 
+=item Pete Kempf
+
 =item Akos Kiss
 
 =item Claus Klein
@@ -3108,7 +3166,11 @@ Contributions from
 
 =item Thomas Parmelan
 
-=item Johanne Stezenbach
+=item Jordan Russell
+
+=item Jacek Sliwerski
+
+=item Johannes Stezenbach
 
 =item Joseph Walton
 
