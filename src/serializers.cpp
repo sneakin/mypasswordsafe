@@ -1,4 +1,4 @@
-/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.29 2006/03/27 00:06:33 nolan Exp $
+/* $Header: /home/cvsroot/MyPasswordSafe/src/serializers.cpp,v 1.30 2006/12/17 02:55:44 nolan Exp $
  * Copyright (c) 2004, Semantic Gap (TM)
  * http://www.semanticgap.com/
  *
@@ -26,6 +26,7 @@
 #include <qstringlist.h>
 #include <vector>
 #include <algorithm>
+#include <qglobal.h>
 #include <qstring.h>
 #include <qcstring.h>
 #include "safe.hpp"
@@ -71,7 +72,7 @@ int BlowfishLizer::writeCBC(FILE *fp, CryptoInterface *fish,
    memset(lengthblock, 0, 8);
    putInt32( lengthblock, length);
 
-   lengthblock[sizeof(long)] = (unsigned char)type;
+   lengthblock[sizeof(int)] = (unsigned char)type;
 
    xormem(lengthblock, ipthing, 8); // do the CBC thing
    fish->encrypt(lengthblock, lengthblock);
