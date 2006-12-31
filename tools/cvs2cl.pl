@@ -9,10 +9,9 @@ exec perl -w -x $0 ${1+"$@"} # -*- mode: perl; perl-indent-level: 2; -*-
 ###                                                        ###
 ##############################################################
 
-## $Revision: 1.2 $
-## $Date: 2006/12/17 03:03:16 $
+## $Revision: 1.3 $
+## $Date: 2006/12/31 20:04:03 $
 ## $Author: nolan $
-##
 
 use strict;
 
@@ -143,7 +142,7 @@ use User::pwent    qw( getpwnam );
 # Globals --------------------------------------------------------------------
 
 # In case we have to print it out:
-my $VERSION = '$Revision: 1.2 $';
+my $VERSION = '$Revision: 1.3 $';
 $VERSION =~ s/\S+\s+(\S+)\s+\S+/$1/;
 
 ## Vars set by options:
