@@ -1,5 +1,5 @@
 # MyPasswordSafe Makefile
-# $Header: /home/cvsroot/MyPasswordSafe/Makefile,v 1.17 2004/12/06 13:14:53 nolan Exp $
+# $Header: /home/cvsroot/MyPasswordSafe/Makefile,v 1.18 2007/01/02 00:01:09 nolan Exp $
 
 # This is the only configuration setting. It specifies where the files will
 # be copied when "make install" is called, and where MyPS will search for
@@ -56,8 +56,8 @@ config: src/config.h
 clean: MyPasswordSafe.mak
 	${MAKE} -f $< clean
 	${MAKE} -C uuid-1.0.0 clean
+	# rm -r doc/api
 	rm $<
-	rm -r doc/api
 
 install:
 	install -d $(PREFIX)/bin $(PREFIX)/share/MyPasswordSafe/locale \
