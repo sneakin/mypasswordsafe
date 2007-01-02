@@ -11,7 +11,7 @@ sign: $(RELEASE).src.tgz.asc $(RELEASE).bin.tgz.asc
 
 src: $(RELEASE).src.tgz
 
-bin: $(RELEASE).bin.tgz
+bin: $(RELEASE)-i686.bin.tgz $(RELEASE)-amd64.bin.tgz
 
 $(RELEASE):
 	#cvs co -r $(BRANCH) $@
@@ -19,8 +19,15 @@ $(RELEASE):
 	mv $(PROGRAM) $@
 	$(MAKE) -C $@ ChangeLog
 
-$(RELEASE).bin.tgz: $(RELEASE)
-	$(MAKE) -C $< all
+$(RELEASE)-i686.bin.tgz: $(RELEASE)
+	$(MAKE) -C $< clean
+	LDFLAGS=-m32 CFLAGS=-m32 $(MAKE) -C $< all
+	tar cfz $@ $</MyPasswordSafe $</Makefile $</README $</ChangeLog $</CHANGES $</doc/manual.html $</doc/manual.fr.html \
+		$</doc/sshots $</locale
+
+$(RELEASE)-amd64.bin.tgz: $(RELEASE)
+	$(MAKE) -C $< clean
+	LDFLAGS=-m64 CFLAGS=-m64 $(MAKE) -C $< all
 	tar cfz $@ $</MyPasswordSafe $</Makefile $</README $</ChangeLog $</CHANGES $</doc/manual.html $</doc/manual.fr.html \
 		$</doc/sshots $</locale
 
