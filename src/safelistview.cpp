@@ -72,14 +72,14 @@ void SafeListViewItem::dropped(QDropEvent *event)
 SafeListViewEntry::SafeListViewEntry(SafeListView *parent, SafeEntry *item)
   : SafeListViewItem(parent, item)
 {
-  setPixmap(0, qPixmapFromMimeSource("file_locked.png"));
+  setPixmap(0, qPixmapFromMimeSource(":/images/file_locked.png"));
 }
 
 SafeListViewEntry::SafeListViewEntry(SafeListViewGroup *parent,
 				   SafeEntry *item)
   : SafeListViewItem(parent, item)
 {
-  setPixmap(0, qPixmapFromMimeSource("file_locked.png"));
+  setPixmap(0, qPixmapFromMimeSource(":/images/file_locked.png"));
 }
 
 SafeListViewEntry::~SafeListViewEntry()
@@ -156,16 +156,16 @@ SafeListViewGroup::SafeListViewGroup(SafeListViewGroup *parent,
 
 void SafeListViewGroup::init()
 {
-  setPixmap(0, qPixmapFromMimeSource("folder_blue.png"));
+  setPixmap(0, qPixmapFromMimeSource(":/images/folder_blue.png"));
   setRenameEnabled(0, true);
 }
 
 void SafeListViewGroup::setOpen(bool yes)
 {
   if(yes)
-    setPixmap(0, qPixmapFromMimeSource("folder_blue.png"));
+    setPixmap(0, qPixmapFromMimeSource(":/images/folder_blue.png"));
   else
-    setPixmap(0, qPixmapFromMimeSource("folder_blue_open.png"));
+    setPixmap(0, qPixmapFromMimeSource(":/images/folder_blue_open.png"));
 
   Q3ListViewItem::setOpen(yes);
 }

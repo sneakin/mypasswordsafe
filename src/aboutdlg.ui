@@ -42,7 +42,7 @@
                 <enum>Sunken</enum>
             </property>
             <property name="pixmap">
-                <pixmap>about_banner.png</pixmap>
+                <pixmap>:/images/about_banner.png</pixmap>
             </property>
             <property name="scaledContents">
                 <bool>true</bool>
@@ -227,7 +227,7 @@ Thanks go out to:
                         <bool>true</bool>
                     </property>
                     <property name="iconSet">
-                        <iconset>fileclose.png</iconset>
+                        <iconset>:/images/fileclose.png</iconset>
                     </property>
                 </widget>
             </hbox>

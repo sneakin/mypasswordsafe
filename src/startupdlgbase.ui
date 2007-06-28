@@ -28,7 +28,7 @@
         <string>Welcome to MyPasswordSafe</string>
     </property>
     <property name="icon">
-        <pixmap>keys.png</pixmap>
+        <pixmap>:/images/keys.png</pixmap>
     </property>
     <vbox>
         <property name="name">
@@ -45,7 +45,7 @@
                 <enum>Sunken</enum>
             </property>
             <property name="pixmap">
-                <pixmap>about_banner.png</pixmap>
+                <pixmap>:/images/about_banner.png</pixmap>
             </property>
             <property name="scaledContents">
                 <bool>true</bool>
@@ -139,7 +139,7 @@
                                     </sizepolicy>
                                 </property>
                                 <property name="pixmap">
-                                    <pixmap>keys.png</pixmap>
+                                    <pixmap>:/images/keys.png</pixmap>
                                 </property>
                                 <property name="scaledContents">
                                     <bool>true</bool>
@@ -262,7 +262,7 @@
                         <string>Alt+Q</string>
                     </property>
                     <property name="iconSet">
-                        <iconset>exit.png</iconset>
+                        <iconset>:/images/exit.png</iconset>
                     </property>
                 </widget>
                 <widget class="QPushButton">
@@ -279,7 +279,7 @@
                         <bool>true</bool>
                     </property>
                     <property name="iconSet">
-                        <iconset>button_ok.png</iconset>
+                        <iconset>:/images/button_ok.png</iconset>
                     </property>
                 </widget>
             </hbox>

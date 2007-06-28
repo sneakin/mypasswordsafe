@@ -173,7 +173,7 @@
                                 <string></string>
                             </property>
                             <property name="pixmap">
-                                <pixmap>fileopen.png</pixmap>
+                                <pixmap>:/images/fileopen.png</pixmap>
                             </property>
                             <property name="autoDefault">
                                 <bool>false</bool>
@@ -356,7 +356,7 @@
                         <string>Alt+H</string>
                     </property>
                     <property name="iconSet">
-                        <iconset>help.png</iconset>
+                        <iconset>:/images/help.png</iconset>
                     </property>
                 </widget>
                 <spacer>
@@ -387,7 +387,7 @@
                         <string>Alt+C</string>
                     </property>
                     <property name="iconSet">
-                        <iconset>button_cancel.png</iconset>
+                        <iconset>:/images/button_cancel.png</iconset>
                     </property>
                 </widget>
                 <widget class="QPushButton">
@@ -404,7 +404,7 @@
                         <bool>true</bool>
                     </property>
                     <property name="iconSet">
-                        <iconset>button_ok.png</iconset>
+                        <iconset>:/images/button_ok.png</iconset>
                     </property>
                 </widget>
             </hbox>

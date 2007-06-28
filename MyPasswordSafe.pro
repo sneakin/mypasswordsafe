@@ -72,42 +72,8 @@ FORMS3	= src/mypasswordsafe.ui \
 	src/manualdlg.ui \
 	src/startupdlgbase.ui \
 	src/newpassphrasedlg.ui
-IMAGES	= \
-	images/edit_add.png \
-	images/edit_remove.png \
-	images/editcopy.png \
-	images/about_banner.png \
-	images/edit.png \
-	images/editcut.png \
-	images/exit.png \
-	images/filenew.png \
-	images/filenew2.png \
-	images/fileopen.png \
-	images/filesave.png \
-	images/filesaveas.png \
-	images/info.png \
-	images/Padlock.xpm \
-	images/fetch_user.png \
-	images/help.png \
-	images/back.png \
-	images/forward.png \
-	doc/sshots/editdialog.jpg \
-	doc/sshots/mainwindow.jpg \
-	doc/sshots/prefsdialog.jpg \
-	images/password.png \
-	images/undo.png \
-	images/redo.png \
-	images/folder_new.png \
-	images/folder_blue.png \
-	images/folder_blue_open.png \
-	images/keys.png \
-	images/button_ok.png \
-	images/configure.png \
-	images/contexthelp.png \
-	images/lock.png \
-	images/fileclose.png \
-	images/button_cancel.png \
-	images/file_locked.png
+
+RESOURCES = resources.qrc
 
 DEBUG = $$(DEBUG)
 

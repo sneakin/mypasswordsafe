@@ -297,7 +297,7 @@
                         <string>Alt+C</string>
                     </property>
                     <property name="iconSet">
-                        <iconset>button_cancel.png</iconset>
+                        <iconset>:/images/button_cancel.png</iconset>
                     </property>
                 </widget>
                 <widget class="QPushButton">
@@ -314,7 +314,7 @@
                         <bool>true</bool>
                     </property>
                     <property name="iconSet">
-                        <iconset>button_ok.png</iconset>
+                        <iconset>:/images/button_ok.png</iconset>
                     </property>
                 </widget>
             </hbox>

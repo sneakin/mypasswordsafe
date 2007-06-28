@@ -16,7 +16,7 @@
         <string>MyPasswordSafe Manual</string>
     </property>
     <property name="icon">
-        <pixmap>help.png</pixmap>
+        <pixmap>:/images/help.png</pixmap>
     </property>
     <vbox>
         <property name="name">
@@ -327,7 +327,7 @@ make&lt;/pre&gt;
                         <bool>true</bool>
                     </property>
                     <property name="iconSet">
-                        <iconset>fileclose.png</iconset>
+                        <iconset>:/images/fileclose.png</iconset>
                     </property>
                 </widget>
             </hbox>
