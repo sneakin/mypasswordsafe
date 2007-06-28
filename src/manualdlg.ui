@@ -162,7 +162,7 @@ make&lt;/pre&gt;
 	The tool-bar and menu duplicate each other quite a bit. Most of the action
 	happens in the list box.
 	&lt;/p&gt;
-	&lt;center&gt;&lt;img src=":/images/mainwindow.jpg"
+	&lt;center&gt;&lt;img src=":/doc/sshots/mainwindow.jpg"
 	alt="Screenshot of MyPasswordSafe's main window"/&gt;&lt;/center&gt;
 	&lt;p&gt;The list box contains the passwords from the current safe.
 	Double clicking on a password in the list box fetches the password for
@@ -187,7 +187,7 @@ make&lt;/pre&gt;
 	&lt;/p&gt;
 	&lt;a href="#top"&gt;Back to top&lt;/a&gt;
 	&lt;h2&gt;&lt;a name="editpword"&gt;Edit Password Dialog&lt;/a&gt;&lt;/h2&gt;
-	&lt;center&gt;&lt;img src=":/images/editdialog.jpg" alt="Screenshot of the
+	&lt;center&gt;&lt;img src=":/doc/sshots/editdialog.jpg" alt="Screenshot of the
 	edit password dialog"/&gt;&lt;/center&gt;
 	&lt;p&gt;
 		Both &lt;i&gt;Add Password&lt;/i&gt; and &lt;i&gt;Edit Password&lt;/i&gt; make use
@@ -224,7 +224,7 @@ make&lt;/pre&gt;
 	&lt;/p&gt;
 	&lt;a href="#top"&gt;Back to top&lt;/a&gt;
 	&lt;h2&gt;&lt;a name="prefs"&gt;Preferences&lt;/a&gt;&lt;/h2&gt;
-	&lt;center&gt;&lt;img src=":/images/prefsdialog.jpg"
+	&lt;center&gt;&lt;img src=":/doc/sshots/prefsdialog.jpg"
 	alt="Screenshot of the Preferences Dialog"/&gt;&lt;/center&gt;
 	&lt;p&gt;MyPasswordSafe isn't the most configurable, but it does
 	have some options.
