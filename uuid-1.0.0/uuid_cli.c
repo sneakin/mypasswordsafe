@@ -73,8 +73,8 @@ int main(int argc, char *argv[])
 {
     char uuid_buf_bin[UUID_LEN_BIN];
     char uuid_buf_str[UUID_LEN_STR+1];
-    uuid_t *uuid;
-    uuid_t *uuid_ns;
+    ossp_uuid_t *uuid;
+    ossp_uuid_t *uuid_ns;
     uuid_rc_t rc;
     FILE *fp;
     char *p;

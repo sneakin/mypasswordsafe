@@ -44,7 +44,7 @@ uuid_datadir="${prefix}/share"
 uuid_acdir="${prefix}/share/aclocal"
 uuid_cflags="-O2 -pipe"
 uuid_ldflags=""
-uuid_libs="-lnsl "
+uuid_libs=""
 uuid_version="1.0.0 (16-Feb-2004)"
 
 help=no

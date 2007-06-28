@@ -11,7 +11,7 @@ CONFIG += idle
 IDLE_CPP = src/tools/idle
 INCLUDEPATH += $$IDLE_CPP
 unix {
-	LIBS += -lXss
+	QMAKE_X11_LIBS += -lXss
 }
 include($$IDLE_CPP/idle.pri)
 

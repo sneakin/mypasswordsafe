@@ -114,7 +114,7 @@ private:
    */
   static Exception errorToException(uuid_rc_t error);
 
-  uuid_t *m_uuid;
+  ossp_uuid_t *m_uuid;
 };
 
 #endif // UUID_HPP

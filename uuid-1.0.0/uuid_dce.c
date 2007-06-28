@@ -28,9 +28,9 @@
 */
 
 /* include DCE 1.1 API */
-#define uuid_t uuid_dce_t
+#define ossp_uuid_t uuid_dce_t
 #include "uuid_dce.h"
-#undef uuid_t
+#undef ossp_uuid_t
 #undef uuid_create
 #undef uuid_create_nil
 #undef uuid_is_nil
@@ -46,7 +46,7 @@
 /* create a UUID (v1 only) */
 void uuid_dce_create(uuid_dce_t *uuid_dce, int *status)
 {
-    uuid_t *uuid;
+    ossp_uuid_t *uuid;
     size_t len;
     void *vp;
 
@@ -135,8 +135,8 @@ int uuid_dce_is_nil(uuid_dce_t *uuid_dce, int *status)
 /* compare two UUIDs */
 int uuid_dce_compare(uuid_dce_t *uuid_dce1, uuid_dce_t *uuid_dce2, int *status)
 {
-    uuid_t *uuid1 = NULL;
-    uuid_t *uuid2 = NULL;
+    ossp_uuid_t *uuid1 = NULL;
+    ossp_uuid_t *uuid2 = NULL;
     int result = 0;
 
     /* initialize status */
@@ -190,7 +190,7 @@ int uuid_dce_equal(uuid_dce_t *uuid_dce1, uuid_dce_t *uuid_dce2, int *status)
 /* import UUID from string representation */
 void uuid_dce_from_string(const char *str, uuid_dce_t *uuid_dce, int *status)
 {
-    uuid_t *uuid = NULL;
+    ossp_uuid_t *uuid = NULL;
     size_t len;
     void *vp;
 
@@ -226,7 +226,7 @@ void uuid_dce_from_string(const char *str, uuid_dce_t *uuid_dce, int *status)
 /* export UUID to string representation */
 void uuid_dce_to_string(uuid_dce_t *uuid_dce, char **str, int *status)
 {
-    uuid_t *uuid = NULL;
+    ossp_uuid_t *uuid = NULL;
     size_t len;
     void *vp;
 

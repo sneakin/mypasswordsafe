@@ -15,8 +15,6 @@
 #include <stdint.h>
 #include <string>
 
-#include "endian.h"
-
 using std::string;
 
 typedef uint8_t		byte;

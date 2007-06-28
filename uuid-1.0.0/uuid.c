@@ -89,14 +89,14 @@ struct uuid_st {
 };
 
 /* create UUID object */
-uuid_rc_t uuid_create(uuid_t **uuid)
+uuid_rc_t uuid_create(ossp_uuid_t **uuid)
 {
     /* argument sanity check */
     if (uuid == NULL)
         return UUID_RC_ARG;
 
     /* allocate UUID object */
-    if ((*uuid = (uuid_t *)malloc(sizeof(uuid_t))) == NULL)
+    if ((*uuid = (ossp_uuid_t *)malloc(sizeof(ossp_uuid_t))) == NULL)
         return UUID_RC_MEM;
 
     /* set UUID object initially to "Nil UUID" */
@@ -123,7 +123,7 @@ uuid_rc_t uuid_create(uuid_t **uuid)
 }
 
 /* destroy UUID object */
-uuid_rc_t uuid_destroy(uuid_t *uuid)
+uuid_rc_t uuid_destroy(ossp_uuid_t *uuid)
 {
     /* argument sanity check */
     if (uuid == NULL)
@@ -140,7 +140,7 @@ uuid_rc_t uuid_destroy(uuid_t *uuid)
 }
 
 /* check whether UUID object represents "Nil UUID" */
-uuid_rc_t uuid_isnil(uuid_t *uuid, int *result)
+uuid_rc_t uuid_isnil(ossp_uuid_t *uuid, int *result)
 {
     const unsigned char *ucp;
     int i;
@@ -162,7 +162,7 @@ uuid_rc_t uuid_isnil(uuid_t *uuid, int *result)
 }
 
 /* compare UUID objects */
-uuid_rc_t uuid_compare(uuid_t *uuid1, uuid_t *uuid2, int *result)
+uuid_rc_t uuid_compare(ossp_uuid_t *uuid1, ossp_uuid_t *uuid2, int *result)
 {
     int r;
 
@@ -214,7 +214,7 @@ uuid_rc_t uuid_compare(uuid_t *uuid1, uuid_t *uuid2, int *result)
 
 /* INTERNAL: unpack UUID binary presentation into UUID object
    (allows in-place operation for internal efficiency!) */
-static uuid_rc_t uuid_import_bin(uuid_t *uuid, const void *data_ptr, size_t data_len)
+static uuid_rc_t uuid_import_bin(ossp_uuid_t *uuid, const void *data_ptr, size_t data_len)
 {
     const uuid_uint8_t *in;
     uuid_uint32_t tmp32;
@@ -260,7 +260,7 @@ static uuid_rc_t uuid_import_bin(uuid_t *uuid, const void *data_ptr, size_t data
 
 /* INTERNAL: pack UUID object into binary representation
    (allows in-place operation for internal efficiency!) */
-static uuid_rc_t uuid_export_bin(uuid_t *uuid, void **data_ptr, size_t *data_len)
+static uuid_rc_t uuid_export_bin(ossp_uuid_t *uuid, void **data_ptr, size_t *data_len)
 {
     uuid_uint8_t *out;
     uuid_uint32_t tmp32;
@@ -273,7 +273,7 @@ static uuid_rc_t uuid_export_bin(uuid_t *uuid, void **data_ptr, size_t *data_len
 
     /* optionally allocate octet data buffer */
     if (*data_ptr == NULL) {
-        if ((*data_ptr = malloc(sizeof(uuid_t))) == NULL)
+        if ((*data_ptr = malloc(sizeof(ossp_uuid_t))) == NULL)
             return UUID_RC_MEM;
         if (data_len != NULL)
             *data_len = UUID_LEN_BIN;
@@ -349,7 +349,7 @@ static int uuid_isstr(const char *str, size_t str_len)
 }
 
 /* INTERNAL: import UUID object from string representation */
-static uuid_rc_t uuid_import_str(uuid_t *uuid, const void *data_ptr, size_t data_len)
+static uuid_rc_t uuid_import_str(ossp_uuid_t *uuid, const void *data_ptr, size_t data_len)
 {
     uuid_uint16_t tmp16;
     const char *cp;
@@ -389,7 +389,7 @@ static uuid_rc_t uuid_import_str(uuid_t *uuid, const void *data_ptr, size_t data
 }
 
 /* INTERNAL: export UUID object to string representation */
-static uuid_rc_t uuid_export_str(uuid_t *uuid, void **data_ptr, size_t *data_len)
+static uuid_rc_t uuid_export_str(ossp_uuid_t *uuid, void **data_ptr, size_t *data_len)
 {
     /* sanity check argument(s) */
     if (uuid == NULL || data_ptr == NULL)
@@ -448,7 +448,7 @@ static struct {
 };
 
 /* INTERNAL: dump UUID object as descriptive text */
-static uuid_rc_t uuid_export_txt(uuid_t *uuid, void **data_ptr, size_t *data_len)
+static uuid_rc_t uuid_export_txt(ossp_uuid_t *uuid, void **data_ptr, size_t *data_len)
 {
     uuid_rc_t rc;
     char **out;
@@ -618,7 +618,7 @@ static uuid_rc_t uuid_export_txt(uuid_t *uuid, void **data_ptr, size_t *data_len
 }
 
 /* UUID importing */
-uuid_rc_t uuid_import(uuid_t *uuid, uuid_fmt_t fmt, const void *data_ptr, size_t data_len)
+uuid_rc_t uuid_import(ossp_uuid_t *uuid, uuid_fmt_t fmt, const void *data_ptr, size_t data_len)
 {
     uuid_rc_t rc;
 
@@ -638,7 +638,7 @@ uuid_rc_t uuid_import(uuid_t *uuid, uuid_fmt_t fmt, const void *data_ptr, size_t
 }
 
 /* UUID exporting */
-uuid_rc_t uuid_export(uuid_t *uuid, uuid_fmt_t fmt, void **data_ptr, size_t *data_len)
+uuid_rc_t uuid_export(ossp_uuid_t *uuid, uuid_fmt_t fmt, void **data_ptr, size_t *data_len)
 {
     uuid_rc_t rc;
 
@@ -658,7 +658,7 @@ uuid_rc_t uuid_export(uuid_t *uuid, uuid_fmt_t fmt, void **data_ptr, size_t *dat
 }
 
 /* INTERNAL: brand UUID with version and variant */
-static void uuid_brand(uuid_t *uuid, int version)
+static void uuid_brand(ossp_uuid_t *uuid, int version)
 {
     /* set version (as given) */
     uuid->obj.time_hi_and_version &= BM_MASK(11,0);
@@ -671,7 +671,7 @@ static void uuid_brand(uuid_t *uuid, int version)
 }
 
 /* INTERNAL: generate UUID version 1: time, clock and node based */
-static uuid_rc_t uuid_make_v1(uuid_t *uuid, unsigned int mode, va_list ap)
+static uuid_rc_t uuid_make_v1(ossp_uuid_t *uuid, unsigned int mode, va_list ap)
 {
     struct timeval time_now;
 #ifdef HAVE_NANOSLEEP
@@ -824,7 +824,7 @@ static struct {
 };
 
 /* load UUID object with pre-defined value */
-uuid_rc_t uuid_load(uuid_t *uuid, const char *name)
+uuid_rc_t uuid_load(ossp_uuid_t *uuid, const char *name)
 {
     uuid_uint8_t *uuid_octets;
     uuid_rc_t rc;
@@ -853,16 +853,16 @@ uuid_rc_t uuid_load(uuid_t *uuid, const char *name)
 }
 
 /* INTERNAL: generate UUID version 3: name based */
-static uuid_rc_t uuid_make_v3(uuid_t *uuid, unsigned int mode, va_list ap)
+static uuid_rc_t uuid_make_v3(ossp_uuid_t *uuid, unsigned int mode, va_list ap)
 {
     char *str;
-    uuid_t *uuid_ns;
+    ossp_uuid_t *uuid_ns;
     uuid_uint8_t uuid_buf[UUID_LEN_BIN];
     void *uuid_ptr;
     size_t uuid_len;
 
     /* determine namespace UUID and name string arguments */
-    if ((uuid_ns = (uuid_t *)va_arg(ap, void *)) == NULL)
+    if ((uuid_ns = (ossp_uuid_t *)va_arg(ap, void *)) == NULL)
         return UUID_RC_ARG;
     if ((str = (char *)va_arg(ap, char *)) == NULL)
         return UUID_RC_ARG;
@@ -898,7 +898,7 @@ static uuid_rc_t uuid_make_v3(uuid_t *uuid, unsigned int mode, va_list ap)
 }
 
 /* INTERNAL: generate UUID version 4: random number based */
-static uuid_rc_t uuid_make_v4(uuid_t *uuid, unsigned int mode, va_list ap)
+static uuid_rc_t uuid_make_v4(ossp_uuid_t *uuid, unsigned int mode, va_list ap)
 {
     /* fill UUID with random data */
     prng_data(uuid->prng, (void *)&(uuid->obj), sizeof(uuid->obj));
@@ -910,7 +910,7 @@ static uuid_rc_t uuid_make_v4(uuid_t *uuid, unsigned int mode, va_list ap)
 }
 
 /* generate UUID */
-uuid_rc_t uuid_make(uuid_t *uuid, unsigned int mode, ...)
+uuid_rc_t uuid_make(ossp_uuid_t *uuid, unsigned int mode, ...)
 {
     va_list ap;
     uuid_rc_t rc;

@@ -45,7 +45,7 @@
 #define uuid_to_string   uuid_dce_to_string
 #define uuid_hash        uuid_dce_hash
 
-/* DCE 1.1 uuid_t type */
+/* DCE 1.1 ossp_uuid_t type */
 typedef struct {
 #if 0
     /* stricter but unportable version */
@@ -59,13 +59,13 @@ typedef struct {
     /* sufficient and portable version */
     unsigned char   data[16];
 #endif
-} uuid_t;
-typedef uuid_t *uuid_p_t;
+} ossp_uuid_t;
+typedef ossp_uuid_t *uuid_p_t;
 
 /* DCE 1.1 uuid_vector_t type */
 typedef struct {
     unsigned int    count;
-    uuid_t         *uuid[1];
+    ossp_uuid_t         *uuid[1];
 } uuid_vector_t;
 
 /* DCE 1.1 UUID API status codes */
@@ -75,14 +75,14 @@ enum {
 };
 
 /* DCE 1.1 UUID API functions */
-extern void          uuid_create      (uuid_t *,               int *);
-extern void          uuid_create_nil  (uuid_t *,               int *);
-extern int           uuid_is_nil      (uuid_t *,               int *);
-extern int           uuid_compare     (uuid_t *, uuid_t *,     int *);
-extern int           uuid_equal       (uuid_t *, uuid_t *,     int *);
-extern void          uuid_from_string (const char *, uuid_t *, int *);
-extern void          uuid_to_string   (uuid_t *,     char **,  int *);
-extern unsigned int  uuid_hash        (uuid_t *,               int *);
+extern void          uuid_create      (ossp_uuid_t *,               int *);
+extern void          uuid_create_nil  (ossp_uuid_t *,               int *);
+extern int           uuid_is_nil      (ossp_uuid_t *,               int *);
+extern int           uuid_compare     (ossp_uuid_t *, ossp_uuid_t *,     int *);
+extern int           uuid_equal       (ossp_uuid_t *, ossp_uuid_t *,     int *);
+extern void          uuid_from_string (const char *, ossp_uuid_t *, int *);
+extern void          uuid_to_string   (ossp_uuid_t *,     char **,  int *);
+extern unsigned int  uuid_hash        (ossp_uuid_t *,               int *);
 
 #endif /* __UUID_DCE_H___ */
 

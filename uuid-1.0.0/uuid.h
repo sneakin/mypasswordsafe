@@ -78,23 +78,23 @@ typedef enum {
 
 /* UUID abstract data type */
 struct uuid_st;
-typedef struct uuid_st uuid_t;
+typedef struct uuid_st ossp_uuid_t;
 
 /* UUID object handling */
-extern uuid_rc_t     uuid_create   (uuid_t **_uuid);
-extern uuid_rc_t     uuid_destroy  (uuid_t  *_uuid);
+extern uuid_rc_t     uuid_create   (ossp_uuid_t **_uuid);
+extern uuid_rc_t     uuid_destroy  (ossp_uuid_t  *_uuid);
 
 /* UUID generation */
-extern uuid_rc_t     uuid_load     (uuid_t  *_uuid, const char *_name);
-extern uuid_rc_t     uuid_make     (uuid_t  *_uuid, unsigned int _mode, ...);
+extern uuid_rc_t     uuid_load     (ossp_uuid_t  *_uuid, const char *_name);
+extern uuid_rc_t     uuid_make     (ossp_uuid_t  *_uuid, unsigned int _mode, ...);
 
 /* UUID comparison */
-extern uuid_rc_t     uuid_isnil    (uuid_t  *_uuid,                 int *_result);
-extern uuid_rc_t     uuid_compare  (uuid_t  *_uuid, uuid_t *_uuid2, int *_result);
+extern uuid_rc_t     uuid_isnil    (ossp_uuid_t  *_uuid,                 int *_result);
+extern uuid_rc_t     uuid_compare  (ossp_uuid_t  *_uuid, ossp_uuid_t *_uuid2, int *_result);
 
 /* UUID import/export */
-extern uuid_rc_t     uuid_import   (uuid_t  *_uuid, uuid_fmt_t _fmt, const void  *_data_ptr, size_t  _data_len);
-extern uuid_rc_t     uuid_export   (uuid_t  *_uuid, uuid_fmt_t _fmt,       void **_data_ptr, size_t *_data_len);
+extern uuid_rc_t     uuid_import   (ossp_uuid_t  *_uuid, uuid_fmt_t _fmt, const void  *_data_ptr, size_t  _data_len);
+extern uuid_rc_t     uuid_export   (ossp_uuid_t  *_uuid, uuid_fmt_t _fmt,       void **_data_ptr, size_t *_data_len);
 
 /* library utilities */
 extern char         *uuid_error    (uuid_rc_t _rc);
