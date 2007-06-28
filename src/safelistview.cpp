@@ -17,15 +17,20 @@
  */
 #include <qpixmap.h>
 #include <qdatetime.h>
-#include <qvaluelist.h>
-#include <qdragobject.h>
+#include <q3valuelist.h>
+#include <q3dragobject.h>
 #include <qmessagebox.h>
+//Added by qt3to4:
+#include <q3mimefactory.h>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QDragEnterEvent>
 #include "myutil.hpp"
 #include "safelistview.hpp"
 #include "safedragobject.hpp"
 
 SafeListViewItem::SafeListViewItem(SafeListView *parent, SafeItem *i)
-  : QListViewItem(parent), m_item(i)
+  : Q3ListViewItem(parent), m_item(i)
 {
   Q_ASSERT(m_item != NULL);
 
@@ -34,7 +39,7 @@ SafeListViewItem::SafeListViewItem(SafeListView *parent, SafeItem *i)
 }
 
 SafeListViewItem::SafeListViewItem(SafeListViewGroup *parent, SafeItem *i)
-  : QListViewItem(parent), m_item(i)
+  : Q3ListViewItem(parent), m_item(i)
 {
   Q_ASSERT(m_item != NULL);
 
@@ -67,14 +72,14 @@ void SafeListViewItem::dropped(QDropEvent *event)
 SafeListViewEntry::SafeListViewEntry(SafeListView *parent, SafeEntry *item)
   : SafeListViewItem(parent, item)
 {
-  setPixmap(0, QPixmap::fromMimeSource("file_locked.png"));
+  setPixmap(0, qPixmapFromMimeSource("file_locked.png"));
 }
 
 SafeListViewEntry::SafeListViewEntry(SafeListViewGroup *parent,
 				   SafeEntry *item)
   : SafeListViewItem(parent, item)
 {
-  setPixmap(0, QPixmap::fromMimeSource("file_locked.png"));
+  setPixmap(0, qPixmapFromMimeSource("file_locked.png"));
 }
 
 SafeListViewEntry::~SafeListViewEntry()
@@ -84,7 +89,7 @@ SafeListViewEntry::~SafeListViewEntry()
 void SafeListViewEntry::setSelected(bool yes)
 {
   setMultiLinesEnabled(yes);
-  QListViewItem::setSelected(yes);
+  Q3ListViewItem::setSelected(yes);
   setup();
 }
 
@@ -151,18 +156,18 @@ SafeListViewGroup::SafeListViewGroup(SafeListViewGroup *parent,
 
 void SafeListViewGroup::init()
 {
-  setPixmap(0, QPixmap::fromMimeSource("folder_blue.png"));
+  setPixmap(0, qPixmapFromMimeSource("folder_blue.png"));
   setRenameEnabled(0, true);
 }
 
 void SafeListViewGroup::setOpen(bool yes)
 {
   if(yes)
-    setPixmap(0, QPixmap::fromMimeSource("folder_blue.png"));
+    setPixmap(0, qPixmapFromMimeSource("folder_blue.png"));
   else
-    setPixmap(0, QPixmap::fromMimeSource("folder_blue_open.png"));
+    setPixmap(0, qPixmapFromMimeSource("folder_blue_open.png"));
 
-  QListViewItem::setOpen(yes);
+  Q3ListViewItem::setOpen(yes);
 }
 
 void SafeListViewGroup::setText(int col, const QString &text)
@@ -239,7 +244,7 @@ void SafeListViewGroup::updateItems()
 
 
 SafeListView::SafeListView(QWidget *parent, const char *name, Safe *safe)
-  : QListView(parent, name), m_target_is_child(false)
+  : Q3ListView(parent, name), m_target_is_child(false)
 {
   setShowSortIndicator(true);
   setAllColumnsShowFocus(true);
@@ -266,9 +271,9 @@ SafeListView::~SafeListView()
 {
 }
 
-void SafeListView::setResizePolicy(QListView::WidthMode mode)
+void SafeListView::setResizePolicy(Q3ListView::WidthMode mode)
 {
-  QScrollView::setResizePolicy((QScrollView::ResizePolicy)mode);
+  Q3ScrollView::setResizePolicy((Q3ScrollView::ResizePolicy)mode);
 }
 
 void SafeListView::setSafe(Safe *safe)
@@ -283,7 +288,7 @@ void SafeListView::setSafe(Safe *safe)
 
 SafeItem *SafeListView::getSelectedItem()
 {
-  QListViewItem *item = selectedItem();
+  Q3ListViewItem *item = selectedItem();
   if(item != NULL && (item->rtti() == SafeListViewEntry::RTTI ||
 		      item->rtti() == SafeListViewGroup::RTTI))
     return ((SafeListViewItem *)item)->item();
@@ -293,7 +298,7 @@ SafeItem *SafeListView::getSelectedItem()
 
 SafeItem *SafeListView::getCurrentItem()
 {
-  QListViewItem *item = currentItem();
+  Q3ListViewItem *item = currentItem();
   if(item != NULL && (item->rtti() == SafeListViewEntry::RTTI ||
 		      item->rtti() == SafeListViewGroup::RTTI))
     return ((SafeListViewItem *)item)->item();
@@ -306,7 +311,7 @@ SafeListViewEntry *SafeListView::addItem(SafeEntry *item)
 {
   if(m_safe) {
     //SafeEntry *item_ptr = m_safe->addItem(item);
-    QListViewItem *parent = selectedItem();
+    Q3ListViewItem *parent = selectedItem();
     if(parent == NULL) {
       return new SafeListViewEntry(this, item);
     }
@@ -337,7 +342,7 @@ void SafeListView::delItem(SafeListViewEntry *item)
 
 SafeListViewGroup *SafeListView::findGroup(const QString &group_name)
 {
-  QListViewItemIterator iter(this);
+  Q3ListViewItemIterator iter(this);
   while(iter.current()) {
     if(iter.current()->rtti() == SafeListViewGroup::RTTI) {
       SafeListViewGroup *group =
@@ -410,8 +415,8 @@ void SafeListView::startDrag()
 
   SafeDragObject *d = new SafeDragObject(viewport());
 
-  QListViewItemIterator it(this, QListViewItemIterator::Selected |
-			   QListViewItemIterator::DragEnabled);
+  Q3ListViewItemIterator it(this, Q3ListViewItemIterator::Selected |
+			   Q3ListViewItemIterator::DragEnabled);
   for(; it.current(); ++it) {
     SafeListViewItem *item = (SafeListViewItem *)it.current();
     d->addItem(item->item());
@@ -547,7 +552,7 @@ void SafeListView::contentsDragEnterEvent(QDragEnterEvent *e)
   DBGOUT("Enter event:");
   DBGOUT("\tAction: " << e->action());
 
-  QListView::contentsDragEnterEvent(e);
+  Q3ListView::contentsDragEnterEvent(e);
 
   if(e->action() == QDropEvent::Move)
     e->acceptAction();
@@ -558,7 +563,7 @@ void SafeListView::contentsDragMoveEvent(QDragMoveEvent *e)
   DBGOUT("Move event:");
   DBGOUT("\tAction: " << e->action());
 
-  QListView::contentsDragMoveEvent(e);
+  Q3ListView::contentsDragMoveEvent(e);
 
   if(e->action() == QDropEvent::Move)
     e->acceptAction();
@@ -573,10 +578,10 @@ bool SafeListView::isTargetChild(QDropEvent *event, SafeListViewItem *target)
   // prevent incest
   if(event->source() == viewport()) {
     DBGOUT("\tWarning!!");
-    QListViewItem *item = currentItem();
+    Q3ListViewItem *item = currentItem();
 
      // make sure this isn't a child of item
-     QListViewItem *p = target;
+     Q3ListViewItem *p = target;
      for(; p != NULL; p = p->parent()) {
        if(p == item) {
 	 DBGOUT("\tThe dragged item is a parent");
@@ -590,9 +595,9 @@ bool SafeListView::isTargetChild(QDropEvent *event, SafeListViewItem *target)
 
 SafeListViewItem *SafeListView::findItem(SafeItem *item)
 {
-  QListViewItemIterator it(this);
+  Q3ListViewItemIterator it(this);
   while(it.current()) {
-    QListViewItem *list_item = it.current();
+    Q3ListViewItem *list_item = it.current();
 
     if(list_item->rtti() == SafeListViewEntry::RTTI ||
        list_item->rtti() == SafeListViewGroup::RTTI) {

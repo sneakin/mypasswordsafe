@@ -19,7 +19,11 @@
 #ifndef SAFELISTVIEW_HPP
 #define SAFELISTVIEW_HPP
 
-#include <qlistview.h>
+#include <q3listview.h>
+//Added by qt3to4:
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QDragMoveEvent>
 #include "safe.hpp"
 
 /* SafeListView is a basic list view w/o
@@ -28,7 +32,7 @@
 class SafeListView;
 class SafeListViewGroup;
 
-class SafeListViewItem: public QListViewItem
+class SafeListViewItem: public Q3ListViewItem
 {
 public:
   SafeListViewItem(SafeListView *parent, SafeItem *i);
@@ -87,7 +91,7 @@ protected:
   void init();
 };
 
-class SafeListView: public QListView
+class SafeListView: public Q3ListView
 {
   Q_OBJECT;
 
@@ -96,7 +100,7 @@ public:
 	       const char *name = NULL, Safe *safe = NULL);
   virtual ~SafeListView();
 
-  virtual void setResizePolicy(QListView::WidthMode mode);
+  virtual void setResizePolicy(Q3ListView::WidthMode mode);
 
   void setSafe(Safe *safe);
   SafeItem *getSelectedItem();

@@ -21,7 +21,7 @@
 
 #include <qobject.h>
 #include <qstring.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qdatetime.h>
 #include <vector>
 #include <map>
@@ -88,7 +88,7 @@ public:
     inline SafeItem *operator--() { return prev(); }
 
   private:
-    QPtrListIterator<SafeItem> m_iter;
+    Q3PtrListIterator<SafeItem> m_iter;
   };
 
   static const int RTTI;
@@ -113,8 +113,8 @@ public:
   Iterator last();
 
 private:
-  typedef QPtrList<SafeItem> ItemList;
-  typedef QPtrListIterator<SafeItem> ItemListIterator;
+  typedef Q3PtrList<SafeItem> ItemList;
+  typedef Q3PtrListIterator<SafeItem> ItemListIterator;
 
   QString m_name;
   ItemList m_items;

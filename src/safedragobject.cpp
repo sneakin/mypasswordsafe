@@ -26,7 +26,7 @@ static const QString SafeDragObject_MimeType = "application/mypasswordsafe";
 static const QString SafeDragObject_Text = "text/plain";
 
 SafeDragObject::SafeDragObject(QWidget *src)
-  : QDragObject(src), m_xml("MyPasswordSafe"), m_state(Nothing)
+  : Q3DragObject(src), m_xml("MyPasswordSafe"), m_state(Nothing)
 {
 }
 
@@ -83,7 +83,7 @@ bool SafeDragObject::provides(const char *mime_type) const
 QByteArray SafeDragObject::encodedData(const char *mime_type) const
 {
   if(mime_type == SafeDragObject_MimeType) {
-    return m_xml.toCString();
+    return m_xml.toByteArray();
   }
   else if(mime_type == SafeDragObject_Text && m_state == Single) {
     return m_text.utf8();

@@ -18,9 +18,9 @@
  *
  */
 
-#include"idle.h"
+#include "idle.h"
 
-#ifdef NO_XSS
+#ifndef HAVE_XSS
 
 IdlePlatform::IdlePlatform() {}
 IdlePlatform::~IdlePlatform() {}
@@ -29,11 +29,13 @@ int IdlePlatform::secondsIdle() { return 0; }
 
 #else
 
-#include<qapplication.h>
+#include <qapplication.h>
+#include <QDesktopWidget>
+#include <QX11Info>
 
-#include<X11/Xlib.h>
-#include<X11/Xutil.h>
-#include<X11/extensions/scrnsaver.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/scrnsaver.h>
 
 static XErrorHandler old_handler = 0;
 extern "C" int xerrhandler(Display* dpy, XErrorEvent* err)
@@ -88,7 +90,7 @@ int IdlePlatform::secondsIdle()
 {
 	if(!d->ss_info)
 		return 0;
-	if(!XScreenSaverQueryInfo(QApplication::desktop()->screen()->x11Display(), qt_xrootwin(), d->ss_info))
+	if(!XScreenSaverQueryInfo(QApplication::desktop()->screen()->x11Display(), QX11Info::appRootWindow(), d->ss_info))
 		return 0;
 	return d->ss_info->idle / 1000;
 }

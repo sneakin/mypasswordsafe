@@ -18,11 +18,11 @@
  *
  */
 
-#include"idle.h"
+#include "idle.h"
 
-#include<qcursor.h>
-#include<qdatetime.h>
-#include<qtimer.h>
+#include <qcursor.h>
+#include <qdatetime.h>
+#include <qtimer.h>
 
 static IdlePlatform *platform = 0;
 static int platform_ref = 0;

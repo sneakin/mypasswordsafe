@@ -23,7 +23,7 @@
 #include "safeserializer.hpp"
 #include "pwsafe/Util.h"
 
-class QTextOStream;
+class QTextStream;
 class QString;
 
 class PlainTextLizer: public SafeSerializer

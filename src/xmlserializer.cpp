@@ -20,7 +20,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 #include <qfile.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 #include "safe.hpp"
 #include "xmlserializer.hpp"
 #include "myutil.hpp"
@@ -37,7 +37,7 @@ XmlSerializer::~XmlSerializer()
 Safe::Error XmlSerializer::checkPassword(const QString &path, const SecuredString &password)
 {
   QFile file(path);
-  if(file.open(IO_ReadOnly)) {
+  if(file.open(QIODevice::ReadOnly)) {
     QDomDocument doc;
     if(!doc.setContent(&file))
       return Safe::BadFile;
@@ -56,7 +56,7 @@ Safe::Error XmlSerializer::checkPassword(const QString &path, const SecuredStrin
 Safe::Error XmlSerializer::load(Safe &safe, const QString &path, const EncryptedString &passphrase, const QString &)
 {
   QFile file(path);
-  if(file.open(IO_ReadOnly)) {
+  if(file.open(QIODevice::ReadOnly)) {
     QDomDocument doc;
     if(!doc.setContent(&file))
       return Safe::BadFile;
@@ -76,12 +76,12 @@ Safe::Error XmlSerializer::load(Safe &safe, const QString &path, const Encrypted
 Safe::Error XmlSerializer::save(Safe &safe, const QString &path, const QString &)
 {
   QFile file(path);
-  if(file.open(IO_WriteOnly)) {
+  if(file.open(QIODevice::WriteOnly)) {
     QDomDocument doc("MyPasswordSafe");
     doc.appendChild(safeToXml(doc, safe));
 
-    QTextStream stream(&file);
-    stream.setEncoding(QTextStream::UnicodeUTF8);
+    Q3TextStream stream(&file);
+    stream.setEncoding(Q3TextStream::UnicodeUTF8);
     stream << doc.toString();
     file.close();
 

@@ -28,7 +28,7 @@
 #include <algorithm>
 #include <qglobal.h>
 #include <qstring.h>
-#include <qcstring.h>
+#include <q3cstring.h>
 #include "safe.hpp"
 #include "securedstring.hpp"
 #include "encryptedstring.hpp"
@@ -240,7 +240,7 @@ int BlowfishLizer::readEntry(FILE *in, SafeEntry &item,
 			     const QString &def_user)
 {
   SecuredString data;
-  QCString tempdata;
+  Q3CString tempdata;
   int type;
 
   int numread = 0;
@@ -437,7 +437,7 @@ int BlowfishLizer::writeEntry(FILE *out, SafeEntry &item, CryptoInterface *fish,
 
   int num_written = 0;
   SecuredString data;
-  QCString temp(item.name().ascii());
+  Q3CString temp(item.name().ascii());
 
   if(v2_hdr == false) {
     if(def_user == item.user()) {
@@ -814,7 +814,7 @@ int BlowfishLizer2::writeString(FILE *out, CryptoInterface *fish,
   // especially with groups.
   // FIXME: this should use EncryptedString
   //if(!str.isEmpty()) {
-    QCString utf(str.utf8());
+    Q3CString utf(str.utf8());
     return writeCBC(out, fish, (const char *)utf,
 		    utf.length(), type, ipthing);
     //}

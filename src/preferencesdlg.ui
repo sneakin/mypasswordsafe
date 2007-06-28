@@ -451,6 +451,7 @@
     <include location="global" impldecl="in declaration">string</include>
     <include location="local" impldecl="in implementation">qfiledialog.h</include>
     <include location="local" impldecl="in implementation">preferencesdlg.ui.h</include>
+    <include location="global" impldecl="in implementation">q3whatsthis.h</include>
 </includes>
 <forwards>
     <forward>using std::string</forward>

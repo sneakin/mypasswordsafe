@@ -20,7 +20,8 @@
 #include <qstringlist.h>
 #include <qstring.h>
 #include <qfile.h>
-#include <qtextstream.h>
+#include <QTextIStream>
+#include <QTextOStream>
 #include "safe.hpp"
 #include "securedstring.hpp"
 #include "encryptedstring.hpp"
@@ -44,7 +45,7 @@ PlainTextLizer::~PlainTextLizer()
 Safe::Error PlainTextLizer::checkPassword(const QString &path, const SecuredString &password)
 {
   QFile file(path);
-  if(file.open(IO_ReadOnly)) {
+  if(file.open(QIODevice::ReadOnly)) {
     QTextStream stream(&file);
     stream.setEncoding(QTextStream::UnicodeUTF8);
     QString line;
@@ -64,7 +65,7 @@ Safe::Error PlainTextLizer::checkPassword(const QString &path, const SecuredStri
 Safe::Error PlainTextLizer::load(Safe &safe, const QString &path, const EncryptedString &passphrase, const QString &)
 {
   QFile file(path);
-  if(file.open(IO_ReadOnly)) {
+  if(file.open(QIODevice::ReadOnly)) {
     QTextStream stream(&file);
     stream.setEncoding(QTextStream::UnicodeUTF8);
     QString line;
@@ -135,7 +136,7 @@ Safe::Error PlainTextLizer::load(Safe &safe, const QString &path, const Encrypte
 Safe::Error PlainTextLizer::save(Safe &safe, const QString &path, const QString &)
 {
   QFile file(path);
-  if(file.open(IO_WriteOnly)) {
+  if(file.open(QIODevice::WriteOnly)) {
     QTextStream stream(&file);
     stream.setEncoding(QTextStream::UnicodeUTF8);
     // NOTE: the passphrase is decrypted...AND SAVED TO DISK!!
@@ -212,7 +213,7 @@ void PlainTextLizer::saveText(QTextStream &file, const QString &text)
 {
   if(!text.isEmpty())
     file << text;
-  file << '\t';
+  file << "\t";
 }
 
 /** Help method to save dates to a stream.

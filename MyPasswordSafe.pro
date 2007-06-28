@@ -4,7 +4,7 @@ LANGUAGE	= C++
 CONFIG	+= qt warn_on
 
 LIBS	+= uuid-1.0.0/.libs/libuuid.a
-INCLUDEPATH	+= uuid-1.0.0
+INCLUDEPATH	+= uuid-1.0.0 src
 
 # idle
 CONFIG += idle
@@ -63,7 +63,8 @@ SOURCES	+= src/main.cpp \
         src/crypto/bfproxy.cpp \
         src/clipboard.cpp
 
-FORMS	= src/mypasswordsafe.ui \
+#The following line was changed from FORMS to FORMS3 by qt3to4
+FORMS3	= src/mypasswordsafe.ui \
 	src/pwordeditdlg.ui \
 	src/passphrasedlg.ui \
 	src/preferencesdlg.ui \
@@ -126,3 +127,8 @@ TRANSLATIONS = locale/mypasswordsafe_en.ts \
 	locale/mypasswordsafe_c.ts \
 	locale/mypasswordsafe_fr.ts \
         locale/mypasswordsafe_pig.ts
+#The following line was inserted by qt3to4
+QT += xml  qt3support 
+#The following line was inserted by qt3to4
+CONFIG += uic3
+

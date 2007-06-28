@@ -21,16 +21,20 @@
 #include <iostream>
 #include <string>
 #include <qapplication.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 // #include <kfiledialog.h>
 #include <qstatusbar.h>
 #include <qclipboard.h>
 #include <qmessagebox.h>
 #include <qinputdialog.h>
 #include <qsettings.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qdom.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <QHideEvent>
+#include <QShowEvent>
+#include <QCloseEvent>
 #include "tools/idle/idle.h"
 #include "passphrasedlg.h"
 #include "pwordeditdlg.h"
@@ -43,7 +47,7 @@
 
 using namespace std;
 
-typedef QFileDialog MyFileDialog;
+typedef Q3FileDialog MyFileDialog;
 
 void MyPasswordSafe::init()
 {
@@ -518,14 +522,14 @@ void MyPasswordSafe::pwordFetchUser()
 }
 
 
-void MyPasswordSafe::onPwordListDblClicked(QListViewItem *item)
+void MyPasswordSafe::onPwordListDblClicked(Q3ListViewItem *item)
 {
   if(item->rtti() == SafeListViewEntry::RTTI)
     pwordFetch();
 }
 
 
-void MyPasswordSafe::onPwordListRightClk( QListViewItem *, const QPoint &point, int)
+void MyPasswordSafe::onPwordListRightClk( Q3ListViewItem *, const QPoint &point, int)
 {
   PopupMenu->popup(point);
 }
@@ -850,7 +854,7 @@ bool MyPasswordSafe::isMinimized() const
 #else
 bool MyPasswordSafe::isMinimized() const
 {
-  return QMainWindow::isMinimized();
+  return Q3MainWindow::isMinimized();
 }
 #endif
 
@@ -1057,7 +1061,7 @@ void MyPasswordSafe::slotSecondsIdle(int secs)
 
 void MyPasswordSafe::checkMinimization()
 {
-  DBGOUT("isMinimized: " << (isMinimized() == QMainWindow::isMinimized()));
+  DBGOUT("isMinimized: " << (isMinimized() == Q3MainWindow::isMinimized()));
   if(lockOnMinimize()) {
     m_do_lock = isMinimized();
   }

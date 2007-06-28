@@ -18,15 +18,17 @@
  *
  */
 
-#include"idle.h"
+#include "idle.h"
 
-#include<qlibrary.h>
-#include<windows.h>
+#include <qlibrary.h>
+#include <windows.h>
 
+#if defined(Q_OS_WIN32) && !defined(Q_CC_GNU)
 typedef struct tagLASTINPUTINFO {
 	UINT cbSize;
 	DWORD dwTime;
 } LASTINPUTINFO, *PLASTINPUTINFO;
+#endif
 
 class IdlePlatform::Private
 {

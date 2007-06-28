@@ -35,7 +35,7 @@ exec_prefix = ${prefix}
 bindir      = ${exec_prefix}/bin
 libdir      = ${exec_prefix}/lib
 includedir  = ${prefix}/include
-mandir      = ${prefix}/man
+mandir      = ${prefix}/share/man
 
 CC          = gcc
 CPPFLAGS    = 
@@ -77,11 +77,11 @@ all: $(TARGETS)
 	@$(LIBTOOL) --mode=compile $(CC) $(CPPFLAGS) $(CFLAGS) -c $<
 
 $(LIB_NAME): $(LIB_OBJS)
-	@$(LIBTOOL) --mode=link $(CC) -o $(LIB_NAME) $(LIB_OBJS) -rpath $(libdir) \
+	@$(LIBTOOL) --mode=link $(CC) -o $(LIB_NAME) $(LIB_OBJS) $(LDFLAGS) -rpath $(libdir) \
 	    -version-info `$(SHTOOL) version -l txt -d libtool VERSION`
 
 $(DCE_NAME): $(DCE_OBJS)
-	@$(LIBTOOL) --mode=link $(CC) -o $(DCE_NAME) $(DCE_OBJS) -rpath $(libdir) \
+	@$(LIBTOOL) --mode=link $(CC) -o $(DCE_NAME) $(DCE_OBJS) $(LDFLAGS) -rpath $(libdir) \
 	    -version-info `$(SHTOOL) version -l txt -d libtool VERSION`
 
 $(PRG_NAME): $(PRG_OBJS) $(LIB_NAME)
