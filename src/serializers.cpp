@@ -249,14 +249,14 @@ int BlowfishLizer::readEntry(FILE *in, SafeEntry &item,
   if(data.length() > 0) {
     tempdata = data.get();
 
-    DBGOUT("tempdata: \"" << tempdata << "\"");
+    DBGOUT("tempdata: \"" << tempdata.data() << "\"");
 
     QStringList name_user(QStringList::split('\xAD', tempdata, true));
     if(name_user.size() == 2) {
       //trimRight(name_user[0]);
       tempdata = name_user[0];
       //tempdata.truncate(tempdata.length() - 1);
-      DBGOUT("\"" << tempdata << "\"\t\"" << name_user[0] << "\"");
+      DBGOUT("\"" << tempdata.data() << "\"\t\"" << name_user[0].toAscii().data() << "\"");
       item.setName(tempdata);
 
       //trimLeft(name_user[1]);
@@ -286,7 +286,7 @@ int BlowfishLizer::readEntry(FILE *in, SafeEntry &item,
   numread += readCBC(in, fish, data, type, ipthing);
   if(data.length() > 0) {
     tempdata = data.get();
-    DBGOUT("Notes: " << tempdata);
+    DBGOUT("Notes: " << tempdata.data());
     item.setNotes(tempdata);
   }
 
@@ -331,7 +331,7 @@ Safe::Error BlowfishLizer::save(Safe &safe, const QString &path, const QString &
   FILE *out = fopen(path, "wb");
   const EncryptedString &passphrase(safe.getPassPhrase());
 
-  DBGOUT("Saving " << path);
+  DBGOUT("Saving " << path.toAscii().data());
 
   if(out == NULL) {
     return Safe::BadFile;
@@ -449,7 +449,7 @@ int BlowfishLizer::writeEntry(FILE *out, SafeEntry &item, CryptoInterface *fish,
     }
   }
 
-  DBGOUT("Writing name: \"" << temp << "\"");
+  DBGOUT("Writing name: \"" << temp.data() << "\"");
   
   data.set(temp);
   num_written += writeCBC(out, fish, data, 0, ipthing);
@@ -500,7 +500,7 @@ Safe::Error BlowfishLizer2::load(Safe &safe, const QString &path,
   // read in the format header
   numread = BlowfishLizer::readEntry(in, *item, fish.get(), ipthing, def_user);
 
-  DBGOUT("Name: \"" << item->name() << "\"");
+  DBGOUT("Name: \"" << item->name().toAscii().data() << "\"");
   DBGOUT("pword: " << item->password().get().get());
 
   const QString pwsafe2_header(FormatName);
@@ -516,6 +516,8 @@ Safe::Error BlowfishLizer2::load(Safe &safe, const QString &path,
     item = new SafeEntry(&safe);
     group = "";
     numread = readEntry(in, *item, group, fish, ipthing, def_user);
+    DBGOUT("Read: " << item->name().toAscii().data() << " in " << group.toAscii().data());
+
     if(numread > 0) {
       if(!group.isEmpty()) {
 	SafeGroup *parent = findOrCreateGroup(&safe, group);
@@ -539,7 +541,7 @@ Safe::Error BlowfishLizer2::save(Safe &safe, const QString &path, const QString 
   FILE *out = fopen(path, "wb");
   const EncryptedString &passphrase(safe.getPassPhrase());
 
-  DBGOUT("Saving " << path);
+  DBGOUT("Saving " << path.toAscii().data());
 
   if(out == NULL) {
     return Safe::BadFile;
@@ -615,7 +617,7 @@ Safe::Error BlowfishLizer2::saveGroup(FILE *out, SafeGroup *group, CryptoInterfa
   while(iter.current()) {
     item = iter.current();
     if(item->rtti() == SafeEntry::RTTI) {
-      DBGOUT("Item name: " << ((SafeEntry *)item)->name());
+      DBGOUT("Item name: " << ((SafeEntry *)item)->name().toAscii().data());
       if(writeEntry(out, *(SafeEntry *)item, fish, ipthing, def_user) == 0) {
 	return Safe::IOError;
       }
@@ -708,7 +710,7 @@ QString BlowfishLizer2::readyGroup(const QString &group)
     }
   }
 
-  DBGOUT("\"" << group << "\" = \"" << ret << "\"");
+  DBGOUT("\"" << group.toAscii().data() << "\" = \"" << ret.toAscii().data() << "\"");
   return ret;
 }
 
@@ -754,7 +756,7 @@ int BlowfishLizer2::readEntry(FILE *in, SafeEntry &item, QString &group,
     case UUID_BLOCK: {
       const unsigned char *uuid_array = (const unsigned char *)data.get();
       UUID uuid(uuid_array);
-      DBGOUT("UUID: " << uuid.toString());
+      DBGOUT("UUID: " << uuid.toString().toAscii().data());
       item.setUUID(uuid);
     } break;
     case GROUP: {
@@ -797,7 +799,7 @@ int BlowfishLizer2::readEntry(FILE *in, SafeEntry &item, QString &group,
     DBGOUT("UUID isNil");
     item.setUUID(UUID(true));
   }
-  DBGOUT("Item UUID: " << item.uuid().toString());
+  DBGOUT("Item UUID: " << item.uuid().toString().toAscii().data());
 
   DBGOUT("END: " << num_read);
 

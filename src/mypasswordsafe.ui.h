@@ -51,6 +51,10 @@ typedef Q3FileDialog MyFileDialog;
 
 void MyPasswordSafe::init()
 {
+#ifdef __APPLE__
+  setAttribute(Qt::WA_MacMetalStyle);
+#endif /* __APPLE__ */
+
   m_clipboard = Clipboard::instance();
   connect(editClearClipboardAction, SIGNAL(activated()), m_clipboard, SLOT(clear()));
   connect(m_clipboard, SIGNAL(cleared()), this, SLOT(clipboardCleared()));
@@ -261,10 +265,13 @@ bool MyPasswordSafe::open( const char *filename, const EncryptedString &passkey,
     if(ret == Safe::Success) {
       DBGOUT(filename << " has " << s->count() << " entries");
 
-      if(m_safe != NULL)
-	delete m_safe;
+      Safe *current_safe = m_safe;
       m_safe = s;
       pwordListView->setSafe(m_safe);
+
+      if(current_safe != NULL)
+	delete current_safe;
+
       setCaption(tr("MyPasswordSafe: ") + filename);
       savingEnabled(false);
       fileSaveAsAction->setEnabled(true);
@@ -985,7 +992,7 @@ void MyPasswordSafe::dragObjectDropped(QMimeSource *drag, SafeListViewItem *targ
   DBGOUT("dragObjectDropped");
   QDomDocument doc("safe");
   if(SafeDragObject::decode(drag, doc)) {
-    DBGOUT("Dragged data: " << endl << doc.toString());
+    DBGOUT("Dragged data: " << endl << doc.toString().toAscii().data());
 
     // find the group to add the dragged data to
     SafeListViewGroup *lvi_parent = NULL;

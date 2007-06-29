@@ -44,7 +44,7 @@ SafeGroup *findGroup(SafeGroup *group, const QString &full_group)
   if(group == NULL || full_group.isEmpty())
     return NULL;
 
-  DBGOUT("findGroup: " << full_group);
+  DBGOUT("findGroup: " << full_group.toAscii().data());
 
   QString group_name;
   unsigned int index = 0;
@@ -79,7 +79,7 @@ SafeGroup *findGroup(SafeGroup *group, const QString &full_group)
 #ifdef DEBUG
       else {
 	if(!group_name.isEmpty())
-	  DBGOUT(temp->name() << " != " << group_name);
+	  DBGOUT(temp->name().toAscii().data() << " != " << group_name.toAscii().data());
       }
 #endif
     }
@@ -118,29 +118,29 @@ SafeGroup *findOrCreateGroup(Safe *safe, const QString &group_name)
 	  break;
 	}
       }
-      DBGOUT("Group path: " << group_path);
+      DBGOUT("Group path: " << group_path.toAscii().data());
     }
 
     SafeGroup *group = findGroup(safe, group_path);
     if(group != NULL) {
-      DBGOUT("Found group " << group_path);
+      DBGOUT("Found group " << group_path.toAscii().data());
       return group;
     }
 
 #ifdef DEBUG
     if(!group_path.isEmpty())
-      DBGOUT(group_path);
+      DBGOUT(group_path.toAscii().data());
 #endif
 
     QString this_group = unescapeGroup(thisGroup(group_path));
     QString parent_group = parentGroup(group_path);
-    DBGOUT("adding group: " << this_group << " to " << parent_group);
+    DBGOUT("adding group: " << this_group.toAscii().data() << " to " << parent_group.toAscii().data());
 
     if(parent_group.isEmpty()) {
       return new SafeGroup(safe, this_group);
     }
     else {
-      DBGOUT("parent = " << parent_group);
+      DBGOUT("parent = " << parent_group.toAscii().data());
       // search for the parent
       // if it doesn't exist add it
       SafeGroup *parent = findOrCreateGroup(safe, parent_group);
@@ -525,12 +525,12 @@ Safe::Error Safe::checkPassword(const QString &path, const QString &type, const 
   QString ext(info.extension(false));
   SafeSerializer *serializer(createSerializer(ext, type));
 
-  DBGOUT("Path: " << path);
+  DBGOUT("Path: " << path.toAscii().data());
 
   if(serializer != NULL) {
     Safe::Error ret = Failed;
     do {
-      DBGOUT("Serializer: " << serializer->name());
+      DBGOUT("Serializer: " << serializer->name().toAscii().data());
 
       // NOTE: password is decrypted
       QString p(path);
@@ -548,7 +548,7 @@ Safe::Error Safe::checkPassword(const QString &path, const QString &type, const 
     return ret;
   }
   else {
-    DBGOUT("No serializer found for: " << ext);
+    DBGOUT("No serializer found for: " << ext.toAscii().data());
     return BadFormat;
   }
 }
@@ -587,7 +587,7 @@ Safe::Error Safe::load(const QString &path, const QString &type,
     do {
       empty();
 
-      DBGOUT("Using " << serializer->name() << " to serialize");
+      DBGOUT("Using " << serializer->name().toAscii().data() << " to serialize");
 
       try {
 	err = serializer->load(*this, path,
@@ -617,7 +617,7 @@ Safe::Error Safe::load(const QString &path, const QString &type,
       }
     } while(err == BadFormat);// && by_ext == true);
 
-    DBGOUT("Returning err");
+    DBGOUT("Returning err: " << (int)err);
     return err;
   }
   else {
@@ -675,8 +675,8 @@ Safe::Error Safe::save(const QString &path, const QString &type,
       full_path += serializer->extension();
     }
 
-    DBGOUT("Path: " << full_path);
-    DBGOUT("Serializer: " << serializer->name());
+    DBGOUT("Path: " << full_path.toAscii().data());
+    DBGOUT("Serializer: " << serializer->name().toAscii().data());
 
     setPath(full_path);
     setType(serializer->name());
