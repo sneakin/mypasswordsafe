@@ -100,16 +100,14 @@ SecuredString EncryptedString::get() const
     unsigned char *buffer = new unsigned char[BlockLength]; // so we lie a little...
 
     unsigned char tempcbc[8];
-    for (int x=0;x<BlockLength;x+=8)
-      {
-	memcpy(tempcbc, m_data+x, 8);
-	algor.decrypt(m_data+x, buffer+x);
-	xormem(buffer+x, cbcbuffer, 8);
-	memcpy(cbcbuffer, tempcbc, 8);
-      }
+    for (int x=0;x<BlockLength;x+=8) {
+      memcpy(tempcbc, m_data+x, 8);
+      algor.decrypt(m_data+x, buffer+x);
+      xormem(buffer+x, cbcbuffer, 8);
+      memcpy(cbcbuffer, tempcbc, 8);
+    }
 
-    buffer[m_length] = '\0';
-    SecuredString s((char *)buffer);
+    SecuredString s((char *)buffer, m_length);
     delete[] buffer;
     return s;
   }
@@ -146,37 +144,25 @@ void EncryptedString::set(const char *buffer)
     BlockLength = 8;
 
    // First encrypt and get the length of the buffer to get its
-  // cbc value
-   //unsigned char lengthblock[8];
-   //memset(lengthblock, 0, 8);
-   //putInt32( lengthblock, length );
-
-   //xormem(lengthblock, m_cbc, 8); // do the CBC thing
-   //m_algor->encrypt(lengthblock, lengthblock);
-   //memcpy(cbcbuffer, lengthblock, 8); // update CBC for next round
-   //memcpy(m_cbc, cbcbuffer, 8);
-
-   // Now, encrypt and write the buffer
+   // cbc value
    unsigned char cbcbuffer[8];
    memcpy(cbcbuffer, m_cbc, 8);
 
+   // Now, encrypt and write the buffer
    unsigned char curblock[8];
-   //SecuredString data(get());
-   //const unsigned char *buffer = (const unsigned char *)str.get();
-
    m_data = new unsigned char[BlockLength];
    memset(m_data, 0, BlockLength);
 
    for (int x=0;x<BlockLength;x+=8)
    {
-      if ((length == 0) || ((length%8 != 0) && (length-x<8)))
-      {
-         //This is for an uneven last block
-         memset(curblock, 0, 8);
-         memcpy(curblock, buffer+x, length % 8);
+      if ((length == 0) || ((length%8 != 0) && (length-x<8))) {
+        //This is for an uneven last block
+        memset(curblock, 0, 8);
+        memcpy(curblock, buffer+x, length % 8);
       }
-      else
-         memcpy(curblock, buffer+x, 8);
+      else {
+        memcpy(curblock, buffer+x, 8);
+      }
       xormem(curblock, cbcbuffer, 8);
       algor.encrypt(curblock, curblock);
       memcpy(cbcbuffer, curblock, 8);
