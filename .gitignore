@@ -1,0 +1,16 @@
+MyPasswordSafe
+.moc/*
+.ui/*
+*.o
+*.lo
+*.qm
+*.mak
+src/config.h
+qrc_resources.cpp
+uuid-1.0.0/.libs
+uuid-1.0.0/config.h
+uuid-1.0.0/config.log
+uuid-1.0.0/config.status
+uuid-1.0.0/libtool
+uuid-1.0.0/libuuid.la
+uuid-1.0.0/uuid
