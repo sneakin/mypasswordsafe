@@ -1,5 +1,6 @@
 TEMPLATE	= app
 LANGUAGE	= C++
+ICON            = images/keys.icns
 
 CONFIG	+= qt warn_on
 
