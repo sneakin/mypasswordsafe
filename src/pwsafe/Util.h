@@ -9,6 +9,7 @@
 #include "securedstring.hpp"
 #include <assert.h>
 
+#include <string.h>
 #include <string>
 using std::string;
 #include "PW_sha1.h"

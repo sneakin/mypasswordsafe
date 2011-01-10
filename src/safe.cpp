@@ -311,10 +311,10 @@ SafeEntry::SafeEntry(SafeGroup *parent)
 }
 
 SafeEntry::SafeEntry(SafeGroup *parent,
-		     const QString &n, const QString &u,
+		     const QString &name, const QString &u,
 		     const EncryptedString &p,
 		     const QString &note)
-  : SafeItem(parent), m_name(n), m_user(u),
+  : SafeItem(parent), m_name(name), m_user(u),
     m_notes(note), m_password(p)
 {
   init();

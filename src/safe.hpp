@@ -128,8 +128,8 @@ public:
 
   SafeEntry(SafeGroup *parent);
   SafeEntry(SafeGroup *parent,
-	    const QString &n, const QString &u,
-	    const EncryptedString &p, const QString &n);
+	    const QString &name, const QString &u,
+	    const EncryptedString &p, const QString &notes);
   SafeEntry(const SafeEntry &item);
   ~SafeEntry();
 
