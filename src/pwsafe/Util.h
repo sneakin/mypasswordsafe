@@ -172,7 +172,7 @@ inline int strLength( const wchar_t *str )
 }
 #endif
 
-inline char * strFind( const char *str, const char *fstr )
+inline const char * strFind( const char *str, const char *fstr )
 {
 	return strstr( str, fstr );
 }
